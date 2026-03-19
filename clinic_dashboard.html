@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELVET — Полный аналитический дашборд</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1e293b;line-height:1.5}
+.topnav{position:sticky;top:0;z-index:100;background:#0f172a;display:flex;align-items:center;padding:0 16px;height:48px;box-shadow:0 2px 8px rgba(0,0,0,0.3);overflow-x:auto;gap:2px}
+.topnav a{color:#94a3b8;text-decoration:none;font-size:0.75em;font-weight:600;padding:6px 10px;border-radius:6px;white-space:nowrap;transition:all 0.2s}
+.topnav a:hover,.topnav a.active{color:#fff;background:#1e40af}
+.topnav .logo{color:#fff;font-weight:800;font-size:1em;margin-right:12px}
+.header{background:linear-gradient(135deg,#0f172a,#1e40af,#3b82f6);color:#fff;padding:32px 40px}
+.header h1{font-size:2em;font-weight:800}
+.header p{opacity:0.8;margin-top:4px}
+.container{max-width:1440px;margin:0 auto;padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:#fff;border-radius:12px;padding:18px 12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);text-align:center;border:1px solid #e2e8f0;transition:transform 0.2s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi .icon{font-size:1.4em;margin-bottom:4px}
+.kpi .value{font-size:1.5em;font-weight:800;color:#0f172a}
+.kpi .label{font-size:0.78em;color:#64748b;margin-top:2px}
+.section{margin-bottom:30px;scroll-margin-top:56px}
+.section-title{font-size:1.2em;font-weight:700;color:#0f172a;margin-bottom:12px;padding-bottom:8px;border-bottom:3px solid #3b82f6;display:flex;align-items:center;gap:8px}
+.badge{background:#3b82f6;color:#fff;font-size:0.55em;padding:2px 8px;border-radius:16px;font-weight:600}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0;margin-bottom:0}
+.card h3{font-size:0.88em;font-weight:600;color:#475569;margin-bottom:10px}
+.tag{font-size:0.72em;padding:2px 7px;border-radius:8px;font-weight:600;color:#fff;margin-left:6px}
+canvas{max-height:320px}
+.advice{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:16px 20px;margin-top:16px}
+.advice h4{color:#1e40af;font-size:0.92em;margin-bottom:8px}
+.advice ul{padding-left:16px;color:#334155;font-size:0.84em}
+.advice li{margin-bottom:5px}
+.advice li strong{color:#1e40af}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:0.82em;border-radius:10px;overflow:hidden}
+.tbl thead{background:#0f172a}
+.tbl th{color:#fff;padding:8px 10px;text-align:left;font-weight:600}
+.tbl td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+.tbl tbody tr:hover{background:#f8fafc}
+.risk-badge{display:inline-block;padding:2px 10px;border-radius:16px;font-size:0.74em;font-weight:700;color:#fff}
+.risk-crit{background:#dc2626}.risk-high{background:#ea580c}.risk-med{background:#d97706}.risk-low{background:#16a34a}
+.risk-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.risk-card{border-radius:12px;padding:16px;color:#fff}
+.risk-card h4{font-size:0.95em;margin-bottom:3px}
+.risk-card p{font-size:0.8em;opacity:0.9}
+.predict-box{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding:8px 0}
+.predict-box>div h4{color:#475569;font-size:0.85em;margin-bottom:4px}
+.predict-box .big{font-size:1.9em;font-weight:800}
+.predict-box .sub{font-size:0.8em;color:#94a3b8;margin-top:2px}
+.seg-card{border-radius:10px;padding:14px;text-align:center;color:#fff}
+.seg-card .sv{font-size:1.6em;font-weight:800}
+.seg-card .sl{font-size:0.78em;opacity:0.9;margin-top:2px}
+.heatmap{display:grid;grid-template-columns:auto repeat(14,1fr);gap:2px;font-size:0.72em}
+.heatmap .cell{padding:6px 2px;text-align:center;border-radius:4px;color:#fff;font-weight:600}
+.heatmap .lbl{padding:6px 4px;font-weight:600;color:#475569;text-align:right}
+.species-diag-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
+.species-diag-card h4{font-size:0.9em;font-weight:700;margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid #e2e8f0}
+.diag-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f8fafc;font-size:0.8em}
+.diag-row span:last-child{font-weight:700;color:#3b82f6}
+.footer{text-align:center;padding:20px;color:#94a3b8;font-size:0.78em;border-top:1px solid #e2e8f0;margin-top:36px}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.grid-2,.grid-3,.risk-cards,.predict-box{grid-template-columns:1fr}}
+@media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+<span class="logo">BELVET</span>
+<a href="#general">&#127968; Общее</a>
+<a href="#finance">&#128200; Финансы</a>
+<a href="#predict">&#128302; Прогноз</a>
+<a href="#operations">&#127973; Операции</a>
+<a href="#clients">&#128100; Клиенты</a>
+<a href="#findetail">&#128176; ABC/Маржа</a>
+<a href="#diseases">&#128300; Болезни</a>
+<a href="#animals">&#128054; Животные</a>
+<a href="#zoonotic">&#9888;&#65039; Зоонозы</a>
+<a href="#marketing">&#128226; Маркетинг</a>
+<a href="#multipet">&#128049; Мульти-питомцы</a>
+<a href="#agefirst">&#128118; Возраст</a>
+<a href="#health">&#127873; Здоровье</a>
+<a href="#crosssell">&#128722; Кросс-продажи</a>
+</nav>
+
+<div class="header">
+<h1>BELVET &mdash; Полный аналитический дашборд</h1>
+<p>10 разделов &bull; Предиктивные модели &bull; RFM-сегментация &bull; ABC-анализ &bull; Зоонозные риски &bull; Рекомендации</p>
+</div>
+
+<div class="container">
+
+<!-- ═══ 1. GENERAL ═══ -->
+<div class="section" id="general">
+<div class="section-title">&#127968; Общая информация <span class="badge">ОБЗОР</span></div>
+<div class="kpi-grid">
+<div class="kpi"><div class="icon">&#128100;</div><div class="value">8 756</div><div class="label">Клиентов</div></div>
+<div class="kpi"><div class="icon">&#128054;</div><div class="value">11 661</div><div class="label">Питомцев</div></div>
+<div class="kpi"><div class="icon">&#128203;</div><div class="value">24 295</div><div class="label">Визитов</div></div>
+<div class="kpi"><div class="icon">&#128176;</div><div class="value">1 322 081</div><div class="label">Выручка (AZN)</div></div>
+<div class="kpi"><div class="icon">&#128178;</div><div class="value">50.5</div><div class="label">Средний чек</div></div>
+<div class="kpi"><div class="icon">&#128138;</div><div class="value">124 146</div><div class="label">Услуг оказано</div></div>
+</div>
+<div class="grid-3">
+<div class="card"><h3>Виды животных</h3><canvas id="cSpecies"></canvas></div>
+<div class="card"><h3>ТОП-12 пород</h3><canvas id="cBreeds"></canvas></div>
+<div class="card"><h3>Типы оплат</h3><canvas id="cPayTypes"></canvas></div>
+</div>
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>44% питомцев без породы</strong> &mdash; создайте пакет &laquo;Первичный осмотр&raquo; для подобранных животных (вакцинация+дегельминтизация+чип).</li>
+<li><strong>Кошки 66%</strong> &mdash; расширяйте кошачьи услуги: стоматология, груминг, фелинологические консультации.</li>
+<li><strong>Безнал/нал 51/49%</strong> &mdash; внедрите онлайн-оплату и рассрочку для повышения среднего чека.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 2. FINANCE ═══ -->
+<div class="section" id="finance">
+<div class="section-title">&#128200; Финансы и посещаемость <span class="badge">ДИНАМИКА</span></div>
+<div class="grid-2">
+<div class="card"><h3>Ежемесячная выручка <span class="tag" style="background:#10b981">+прогноз</span></h3><canvas id="cRevenue"></canvas></div>
+<div class="card"><h3>Ежемесячные визиты</h3><canvas id="cVisits"></canvas></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Выручка по годам</h3><canvas id="cYearRev"></canvas></div>
+<div class="card"><h3>Рост клиентской базы</h3><canvas id="cClientGrowth"></canvas></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>LTV клиента по годам (AZN)</h3><canvas id="cAvgRevClient"></canvas></div>
+<div class="card"><h3>Сезонность визитов</h3><canvas id="cSeasonal"></canvas></div>
+</div>
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>Выручка 2025 vs 2024: +17%</strong> &mdash; хороший рост, но средний чек 50.5 AZN низкий. Цель: 65 AZN через пакетные услуги.</li>
+<li><strong>Февраль самый слабый</strong> &mdash; запускайте акции в январе-феврале.</li>
+<li><strong>LTV вырос до 200 AZN</strong> &mdash; цель: 250 AZN к 2027 через программу удержания.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 3. PREDICT ═══ -->
+<div class="section" id="predict">
+<div class="section-title">&#128302; Предиктивная модель <span class="badge">ПРОГНОЗ 12 МЕС.</span></div>
+<div class="card">
+<div class="predict-box">
+<div><h4>Прогноз выручки (апр 2026&mdash;мар 2027)</h4><div class="big" style="color:#10b981">246 736 AZN</div><div class="sub">Суммарная прогнозируемая выручка</div></div>
+<div><h4>Целевой показатель</h4><div class="big" style="color:#8b5cf6">~400 000 AZN</div><div class="sub">При реализации рекомендаций (+62%)</div></div>
+<div><h4>Метод</h4><p style="color:#64748b;font-size:0.88em;margin-top:6px">Полиномиальная регрессия 2-й степени. 2026* &mdash; данные по 03.02.2026.</p></div>
+</div>
+</div>
+<div class="card" style="margin-top:16px"><h3>Сценарии развития</h3><canvas id="cScenarios"></canvas></div>
+<div class="advice"><h4>&#128161; Рекомендации для роста</h4><ul>
+<li><strong>Средний чек до 65 AZN</strong> &mdash; комплексные пакеты: &laquo;Check-up&raquo;, &laquo;Годовой абонемент&raquo;.</li>
+<li><strong>Отложенные визиты 18% &rarr; 10%</strong> &mdash; SMS-напоминания, онлайн-запись.</li>
+<li><strong>Реферальная программа</strong> &mdash; &laquo;Приведи друга &mdash; скидка 20%&raquo;.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 4. OPERATIONS ═══ -->
+<div class="section" id="operations">
+<div class="section-title">&#127973; Операционные показатели</div>
+<div class="grid-2">
+<div class="card"><h3>Нагрузка врачей</h3><canvas id="cDocVisits"></canvas></div>
+<div class="card"><h3>Выручка по врачам</h3><canvas id="cDocRev"></canvas></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Статус визитов</h3><canvas id="cVisitStatus"></canvas></div>
+<div class="card"><h3>Нагрузка по дням недели</h3><canvas id="cDow"></canvas></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Нагрузка по часам</h3><canvas id="cHours"></canvas></div>
+<div class="card"><h3>ТОП-15 услуг по выручке</h3><canvas id="cTopServices" style="max-height:380px"></canvas></div>
+</div>
+<!-- Heatmap -->
+<div class="card" style="margin-top:16px">
+<h3>Тепловая карта загрузки (день недели &times; час)</h3>
+<div class="heatmap" id="heatmapGrid"></div>
+</div>
+<div class="card" style="margin-top:16px">
+<h3>Эффективность врачей</h3>
+<table class="tbl"><thead><tr><th>Врач</th><th>Визиты</th><th>Клиенты</th><th>Выручка (AZN)</th><th>AZN/визит</th></tr></thead><tbody>
+<tr><td>Родько Екатерина</td><td>7 898</td><td>3 505</td><td>416 585</td><td style="color:#10b981;font-weight:700">52.7</td></tr>
+<tr><td>Кузьмин Василий</td><td>7 577</td><td>3 668</td><td>322 824</td><td>42.6</td></tr>
+<tr><td>Рустамов Рахман</td><td>7 010</td><td>3 906</td><td>265 920</td><td>37.9</td></tr>
+<tr><td>Мухамедова Самира</td><td>32</td><td>21</td><td>260 252</td><td style="color:#dc2626;font-weight:700">8 132.9</td></tr>
+<tr><td>Абдуллазаде Сакиба</td><td>1 661</td><td>963</td><td>56 091</td><td>33.8</td></tr>
+</tbody></table>
+</div>
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>3 врача обслуживают 93% визитов</strong> &mdash; риск выгорания. Наймите 1-2 ветеринаров.</li>
+<li><strong>Суббота &mdash; самый загруженный день</strong> (4 342 визита), понедельник &mdash; наименее (2 753). Перераспределите смены.</li>
+<li><strong>Пик нагрузки: 8:00-12:00</strong> &mdash; добавьте вечерние часы приема для работающих владельцев.</li>
+<li><strong>Мухамедова: 32 визита = 260K AZN</strong> &mdash; специализация на дорогих процедурах. Масштабируйте модель.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 5. CLIENTS ═══ -->
+<div class="section" id="clients">
+<div class="section-title">&#128100; Клиентская аналитика <span class="badge">RFM &bull; КОГОРТЫ &bull; ОТТОК</span></div>
+
+<!-- RFM -->
+<div class="grid-4" style="margin-bottom:16px">
+<div class="seg-card" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6)"><div class="sv">1 304</div><div class="sl">VIP (ср. 566 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#0284c7,#0ea5e9)"><div class="sv">944</div><div class="sl">Лояльные (ср. 66 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">1 289</div><div class="sl">Новички (ср. 62 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><div class="sv">939</div><div class="sl">Обычные (ср. 175 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#ea580c,#f97316)"><div class="sv">1 288</div><div class="sl">В зоне риска (ср. 144 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#dc2626,#ef4444)"><div class="sv">1 695</div><div class="sl">Потерянные (ср. 55 AZN)</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><h3>RFM-сегментация</h3><canvas id="cRfm"></canvas></div>
+<div class="card"><h3>Статус клиентов по активности</h3><canvas id="cChurn"></canvas></div>
+</div>
+
+<div class="grid-2" style="margin-top:16px">
+<div class="card">
+<h3>&#11088; ТОП-15 VIP-клиентов</h3>
+<table class="tbl"><thead><tr><th>Клиент</th><th>Выручка</th><th>Визиты</th><th>Дней назад</th></tr></thead><tbody>
+<tr><td>Милана Набиева</td><td style="font-weight:700">27 794</td><td>183</td><td>47</td></tr>
+<tr><td>Алина Прокофьева</td><td>8 780</td><td>83</td><td>8</td></tr>
+<tr><td>Зулейха Велиева</td><td>8 589</td><td>66</td><td>3</td></tr>
+<tr><td>Гюльбяниз Эйвазова</td><td>7 178</td><td>98</td><td>268</td></tr>
+<tr><td>Оксана Ахмедова</td><td>6 944</td><td>46</td><td>165</td></tr>
+<tr><td>Айдан Мамедова</td><td>6 469</td><td>138</td><td>37</td></tr>
+<tr><td>Диана Дронова</td><td>4 586</td><td>76</td><td>1</td></tr>
+<tr><td>Гюльнара Абузарова</td><td>4 141</td><td>66</td><td>5</td></tr>
+<tr><td>Елизавета Гасанова</td><td>4 095</td><td>45</td><td>7</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h3>&#9888;&#65039; Клиенты в зоне риска (уходят)</h3>
+<table class="tbl"><thead><tr><th>Клиент</th><th>Выручка</th><th>Визиты</th><th>Дней назад</th></tr></thead><tbody>
+<tr><td>Фаиг Мамедов</td><td>2 107</td><td>9</td><td style="color:#dc2626;font-weight:700">1 584</td></tr>
+<tr><td>Фархад Джабраилов</td><td>1 041</td><td>12</td><td style="color:#dc2626">1 107</td></tr>
+<tr><td>Имран Имранов</td><td>920</td><td>13</td><td style="color:#dc2626">1 268</td></tr>
+<tr><td>Мамед Рагимов</td><td>871</td><td>13</td><td style="color:#dc2626">1 512</td></tr>
+<tr><td>Севиндж Гасанова</td><td>863</td><td>17</td><td style="color:#ea580c">1 022</td></tr>
+<tr><td>Яна Торлей</td><td>852</td><td>11</td><td style="color:#ea580c">1 130</td></tr>
+</tbody></table>
+</div>
+</div>
+
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Ежемесячный отток (180+ дней без визита)</h3><canvas id="cChurnMonthly"></canvas></div>
+<div class="card"><h3>Распределение интервалов между визитами</h3><canvas id="cVisitGaps"></canvas></div>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации по клиентам</h4><ul>
+<li><strong>1 695 потерянных клиентов (23%)</strong> &mdash; запустите win-back кампанию: &laquo;Мы скучаем! Скидка 30% на следующий визит&raquo;.</li>
+<li><strong>1 288 в зоне риска (ср. 144 AZN)</strong> &mdash; это ценные клиенты. Персональные звонки для возврата.</li>
+<li><strong>Медиана интервала: 15 дней</strong>, но 1 705 случаев 180+ дней &mdash; настройте автоматические напоминания после 60 дней.</li>
+<li><strong>VIP Милана Набиева (27 794 AZN)</strong> &mdash; 183 визита. Назначьте персонального менеджера.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 6. FINANCE DETAIL ═══ -->
+<div class="section" id="findetail">
+<div class="section-title">&#128176; Финансовая аналитика <span class="badge">ABC &bull; МАРЖА &bull; КОРЗИНА &bull; ДОЛГИ</span></div>
+
+<div class="grid-3" style="margin-bottom:16px">
+<div class="seg-card" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">43 услуги</div><div class="sl">Категория A (80% выручки)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#0284c7,#0ea5e9)"><div class="sv">190 услуг</div><div class="sl">Категория B (15% выручки)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);color:#334155"><div class="sv">1 191 услуга</div><div class="sl">Категория C (5% выручки)</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><h3>ABC-анализ услуг</h3><canvas id="cAbc"></canvas></div>
+<div class="card"><h3>ТОП-15 по прибыли</h3><canvas id="cMargins"></canvas></div>
+</div>
+
+<div class="grid-2" style="margin-top:16px">
+<div class="card">
+<h3>&#128722; Корзинный анализ &mdash; что покупают вместе</h3>
+<table class="tbl"><thead><tr><th>Услуга 1</th><th>Услуга 2</th><th>Раз вместе</th></tr></thead><tbody>
+<tr><td>Инъекция в/м</td><td>Шприц 2 мл</td><td style="font-weight:700">3 204</td></tr>
+<tr><td>Инъекция в/м</td><td>Прием терапевта</td><td>1 897</td></tr>
+<tr><td>Бинт</td><td>Игла инъекционная</td><td>1 852</td></tr>
+<tr><td>Инъекция в/м</td><td>Шприц 5 мл</td><td>1 605</td></tr>
+<tr><td>ProCyte Dx</td><td>Игла инъекц.</td><td>1 565</td></tr>
+<tr><td>Игла инъекц.</td><td>Забор крови</td><td>1 565</td></tr>
+<tr><td>ProCyte Dx</td><td>Краситель Stain Pack</td><td>1 369</td></tr>
+<tr><td>Инъекция в/м</td><td>Тривит</td><td>1 324</td></tr>
+<tr><td>Бициллин-3</td><td>Инъекция в/м</td><td>1 270</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h3>&#128176; Дебиторская задолженность: 28 223 AZN</h3>
+<p style="font-size:0.82em;color:#64748b;margin-bottom:8px">354 клиента с неоплаченными счетами</p>
+<table class="tbl"><thead><tr><th>Клиент</th><th>Долг (AZN)</th><th>Счетов</th><th>С даты</th></tr></thead><tbody>
+<tr><td>Кёнюль Гулиева</td><td style="color:#dc2626;font-weight:700">2 745.9</td><td>5</td><td>2026-01-20</td></tr>
+<tr><td>Гость (неизв.)</td><td>2 623.4</td><td>21</td><td>2022-06-15</td></tr>
+<tr><td>Фатиев Нурик</td><td>1 400.5</td><td>9</td><td>2021-10-16</td></tr>
+<tr><td>Айдан Мамедова</td><td>835.7</td><td>6</td><td>2023-05-30</td></tr>
+<tr><td>Рукият Гусейнова</td><td>568.3</td><td>3</td><td>2025-05-09</td></tr>
+<tr><td>Гюльнара Абузарова</td><td>533.1</td><td>2</td><td>2025-07-20</td></tr>
+<tr><td>Милана Набиева</td><td>369.2</td><td>2</td><td>2025-04-12</td></tr>
+</tbody></table>
+</div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Ключевые финансовые метрики</h3>
+<div class="grid-3" style="text-align:center;padding:10px 0">
+<div><div style="font-size:1.6em;font-weight:800;color:#10b981">3 050 842 AZN</div><div style="color:#64748b;font-size:0.85em">Общая прибыль</div></div>
+<div><div style="font-size:1.6em;font-weight:800;color:#3b82f6">78.1%</div><div style="color:#64748b;font-size:0.85em">Средняя маржинальность</div></div>
+<div><div style="font-size:1.6em;font-weight:800;color:#dc2626">28 223 AZN</div><div style="color:#64748b;font-size:0.85em">Дебиторская задолженность</div></div>
+</div>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>43 услуги дают 80% выручки</strong> &mdash; сфокусируйте маркетинг на этих услугах. Остальные 1 191 &mdash; ревизия ассортимента.</li>
+<li><strong>Маржа 78%</strong> &mdash; высокая для ветклиники. Основные услуги (прием, рентген, стационар) дают 100% маржу.</li>
+<li><strong>Корзинный анализ</strong> &mdash; создайте готовые наборы: &laquo;Анализ крови&raquo; (ProCyte+забор+игла+бинт = 1 пакет).</li>
+<li><strong>28K AZN долгов</strong> &mdash; Кёнюль Гулиева (2 746 AZN) и Фатиев Нурик (1 401 AZN с 2021!) &mdash; передайте в работу.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 7. DISEASES ═══ -->
+<div class="section" id="diseases">
+<div class="section-title">&#128300; Анализ заболеваний <span class="badge">ДИАГНОСТИКА</span></div>
+<div class="grid-2">
+<div class="card"><h3>ТОП-25 диагнозов</h3><canvas id="cDiagnoses" style="max-height:500px"></canvas></div>
+<div class="card"><h3>Динамика заболеваний (24 мес.)</h3><canvas id="cDiseaseTrend"></canvas></div>
+</div>
+<div style="margin-top:16px"><div style="font-size:1.05em;font-weight:700;margin-bottom:10px">Заболевания по видам</div><div class="grid-4" id="speciesDiagCards"></div></div>
+<div class="card" style="margin-top:16px"><h3>Сезонность заболеваний (какой месяц опаснее)</h3><canvas id="cSeasonDisease"></canvas></div>
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>Вирусная инфекция кошек (253)</strong> &mdash; #1. Усильте вакцинацию Nobivac Tricat. Предлагайте при каждом визите.</li>
+<li><strong>Блошиный дерматит пик июнь-ноябрь</strong> &mdash; программа &laquo;Защита круглый год&raquo;.</li>
+<li><strong>Парвовирус (47)</strong> &mdash; выездные вакцинации в районах Баку с низким охватом.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 8. ANIMALS ═══ -->
+<div class="section" id="animals">
+<div class="section-title">&#128054; Аналитика животных <span class="badge">LTV &bull; РИСКИ &bull; СМЕРТНОСТЬ</span></div>
+<div class="grid-2">
+<div class="card"><h3>LTV питомца по видам (AZN)</h3><canvas id="cPetLtv"></canvas></div>
+<div class="card"><h3>ТОП-20 пород по LTV (AZN/питомец)</h3><canvas id="cBreedLtv"></canvas></div>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Риск-профиль пород (% диагнозов к визитам)</h3><canvas id="cBreedRisk"></canvas></div>
+<div class="card"><h3>Смертность по видам</h3>
+<p style="font-size:0.85em;color:#64748b;margin-bottom:8px">Всего зарегистрированных смертей: <strong>99</strong></p>
+<table class="tbl"><thead><tr><th>Вид</th><th>Смертей</th><th>Ср. возраст (лет)</th></tr></thead><tbody>
+<tr><td>Кошки</td><td>73</td><td>3.1</td></tr>
+<tr><td>Собаки</td><td>24</td><td>5.3</td></tr>
+<tr><td>Кролик</td><td>1</td><td>4.0</td></tr>
+<tr><td>Грызуны</td><td>1</td><td>2.0</td></tr>
+</tbody></table>
+<div style="margin-top:10px"><canvas id="cMortality" style="max-height:200px"></canvas></div>
+</div>
+</div>
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>Кролики &mdash; LTV 213 AZN</strong> (выше кошек!). Развивайте экзотическое направление.</li>
+<li><strong>Хаски &mdash; LTV 313 AZN</strong> &mdash; самая доходная порода. Специальные пакеты для крупных собак.</li>
+<li><strong>Кролик и Бишон-фризе &mdash; самые &laquo;болезненные&raquo;</strong> (55-60% визитов с диагнозом). Профилактические программы.</li>
+<li><strong>Ср. возраст смерти кошек 3.1 года</strong> &mdash; очень низкий. Причина: вирусные инфекции молодых кошек. Ранняя вакцинация критична.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 9. ZOONOTIC ═══ -->
+<div class="section" id="zoonotic">
+<div class="section-title">&#9888;&#65039; Зоонозные риски <span class="badge">КРИТИЧЕСКИ ВАЖНО</span></div>
+<div class="risk-cards">
+<div class="risk-card" style="background:linear-gradient(135deg,#991b1b,#dc2626)"><h4>&#128680; Критический</h4><p>Бешенство: 1 015 владельцев. 100% летальность без лечения.</p></div>
+<div class="risk-card" style="background:linear-gradient(135deg,#9a3412,#ea580c)"><h4>&#9888;&#65039; Высокий</h4><p>Эрлихиоз: 171 владелец. Лептоспироз: 4.</p></div>
+<div class="risk-card" style="background:linear-gradient(135deg,#92400e,#d97706)"><h4>&#128993; Средний</h4><p>Микроспория: 103. Хламидиоз: 34. Лишай: 33.</p></div>
+<div class="risk-card" style="background:linear-gradient(135deg,#166534,#16a34a)"><h4>&#9989; Низкий</h4><p>Лямблиоз: 13. Дерматофития: 19.</p></div>
+</div>
+
+<div class="card">
+<h3>Масштаб зоонозных рисков</h3>
+<table class="tbl"><thead><tr><th>Заболевание</th><th>Риск</th><th>Владельцев</th><th>Питомцев</th><th>Виды</th><th>Путь передачи</th></tr></thead><tbody>
+<tr><td><strong>Бешенство</strong></td><td><span class="risk-badge risk-crit">КРИТ.</span></td><td>1 015</td><td>1 283</td><td>Кошки, Собаки</td><td>Укус, слюна</td></tr>
+<tr><td><strong>Эрлихиоз</strong></td><td><span class="risk-badge risk-high">ВЫСОК.</span></td><td>171</td><td>182</td><td>Собаки</td><td>Клещи</td></tr>
+<tr><td><strong>Микроспория</strong></td><td><span class="risk-badge risk-med">СРЕДН.</span></td><td>103</td><td>131</td><td>Кошки, Собаки</td><td>Контакт (дети!)</td></tr>
+<tr><td><strong>Хламидиоз</strong></td><td><span class="risk-badge risk-med">СРЕДН.</span></td><td>34</td><td>34</td><td>Кошки</td><td>Выделения</td></tr>
+<tr><td><strong>Лишай</strong></td><td><span class="risk-badge risk-med">СРЕДН.</span></td><td>33</td><td>38</td><td>Кошки</td><td>Контакт</td></tr>
+<tr><td><strong>Лямблиоз</strong></td><td><span class="risk-badge risk-med">СРЕДН.</span></td><td>13</td><td>14</td><td>Кошки, Собаки</td><td>Фекалии, вода</td></tr>
+</tbody></table>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>&#128270; Конкретные кейсы из клиники</h3>
+<h4 style="color:#dc2626;margin:10px 0 6px;font-size:0.9em">Микроспория (передается детям!)</h4>
+<table class="tbl"><thead><tr><th>Владелец</th><th>Питомец</th><th>Порода</th><th>Дата</th></tr></thead><tbody>
+<tr><td>Нилюфар Багирова</td><td>Мия</td><td>Шотландская</td><td>2026-01-31</td></tr>
+<tr><td>Ирада Рзаева</td><td>Малявка</td><td>б/п</td><td>2025-12-12</td></tr>
+<tr><td>Милана Набиева</td><td>4 кота</td><td>б/п</td><td>2025-08-19</td></tr>
+<tr><td>Эмиль Джумаев</td><td>Пиа</td><td>Кокер-спаниель</td><td>2025-09-11</td></tr>
+</tbody></table>
+<h4 style="color:#ea580c;margin:14px 0 6px;font-size:0.9em">Эрлихиоз (клещевая)</h4>
+<table class="tbl"><thead><tr><th>Владелец</th><th>Питомец</th><th>Порода</th><th>Дата</th></tr></thead><tbody>
+<tr><td>Фидан Сулейманлы</td><td>Джерри</td><td>Кокер-спаниель</td><td>2025-12-20</td></tr>
+<tr><td>Фахрия Тагиева</td><td>Аки</td><td>Акита-ину</td><td>2025-11-19</td></tr>
+<tr><td>Улдуз Бабаева</td><td>Нафаня</td><td>б/п</td><td>2025-08-12</td></tr>
+</tbody></table>
+<h4 style="color:#d97706;margin:14px 0 6px;font-size:0.9em">Хламидиоз / Лямблиоз</h4>
+<table class="tbl"><thead><tr><th>Владелец</th><th>Питомец</th><th>Заболевание</th><th>Дата</th></tr></thead><tbody>
+<tr><td>Сбина Агаева</td><td>Буся</td><td>Хламидиоз</td><td>2025-11-12</td></tr>
+<tr><td>Эльмира Гасымова</td><td>Морган</td><td>Хламидиоз + конъюнктивит</td><td>2024-03-17</td></tr>
+<tr><td>Сабина Ахмедова</td><td>Джесси</td><td>Лямблиоз + криптоспоридиоз</td><td>2025-08-06</td></tr>
+<tr><td>Натаван Ахмедова</td><td>Бон-Бон</td><td>Лептоспироз</td><td>2022-08-02</td></tr>
+</tbody></table>
+</div>
+
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Тренды зоонозов (по кварталам)</h3><canvas id="cZooTrend"></canvas></div>
+<div class="card"><h3>Прогноз зоонозных рисков 2026-2027</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+<div style="background:#fef2f2;border-radius:8px;padding:10px;border:1px solid #fecaca"><h4 style="color:#dc2626;font-size:0.85em">Эрлихиоз: РОСТ</h4><p style="font-size:0.78em;color:#475569">10-18/квартал. Прогноз: 40-60 случаев в 2026.</p></div>
+<div style="background:#fff7ed;border-radius:8px;padding:10px;border:1px solid #fed7aa"><h4 style="color:#ea580c;font-size:0.85em">Микроспория: СЕЗОННЫЙ</h4><p style="font-size:0.78em;color:#475569">Пик Q3-Q4. Прогноз: 40-50 в 2026.</p></div>
+<div style="background:#fffbeb;border-radius:8px;padding:10px;border:1px solid #fde68a"><h4 style="color:#d97706;font-size:0.85em">Хламидиоз: СПАД</h4><p style="font-size:0.78em;color:#475569">Снижение с 8 до 0-2/квартал.</p></div>
+<div style="background:#f0fdf4;border-radius:8px;padding:10px;border:1px solid #bbf7d0"><h4 style="color:#16a34a;font-size:0.85em">Лямблиоз: РАСТУЩИЙ</h4><p style="font-size:0.78em;color:#475569">Появился с 2023, 2-4/квартал.</p></div>
+</div>
+</div>
+</div>
+
+<div class="advice" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fecaca"><h4 style="color:#dc2626">&#128680; Критические рекомендации</h4><ul>
+<li><strong>Памятки при зоонозных диагнозах</strong> &mdash; обязательная выдача при микроспории, хламидиозе, лямблиозе.</li>
+<li><strong>Милана Набиева (VIP, 27 794 AZN)</strong> &mdash; множественные микроспория + лямблиоз. Рекомендовать дезинфекцию жилья.</li>
+<li><strong>Программа &laquo;Антиклещ&raquo;</strong> &mdash; 171 владелец с эрлихиозом. Ежемесячная обработка апрель-ноябрь.</li>
+<li><strong>Скрининг бездомных</strong> &mdash; обязательный тест на микроспорию, лямблиоз, хламидиоз при первом визите.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 10. MARKETING ═══ -->
+<div class="section" id="marketing">
+<div class="section-title">&#128226; Маркетинг и география <span class="badge">ИСТОЧНИКИ &bull; ГЕО</span></div>
+<div class="grid-2">
+<div class="card">
+<h3>Источники клиентов (по выручке)</h3>
+<p style="font-size:0.82em;color:#64748b;margin-bottom:8px">Источники кодированы числами в системе. Расшифровка требуется от клиники.</p>
+<table class="tbl"><thead><tr><th>Источник (код)</th><th>Клиентов</th><th>Выручка</th><th>Ср. чек/клиент</th></tr></thead><tbody>
+<tr><td>Код 15</td><td>5</td><td>3 625</td><td style="font-weight:700;color:#10b981">725.0</td></tr>
+<tr><td>Код 17</td><td>12</td><td>1 155</td><td>96.2</td></tr>
+<tr><td>Код 7</td><td>1</td><td>175</td><td>174.6</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h3>География клиентов</h3>
+<div style="text-align:center;padding:20px 0">
+<div style="font-size:2.5em;font-weight:800;color:#1e40af">99.9%</div>
+<div style="color:#64748b;font-size:0.95em;margin-top:4px">клиентов из <strong>Баку</strong> (8 751 из 8 756)</div>
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-top:16px"><h3>Интервалы между визитами клиентов</h3>
+<div class="grid-3" style="text-align:center;padding:10px 0;margin-bottom:10px">
+<div><div style="font-size:1.5em;font-weight:800;color:#3b82f6">80.8 дн.</div><div style="color:#64748b;font-size:0.82em">Среднее</div></div>
+<div><div style="font-size:1.5em;font-weight:800;color:#10b981">15 дн.</div><div style="color:#64748b;font-size:0.82em">Медиана</div></div>
+<div><div style="font-size:1.5em;font-weight:800;color:#8b5cf6">4&ndash;75 дн.</div><div style="color:#64748b;font-size:0.82em">25-75 перцентиль</div></div>
+</div>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации по маркетингу</h4><ul>
+<li><strong>Источники слабо заполнены</strong> &mdash; настройте обязательное поле &laquo;Источник&raquo; при регистрации: Instagram, Google, рекомендация, проходил мимо.</li>
+<li><strong>99.9% клиентов из Баку</strong> &mdash; рассмотрите открытие филиала в районах Абшеронского полуострова.</li>
+<li><strong>Медиана визитов 15 дней</strong> &mdash; для большинства это повторные/контрольные визиты. Настройте напоминания через 60 дней для плановых осмотров.</li>
+<li><strong>Реферальная программа</strong> &mdash; самый дешевый канал привлечения. Скидка 20% за каждого приведенного клиента.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 11. MULTI-PET OWNERS ═══ -->
+<div class="section" id="multipet">
+<div class="section-title">&#128049; Мульти-питомцевые владельцы <span class="badge">LTV &bull; ПАКЕТЫ</span></div>
+
+<div class="grid-4" style="margin-bottom:16px">
+<div class="seg-card" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);color:#334155"><div class="sv">7 409</div><div class="sl">1 питомец (99 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#0284c7,#0ea5e9)"><div class="sv">814</div><div class="sl">2 питомца (248 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6)"><div class="sv">371</div><div class="sl">3-5 питомцев (512 AZN)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">73 + 28</div><div class="sl">6+ питомцев (1 055&ndash;4 295 AZN!)</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><h3>LTV по количеству питомцев</h3><canvas id="cMultiLtv"></canvas></div>
+<div class="card"><h3>Распределение владельцев</h3><canvas id="cMultiDist"></canvas></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>&#11088; ТОП владельцев с наибольшим числом питомцев</h3>
+<table class="tbl"><thead><tr><th>Владелец</th><th>Питомцев</th><th>Выручка (AZN)</th><th>AZN/питомец</th></tr></thead><tbody>
+<tr><td><strong>Ульвия Байрамова</strong></td><td style="font-weight:700;color:#8b5cf6">108</td><td>8 022</td><td>74</td></tr>
+<tr><td><strong>Милана Набиева</strong></td><td style="font-weight:700;color:#8b5cf6">98</td><td>27 794</td><td style="color:#10b981;font-weight:700">284</td></tr>
+<tr><td>Valixad Safarov</td><td>84</td><td>7 972</td><td>95</td></tr>
+<tr><td>Алина Прокофьева</td><td>47</td><td>8 780</td><td>187</td></tr>
+<tr><td>Айдан Мамедова</td><td>44</td><td>6 469</td><td>147</td></tr>
+<tr><td>Зулейха Велиева</td><td>40</td><td>8 589</td><td>215</td></tr>
+<tr><td>Гюльнара Абузарова</td><td>35</td><td>4 141</td><td>118</td></tr>
+<tr><td>Диана Дронова</td><td>34</td><td>4 586</td><td>135</td></tr>
+<tr><td>Оксана Ахмедова</td><td>24</td><td>6 944</td><td>289</td></tr>
+<tr><td>Рауф Илишаев</td><td>19</td><td>1 682</td><td>89</td></tr>
+</tbody></table>
+<p style="font-size:0.8em;color:#64748b;margin-top:8px">* Ульвия Байрамова (108 питомцев) и Милана Набиева (98) &mdash; вероятно приюты/передержки. Виды у мульти-владельцев: кошки 78%, собаки 22%.</p>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>LTV растёт в 43 раза:</strong> 1 питомец = 99 AZN, 10+ = 4 295 AZN. Каждый дополнительный питомец &mdash; это +150-200 AZN.</li>
+<li><strong>Пакет &laquo;Мульти&raquo;:</strong> скидка 15% от 2-го питомца, 25% от 3-го. Автоматически при регистрации.</li>
+<li><strong>VIP-программа для приютов:</strong> Ульвия (108), Милана (98), Valixad (84) &mdash; это приюты/передержки. Специальные оптовые тарифы на вакцинацию и стерилизацию.</li>
+<li><strong>814 владельцев с 2 питомцами</strong> &mdash; потенциал для роста LTV в 2x. Предложите check-up второго питомца при визите.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 12. AGE AT FIRST VISIT ═══ -->
+<div class="section" id="agefirst">
+<div class="section-title">&#128118; Возраст при первом визите <span class="badge">КОГДА ПРИХОДЯТ?</span></div>
+
+<div class="grid-2">
+<div class="card"><h3>Возраст питомца при первом визите (все виды)</h3><canvas id="cAgeDist"></canvas></div>
+<div class="card"><h3>Кошки vs Собаки: возраст при первом визите</h3><canvas id="cAgeSpecies"></canvas></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Ключевые метрики</h3>
+<div class="grid-4" style="text-align:center;padding:10px 0">
+<div><div style="font-size:1.4em;font-weight:800;color:#8b5cf6">14 мес.</div><div style="color:#64748b;font-size:0.8em">Медиана кошки</div></div>
+<div><div style="font-size:1.4em;font-weight:800;color:#f59e0b">29 мес.</div><div style="color:#64748b;font-size:0.8em">Медиана собаки</div></div>
+<div><div style="font-size:1.4em;font-weight:800;color:#ef4444">970</div><div style="color:#64748b;font-size:0.8em">Пришли до 3 мес. (13%)</div></div>
+<div><div style="font-size:1.4em;font-weight:800;color:#10b981">1 312</div><div style="color:#64748b;font-size:0.8em">5+ лет при 1-м визите</div></div>
+</div>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>Только 13% приходят до 3 месяцев</strong> &mdash; упускаем критический период вакцинации. Кампания &laquo;Первый визит до 3 мес. &mdash; бесплатно&raquo;.</li>
+<li><strong>Собаки приходят вдвое позже кошек</strong> (29 vs 14 мес.) &mdash; партнерство с заводчиками и зоомагазинами для раннего привлечения щенков.</li>
+<li><strong>1 312 питомцев впервые пришли после 5 лет</strong> &mdash; это животные без истории. Обязательный расширенный check-up с анализами крови.</li>
+<li><strong>649 котят до 3 мес. vs 315 щенков</strong> &mdash; щенков вдвое меньше. Целевая реклама: &laquo;Купили щенка? Первый осмотр за наш счет!&raquo;.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 13. HEALTH MONITORING ═══ -->
+<div class="section" id="health">
+<div class="section-title">&#127873; Мониторинг здоровья <span class="badge">ВЕС &bull; ТЕМПЕРАТУРА &bull; АЛЕРТЫ</span></div>
+
+<div class="grid-4" style="margin-bottom:16px">
+<div class="seg-card" style="background:linear-gradient(135deg,#0284c7,#0ea5e9)"><div class="sv">68.3%</div><div class="sl">Записей с весом (15 813)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">42.0%</div><div class="sl">Записей с температурой (9 708)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#dc2626,#ef4444)"><div class="sv">11.9%</div><div class="sl">С повышенной температурой (1 160)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><div class="sv">2 829</div><div class="sl">Алерты по весу (недовес/перевес)</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><h3>Тренд среднего веса по кварталам (кг)</h3><canvas id="cWeightTrend"></canvas></div>
+<div class="card"><h3>Тренд средней температуры (&deg;C)</h3><canvas id="cTempTrend"></canvas></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Показатели здоровья по видам</h3>
+<table class="tbl"><thead><tr><th>Показатель</th><th>Кошки</th><th>Собаки</th></tr></thead><tbody>
+<tr><td>Средний вес (кг)</td><td>4.73</td><td>13.07</td></tr>
+<tr><td>Медиана веса (кг)</td><td>3.27</td><td>5.80</td></tr>
+<tr><td>Записей с весом</td><td>10 327</td><td>5 387</td></tr>
+<tr><td>Замеров температуры</td><td>6 719</td><td>2 955</td></tr>
+<tr><td style="color:#dc2626">% с лихорадкой</td><td style="color:#dc2626;font-weight:700">13.0%</td><td style="color:#dc2626;font-weight:700">18.4%</td></tr>
+<tr><td style="color:#f59e0b">Недовес (&lt;2 кг)</td><td>2 183</td><td>473</td></tr>
+<tr><td style="color:#8b5cf6">Перевес кошки (&gt;7 кг)</td><td>173</td><td>&mdash;</td></tr>
+</tbody></table>
+</div>
+
+<div class="advice"><h4>&#128161; Рекомендации</h4><ul>
+<li><strong>42% записей без температуры</strong> &mdash; сделайте замер t&deg; обязательным при каждом приеме. Это базовый показатель.</li>
+<li><strong>18.4% собак с лихорадкой</strong> &mdash; значительно выше кошек (13%). Возможная связь с эрлихиозом (клещевая инфекция).</li>
+<li><strong>2 183 записи кошек с весом &lt;2 кг</strong> &mdash; это котята или истощённые животные. Протокол дополнительного обследования при критическом весе.</li>
+<li><strong>173 кошки с весом &gt;7 кг</strong> &mdash; ожирение. Программа &laquo;Здоровый вес&raquo;: диетолог + контрольные взвешивания.</li>
+<li><strong>Внедрите автоматический алерт</strong> в карточку: если вес резко изменился &gt;20% между визитами &mdash; предупреждение врачу.</li>
+</ul></div>
+</div>
+
+<!-- ═══ 14. CROSS-SELLING ═══ -->
+<div class="section" id="crosssell">
+<div class="section-title">&#128722; Кросс-продажи <span class="badge">ПОТЕНЦИАЛ РОСТА</span></div>
+
+<div class="grid-4" style="margin-bottom:16px">
+<div class="seg-card" style="background:linear-gradient(135deg,#dc2626,#ef4444)"><div class="sv">6 600</div><div class="sl">Клиентов БЕЗ вакцинации (88%!)</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#ea580c,#f97316)"><div class="sv">3 013</div><div class="sl">Были на приеме, но НЕ делали диагностику</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><div class="sv">863</div><div class="sl">Вакцинировались, но БЕЗ антипаразитарки</div></div>
+<div class="seg-card" style="background:linear-gradient(135deg,#059669,#10b981)"><div class="sv">8x</div><div class="sl">LTV растёт: 1 категория=38, 8 категорий=800 AZN</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><h3>Выручка по категориям услуг (AZN)</h3><canvas id="cServiceCats"></canvas></div>
+<div class="card"><h3>LTV клиента по числу используемых категорий</h3><canvas id="cCrossLtv"></canvas></div>
+</div>
+
+<div class="grid-2" style="margin-top:16px">
+<div class="card"><h3>Охват категорий (из 7 488 клиентов)</h3><canvas id="cPenetration"></canvas></div>
+<div class="card"><h3>Сколько категорий использует клиент</h3><canvas id="cCrossBuckets"></canvas></div>
+</div>
+
+<div class="advice" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0"><h4 style="color:#059669">&#128176; Потенциал кросс-продаж &mdash; крупнейшая точка роста!</h4><ul>
+<li><strong>88% клиентов (6 600) НЕ вакцинировались</strong> &mdash; это катастрофически низко. Предлагайте вакцинацию при КАЖДОМ визите. Потенциал: +580K AZN/год (6600 &times; 88 AZN ср. стоимость).</li>
+<li><strong>3 013 клиентов были на приеме, но НЕ делали диагностику</strong> &mdash; &laquo;Check-up пакет&raquo; (прием + анализ крови + УЗИ) с скидкой 20%.</li>
+<li><strong>LTV растёт в 21 раз</strong> при росте с 1 до 8 категорий (38 &rarr; 800 AZN). Каждая новая категория = +50-100 AZN.</li>
+<li><strong>Антипаразитарка охватывает ТОЛЬКО 66 клиентов</strong> (0.9%!) &mdash; критически низкий охват. Включите обработку в каждый пакет услуг.</li>
+<li><strong>863 клиента вакцинированы, но без антипаразитарки</strong> &mdash; автоматическое предложение при следующем визите.</li>
+<li><strong>Целевая допродажа</strong>: после приема терапевта автоматически предлагать: анализ крови, УЗИ, вакцинацию.</li>
+</ul></div>
+</div>
+
+</div><!-- container -->
+<div class="footer">BELVET Полный аналитический дашборд &bull; Данные по 03.02.2026 &bull; 14 разделов &bull; &copy; 2026</div>
+
+<script>
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";Chart.defaults.font.size=10;Chart.defaults.color='#64748b';
+var C=['#3b82f6','#f59e0b','#ef4444','#10b981','#8b5cf6','#ec4899','#06b6d4','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#a855f7','#0ea5e9','#d946ef','#f43f5e','#22d3ee','#a3e635','#fb923c','#818cf8'];
+// NAV
+var sects=document.querySelectorAll('.section[id]'),navs=document.querySelectorAll('.topnav a');
+window.addEventListener('scroll',function(){var cur='';sects.forEach(function(s){if(scrollY>=s.offsetTop-100)cur=s.id});navs.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})});
+
+// Species
+new Chart(document.getElementById('cSpecies'),{type:'doughnut',data:{labels:["Кошки","Собаки","Птицы","Кролик","Грызуны","Другие"],datasets:[{data:[7746,3440,39,34,11,10],backgroundColor:C,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:9},usePointStyle:true,pointStyle:'circle'}}}}});
+
+// Breeds
+new Chart(document.getElementById('cBreeds'),{type:'bar',data:{labels:["б/п","Британ.","Метис","Шотланд.","Шпиц","Пудель","Скоттиш","Пекинес","Шиншилла","Йоркшир","Европейск.","Овчарка"],datasets:[{data:[5167,577,565,401,328,317,281,189,181,177,177,161],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false},ticks:{font:{size:8},maxRotation:45}}}}});
+
+// PayTypes
+new Chart(document.getElementById('cPayTypes'),{type:'doughnut',data:{labels:["Безнал","Нал"],datasets:[{data:[13079,12670],backgroundColor:['#3b82f6','#10b981'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:11},usePointStyle:true}}}}});
+
+// Revenue
+var rL=["2021-07","2021-09","2021-11","2022-01","2022-03","2022-05","2022-07","2022-09","2022-11","2023-01","2023-03","2023-05","2023-07","2023-09","2023-11","2024-01","2024-03","2024-05","2024-07","2024-09","2024-11","2025-01","2025-03","2025-05","2025-07","2025-09","2025-11","2026-01"];
+var rV=[8996,18038,21855,11108,15639,19724,21276,17185,20587,24918,23992,23928,26445,24209,29183,24397,29129,26873,26874,24092,26509,26707,32499,35974,27486,22056,34039,22289];
+new Chart(document.getElementById('cRevenue'),{type:'line',data:{labels:rL,datasets:[{label:'Выручка',data:rV,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:.35,borderWidth:2,pointRadius:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:10,maxRotation:45},grid:{display:false}},y:{beginAtZero:true,ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}}}}});
+
+// Visits
+var vL=["2021-07","2021-09","2021-11","2022-01","2022-03","2022-05","2022-07","2022-09","2022-11","2023-01","2023-03","2023-05","2023-07","2023-09","2023-11","2024-01","2024-03","2024-05","2024-07","2024-09","2024-11","2025-01","2025-03","2025-05","2025-07","2025-09","2025-11","2026-01"];
+var vV=[157,326,392,204,380,419,486,433,478,537,460,505,602,512,527,456,486,443,423,376,383,418,466,522,465,415,634,422];
+new Chart(document.getElementById('cVisits'),{type:'line',data:{labels:vL,datasets:[{label:'Визиты',data:vV,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true,tension:.35,borderWidth:2,pointRadius:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:10,maxRotation:45},grid:{display:false}},y:{beginAtZero:true}}}});
+
+// Yearly
+new Chart(document.getElementById('cYearRev'),{type:'bar',data:{labels:['2021','2022','2023','2024','2025','2026*'],datasets:[{data:[101349,225462,307412,306417,357755,23686],backgroundColor:['#3b82f6','#6366f1','#8b5cf6','#a855f7','#d946ef','#f0abfc'],borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}},x:{grid:{display:false}}}}});
+
+// Client Growth
+new Chart(document.getElementById('cClientGrowth'),{type:'line',data:{labels:["2021-07","2021-10","2022-01","2022-04","2022-07","2022-10","2023-01","2023-04","2023-07","2023-10","2024-01","2024-04","2024-07","2024-10","2025-01","2025-04","2025-07","2025-10","2026-01"],datasets:[{data:[95,615,1166,1744,2459,3046,3637,4155,4792,5265,5744,6200,6654,7053,7384,7710,8070,8409,8743],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.12)',fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:10},grid:{display:false}},y:{beginAtZero:true}}}});
+
+// LTV
+new Chart(document.getElementById('cAvgRevClient'),{type:'bar',data:{labels:['2021','2022','2023','2024','2025','2026*'],datasets:[{data:[114.1,99.8,132.1,154.6,200.0,103.9],backgroundColor:['#06b6d4','#0ea5e9','#3b82f6','#6366f1','#8b5cf6','#c4b5fd'],borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Seasonal
+new Chart(document.getElementById('cSeasonal'),{type:'bar',data:{labels:["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"],datasets:[{data:[2045,1575,1795,1747,1889,1939,2135,2222,2064,2270,2417,2197],backgroundColor:C.slice(0,12),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Scenarios
+new Chart(document.getElementById('cScenarios'),{type:'line',data:{labels:['Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек','Янв','Фев','Мар'],datasets:[{label:'Базовый',data:[23524,23065,22582,22075,21545,20990,20412,19809,19183,18533,17859,17160],borderColor:'#94a3b8',borderDash:[4,4],tension:.3,borderWidth:2,pointRadius:1},{label:'Оптимист. (+30%)',data:[30581,29985,29357,28698,28009,27287,26536,25752,24938,24093,23217,22308],borderColor:'#10b981',tension:.3,borderWidth:2,pointRadius:1},{label:'С рекомендациями',data:[28000,29500,31000,32500,34000,35500,34000,33000,32000,31000,30000,29500],borderColor:'#8b5cf6',tension:.3,borderWidth:2,pointRadius:1}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:9},usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}}}}});
+
+// Doc Visits
+new Chart(document.getElementById('cDocVisits'),{type:'bar',data:{labels:["Родько","Кузьмин","Рустамов","Абдуллазаде","Мухамедова"],datasets:[{data:[7898,7577,7010,1661,32],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+
+// Doc Rev
+new Chart(document.getElementById('cDocRev'),{type:'bar',data:{labels:["Родько","Кузьмин","Рустамов","Мухамедова","Абдуллазаде"],datasets:[{data:[416585,322824,265920,260252,56091],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw.toLocaleString()+' AZN'}}}},scales:{x:{ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}}}}});
+
+// Visit Status
+new Chart(document.getElementById('cVisitStatus'),{type:'doughnut',data:{labels:["Принят","Отложен","Удален","Сохранен"],datasets:[{data:[17855,4436,1908,96],backgroundColor:['#10b981','#f59e0b','#ef4444','#6366f1'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:10},usePointStyle:true}}}}});
+
+// DOW
+new Chart(document.getElementById('cDow'),{type:'bar',data:{labels:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],datasets:[{data:[2753,3981,3362,3298,3303,4342,3256],backgroundColor:C.slice(0,7),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Hours
+new Chart(document.getElementById('cHours'),{type:'bar',data:{labels:["8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00"],datasets:[{data:[3251,3099,2859,2951,2609,2159,1451,541],backgroundColor:'#3b82f6',borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Top Services
+new Chart(document.getElementById('cTopServices'),{type:'bar',data:{labels:["ProCyte Dx","Canhydrox GAG","Стационар (кошки)","Прием терапевта","Рентген","Стационар (собаки)","Рентген 1пр","Инъекция","Глюкоза 5%","Забор крови","Стационар (день)","Nobivac Tricat","Пеленка","Стерилизация","УЗИ"],datasets:[{data:[646512,444864,262012,165470,146405,145750,108082,101757,91288,88419,64972,46209,43244,38100,37562],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw.toLocaleString()+' AZN'}}}},scales:{x:{ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}},y:{ticks:{font:{size:8}}}}}});
+
+// Heatmap
+var hm={"0_8":326,"0_9":354,"0_10":321,"0_11":331,"0_12":284,"0_13":266,"0_14":187,"0_15":62,"1_8":589,"1_9":506,"1_10":498,"1_11":490,"1_12":415,"1_13":354,"1_14":288,"1_15":121,"2_8":441,"2_9":402,"2_10":404,"2_11":425,"2_12":339,"2_13":303,"2_14":194,"2_15":79,"3_8":468,"3_9":405,"3_10":379,"3_11":379,"3_12":364,"3_13":285,"3_14":184,"3_15":86,"4_8":411,"4_9":407,"4_10":394,"4_11":420,"4_12":363,"4_13":294,"4_14":184,"4_15":77,"5_8":612,"5_9":568,"5_10":464,"5_11":532,"5_12":498,"5_13":376,"5_14":245,"5_15":100,"6_8":404,"6_9":457,"6_10":399,"6_11":374,"6_12":346,"6_13":281,"6_14":169,"6_15":16};
+var hmG=document.getElementById('heatmapGrid');
+var dN=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],hrs=[8,9,10,11,12,13,14,15];
+// header
+hmG.innerHTML='<div></div>'+hrs.map(function(h){return'<div class="lbl">'+h+':00</div>'}).join('');
+var maxV=612;
+dN.forEach(function(d,di){
+hmG.innerHTML+='<div class="lbl">'+d+'</div>';
+hrs.forEach(function(h){
+var v=hm[di+'_'+h]||0;
+var intensity=Math.round(v/maxV*255);
+var bg='rgb('+Math.max(59,200-intensity)+','+Math.min(130,50+intensity)+','+Math.max(100,246-intensity)+')';
+hmG.innerHTML+='<div class="cell" style="background:'+bg+'">'+v+'</div>';
+})});
+
+// RFM
+new Chart(document.getElementById('cRfm'),{type:'doughnut',data:{labels:["VIP","Лояльные","Новички","Обычные","В зоне риска","Потерянные"],datasets:[{data:[1304,944,1289,939,1288,1695],backgroundColor:['#8b5cf6','#0ea5e9','#10b981','#f59e0b','#f97316','#ef4444'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:10},usePointStyle:true}}}}});
+
+// Churn
+new Chart(document.getElementById('cChurn'),{type:'doughnut',data:{labels:["Активные <90д","Тёплые 90-180","Остывающие 180-365","Потерянные >365"],datasets:[{data:[696,504,854,6540],backgroundColor:['#10b981','#f59e0b','#f97316','#ef4444'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:9},usePointStyle:true}}}}});
+
+// Churn monthly
+new Chart(document.getElementById('cChurnMonthly'),{type:'bar',data:{labels:["2023-09","2023-12","2024-03","2024-06","2024-09","2024-12","2025-03","2025-06"],datasets:[{data:[145,161,174,172,149,130,150,149],backgroundColor:'#ef4444',borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Visit gaps
+new Chart(document.getElementById('cVisitGaps'),{type:'bar',data:{labels:["0-7 дн","8-14","15-30","31-60","61-90","91-180","180+"],datasets:[{data:[4905,1357,1624,1161,663,1113,1705],backgroundColor:['#10b981','#22d3ee','#3b82f6','#6366f1','#f59e0b','#f97316','#ef4444'],borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// ABC
+new Chart(document.getElementById('cAbc'),{type:'bar',data:{labels:["A (43 усл.)","B (190 усл.)","C (1191 усл.)"],datasets:[{label:'Выручка',data:[2938198,554232,182545],backgroundColor:['#10b981','#3b82f6','#94a3b8'],borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return(v/1e6).toFixed(1)+'M'}}},x:{grid:{display:false}}}}});
+
+// Margins
+new Chart(document.getElementById('cMargins'),{type:'bar',data:{labels:["Canhydrox","ProCyte Dx","Стационар кошки","Терапевт","Рентген","Стационар собаки","Рентген 1пр","Инъекция","Забор крови","Глюкоза","Стационар день","Пеленка","Стерилизация","УЗИ бр.пол.","УЗИ 1 системы"],datasets:[{label:'Прибыль',data:[443047,327778,262012,165470,146405,145750,108082,101757,88419,79414,64972,41793,38100,37562,35912],backgroundColor:C,borderRadius:3,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw.toLocaleString()+' AZN'}}}},scales:{x:{ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}},y:{ticks:{font:{size:8}}}}}});
+
+// Diagnoses
+new Chart(document.getElementById('cDiagnoses'),{type:'bar',data:{labels:["Клин. обслед.","Осмотр","Вирусная инф.","Клин. здоров","Послеоп.","Конъюнктивит","Блош. дерматит","Отит","Пищ. непер.","Перелом","Панлейкопения","Парвовирус","ОЗМ","Зубной камень","Вакцинация","Гастрит","Инородное тело","Ушиб","Микроспория","Кардиомиопатия"],datasets:[{data:[640,372,253,207,98,69,67,62,53,52,49,47,46,46,46,43,43,42,41,41],backgroundColor:'#ef4444',borderRadius:3,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{ticks:{font:{size:8}}}}}});
+
+// Disease trend
+var dtL=["2024-03","2024-06","2024-09","2024-12","2025-03","2025-06","2025-09","2025-12"];
+new Chart(document.getElementById('cDiseaseTrend'),{type:'line',data:{labels:dtL,datasets:[{label:'Клин. обслед.',data:[0,0,0,0,42,72,82,66],borderColor:C[0],tension:.3,borderWidth:2,pointRadius:2},{label:'Вир. инф. кошек',data:[4,14,7,3,0,13,0,0],borderColor:C[2],tension:.3,borderWidth:2,pointRadius:2},{label:'Блош. дерматит',data:[2,4,0,0,0,0,1,3],borderColor:C[5],tension:.3,borderWidth:2,pointRadius:2}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:9},usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true}}}});
+
+// Species Diag Cards
+var spD={"Кошки":{l:["Клин. обслед.","Вирусная инф.","Осмотр","Клин. здоров","Послеоп.","Панлейкопения","ОЗМ","Конъюнктивит"],v:[405,253,151,99,50,49,46,42]},"Собаки":{l:["Клин. обслед.","Осмотр","Клин. здоров","Отит","Парвовирус","Зубной камень","Послеоп.","Эрлихиоз"],v:[211,197,106,48,47,35,33,32]}};
+var ct=document.getElementById('speciesDiagCards');
+Object.keys(spD).forEach(function(sp){var d=spD[sp],c=document.createElement('div');c.className='species-diag-card';var r='';for(var i=0;i<d.l.length;i++)r+='<div class="diag-row"><span>'+d.l[i]+'</span><span>'+d.v[i]+'</span></div>';c.innerHTML='<h4>'+sp+'</h4>'+r;ct.appendChild(c)});
+
+// Seasonal disease
+new Chart(document.getElementById('cSeasonDisease'),{type:'line',data:{labels:["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"],datasets:[{label:'Вирусная инф. кошек',data:[18,16,4,6,18,34,34,33,19,33,23,15],borderColor:'#ef4444',tension:.3,borderWidth:2,pointRadius:2},{label:'Блошиный дерматит',data:[4,2,3,2,4,11,5,6,5,10,11,4],borderColor:'#f59e0b',tension:.3,borderWidth:2,pointRadius:2},{label:'Конъюнктивит',data:[0,0,15,8,4,7,1,6,1,10,4,13],borderColor:'#8b5cf6',tension:.3,borderWidth:2,pointRadius:2},{label:'Отит',data:[6,2,6,3,2,5,7,6,7,4,6,8],borderColor:'#06b6d4',tension:.3,borderWidth:2,pointRadius:2}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:9},usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true}}}});
+
+// Pet LTV
+new Chart(document.getElementById('cPetLtv'),{type:'bar',data:{labels:["Кролик","Собаки","Кошки","Тигр","Грызуны","Птицы"],datasets:[{label:'Средний LTV',data:[212.8,161.3,126.2,95,78.3,35.8],backgroundColor:C,borderRadius:4,borderSkipped:false},{label:'Медиана',data:[70.5,81,66.6,95,59.9,31],backgroundColor:C.map(function(c){return c+'66'}),borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:9},usePointStyle:true}}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// Breed LTV
+new Chart(document.getElementById('cBreedLtv'),{type:'bar',data:{labels:["Хаски","Экзотич.","Питбуль","Бишон-фризе","Кролик","Ретривер","Такса","Маламут","Йоркшир","Европейская","Мейн Кун","Овчарка","Кокер","Чихуахуа","Шпиц"],datasets:[{data:[312.9,251.3,249.8,245.2,230.7,227.7,217.7,203.2,199.6,195.3,193.8,184.6,182.2,181.8,181.6],backgroundColor:C,borderRadius:3,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{ticks:{font:{size:8}}}}}});
+
+// Breed Risk
+new Chart(document.getElementById('cBreedRisk'),{type:'bar',data:{labels:["Кролик","Бишон-фризе","Экзотич.","Фр. бульдог","Европейская","Спаниель","Корги","Мейн Кун","Ротвейлер","Мальтезе","Кане-корсо","Персидская","Йоркшир"],datasets:[{label:'% визитов с диагнозом',data:[59.6,54.9,47.1,43.4,40.7,34.3,33.3,33,31.4,31.1,30.8,30,29.4],backgroundColor:C,borderRadius:3,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:function(v){return v+'%'}}},y:{ticks:{font:{size:8}}}}}});
+
+// Mortality
+new Chart(document.getElementById('cMortality'),{type:'bar',data:{labels:["2023-02","2023-06","2023-09","2023-12","2024-05","2024-09","2025-01","2025-07","2025-11","2026-01"],datasets:[{data:[4,2,9,9,2,2,1,5,1,1],backgroundColor:'#64748b',borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{ticks:{font:{size:8}},grid:{display:false}}}}});
+
+// Zoo Trends
+var zQ=["21Q3","21Q4","22Q1","22Q2","22Q3","22Q4","23Q1","23Q2","23Q3","23Q4","24Q1","24Q2","24Q3","24Q4","25Q1","25Q2","25Q3","25Q4","26Q1"];
+new Chart(document.getElementById('cZooTrend'),{type:'line',data:{labels:zQ,datasets:[{label:'Эрлихиоз',data:[43,17,1,23,15,9,3,14,12,10,0,11,18,9,9,15,12,7,1],borderColor:'#ef4444',tension:.3,borderWidth:2,pointRadius:2},{label:'Микроспория',data:[3,0,1,1,12,13,7,11,10,17,11,9,11,16,4,5,17,4,2],borderColor:'#f59e0b',tension:.3,borderWidth:2,pointRadius:2},{label:'Хламидиоз',data:[1,3,0,1,8,1,1,5,2,5,1,3,0,0,1,1,0,2,0],borderColor:'#8b5cf6',tension:.3,borderWidth:2,pointRadius:2},{label:'Лямблиоз',data:[0,0,0,0,0,0,2,0,0,2,0,0,4,0,0,3,2,1,0],borderColor:'#06b6d4',tension:.3,borderWidth:2,pointRadius:2}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:9},usePointStyle:true}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{beginAtZero:true}}}});
+// ═══ MULTI-PET ═══
+new Chart(document.getElementById('cMultiLtv'),{type:'bar',data:{labels:["1 пит.","2 пит.","3-5","6-10","10+"],datasets:[{label:'Ср. LTV (AZN)',data:[98.9,248.0,512.3,1054.6,4294.9],backgroundColor:['#94a3b8','#0ea5e9','#8b5cf6','#10b981','#f59e0b'],borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+new Chart(document.getElementById('cMultiDist'),{type:'doughnut',data:{labels:["1 пит. (7409)","2 пит. (814)","3-5 (371)","6-10 (73)","10+ (28)"],datasets:[{data:[7409,814,371,73,28],backgroundColor:['#94a3b8','#0ea5e9','#8b5cf6','#10b981','#f59e0b'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:9},usePointStyle:true}}}}});
+
+// ═══ AGE FIRST VISIT ═══
+new Chart(document.getElementById('cAgeDist'),{type:'bar',data:{labels:["0-3 мес","3-6","6-12","1-2 года","2-5 лет","5-10","10+"],datasets:[{data:[970,787,1314,1300,1501,921,391],backgroundColor:['#10b981','#22d3ee','#3b82f6','#6366f1','#8b5cf6','#f59e0b','#ef4444'],borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+new Chart(document.getElementById('cAgeSpecies'),{type:'bar',data:{labels:["0-3 мес","3-6","6-12","1-2 года","2-5 лет","5+"],datasets:[{label:'Кошки',data:[649,547,1023,917,852,627],backgroundColor:'#8b5cf6',borderRadius:4,borderSkipped:false},{label:'Собаки',data:[315,239,289,374,636,680],backgroundColor:'#f59e0b',borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:10},usePointStyle:true}}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});
+
+// ═══ HEALTH ═══
+new Chart(document.getElementById('cWeightTrend'),{type:'line',data:{labels:["23Q2","23Q3","23Q4","24Q1","24Q2","24Q3","24Q4","25Q1","25Q2","25Q3","25Q4","26Q1"],datasets:[{label:'Ср. вес (кг)',data:[6.92,6.03,5.87,6.42,6.29,8.14,7.92,6.22,13.66,5.09,5.49,5.3],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:.3,borderWidth:2,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:false}}}});
+
+new Chart(document.getElementById('cTempTrend'),{type:'line',data:{labels:["23Q2","23Q3","23Q4","24Q1","24Q2","24Q3","24Q4","25Q1","25Q2","25Q3","25Q4","26Q1"],datasets:[{label:'Ср. температура',data:[38.76,38.79,38.59,38.58,38.69,38.76,38.7,38.62,38.64,38.76,38.53,38.47],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.08)',fill:true,tension:.3,borderWidth:2,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false},annotation:{}},scales:{x:{grid:{display:false}},y:{min:38.3,max:39}}}});
+
+// ═══ CROSS-SELL ═══
+new Chart(document.getElementById('cServiceCats'),{type:'bar',data:{labels:["Диагностика","Стационар","Питание","Другое","Визуализация","Расходники","Хирургия","Прием","Медикаменты","Вакцинация","Антипараз."],datasets:[{data:[884218,538708,517948,463724,302637,274827,246672,209771,142934,92510,1026],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw.toLocaleString()+' AZN'}}}},scales:{x:{ticks:{callback:function(v){return(v/1000).toFixed(0)+'K'}}},y:{ticks:{font:{size:8}}}}}});
+
+new Chart(document.getElementById('cCrossLtv'),{type:'line',data:{labels:["1","2","3","4","5","6","7","8"],datasets:[{label:'LTV (AZN)',data:[38.4,64.1,79.4,100.9,145.3,268.0,413.2,799.7],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:.3,borderWidth:3,pointRadius:4,pointBackgroundColor:'#10b981'}]},options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'Кол-во категорий услуг →',font:{size:11}}},scales:{x:{title:{display:true,text:'Категорий'},grid:{display:false}},y:{beginAtZero:true,title:{display:true,text:'AZN'}}}}});
+
+new Chart(document.getElementById('cPenetration'),{type:'bar',data:{labels:["Прием","Визуализ.","Диагностика","Медикаменты","Хирургия","Вакцинация","Стационар","Антипараз."],datasets:[{label:'Клиентов',data:[5039,4025,2972,2301,1298,888,228,66],backgroundColor:C,borderRadius:4,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{ticks:{font:{size:9}}}}}});
+
+new Chart(document.getElementById('cCrossBuckets'),{type:'doughnut',data:{labels:["1 кат. (1583)","2 кат. (920)","3 кат. (962)","4-5 кат. (2321)","6+ кат. (1702)"],datasets:[{data:[1583,920,962,2321,1702],backgroundColor:['#ef4444','#f59e0b','#3b82f6','#8b5cf6','#10b981'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:9},usePointStyle:true}}}}});
+</script>
+</body>
+</html>
