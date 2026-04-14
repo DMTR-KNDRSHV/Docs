@@ -1,0 +1,3155 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDSS - Baytarlıq Klinik Qərar Dəstək Sistemi</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: #1a1d27;
+            --card2: #222535;
+            --border: #2d3148;
+            --text: #e4e6f0;
+            --text2: #9599b3;
+            --accent: #6c7bf7;
+            --accent2: #4e5bdb;
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.12);
+            --orange: #f59e0b;
+            --orange-bg: rgba(245,158,11,0.12);
+            --blue: #3b82f6;
+            --blue-bg: rgba(59,130,246,0.12);
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,0.12);
+            --purple: #a855f7;
+            --purple-bg: rgba(168,85,247,0.12);
+            --cyan: #06b6d4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e2235 0%, #161929 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 22px; font-weight: 700;
+            background: linear-gradient(135deg, #fff, #c4c8e8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            font-size: 13px; color: var(--text2); margin-top: 3px;
+        }
+
+        .header-stats {
+            margin-left: auto;
+            display: flex; gap: 24px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat .val {
+            font-size: 24px; font-weight: 700; color: var(--accent);
+        }
+
+        .header-stat .lbl {
+            font-size: 11px; color: var(--text2); text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main {
+            display: flex;
+            height: calc(100vh - 100px);
+        }
+
+        .sidebar {
+            width: 420px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-wrap {
+            position: relative;
+        }
+
+        .search-wrap::before {
+            content: "\1F50D";
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .filter-row {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .cat-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .alert-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .alert-btn:hover, .alert-btn.active-hard {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+
+        .alert-btn.active-soft {
+            background: var(--orange);
+            color: #fff;
+            border-color: var(--orange);
+        }
+
+        .alert-btn.active-info {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+        }
+
+        .diag-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .diag-list::-webkit-scrollbar { width: 6px; }
+        .diag-list::-webkit-scrollbar-track { background: transparent; }
+        .diag-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .diag-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2px;
+        }
+
+        .diag-item:hover {
+            background: var(--card2);
+        }
+
+        .diag-item.selected {
+            background: rgba(108,123,247,0.15);
+            border-left: 3px solid var(--accent);
+        }
+
+        .diag-item .cat-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .diag-item .diag-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .diag-item .diag-count {
+            font-size: 11px;
+            color: var(--text2);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .alert-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .alert-badge.hard {
+            background: var(--red-bg);
+            color: var(--red);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .alert-badge.soft {
+            background: var(--orange-bg);
+            color: var(--orange);
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+
+        .alert-badge.info {
+            background: var(--blue-bg);
+            color: var(--blue);
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px;
+        }
+
+        .content::-webkit-scrollbar { width: 6px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text2);
+            gap: 12px;
+        }
+
+        .empty-state .icon { font-size: 48px; opacity: 0.3; }
+        .empty-state p { font-size: 15px; }
+
+        .detail-header {
+            margin-bottom: 24px;
+        }
+
+        .detail-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text2);
+            background: var(--card);
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+
+        /* ===== ALERT LEVEL BANNER ===== */
+        .alert-banner {
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .alert-banner.hard {
+            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05));
+            border: 1px solid rgba(239,68,68,0.4);
+        }
+
+        .alert-banner.soft {
+            background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05));
+            border: 1px solid rgba(245,158,11,0.4);
+        }
+
+        .alert-banner.info {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+            border: 1px solid rgba(59,130,246,0.4);
+        }
+
+        .alert-banner-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .alert-banner-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .alert-banner.hard h3 { color: var(--red); }
+        .alert-banner.soft h3 { color: var(--orange); }
+        .alert-banner.info h3 { color: var(--blue); }
+
+        .alert-banner-content p {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .alert-banner-content .alert-reason {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        /* ===== WORKFLOW DEMO ===== */
+        .workflow-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .workflow-box h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .wf-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .wf-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 36px;
+            bottom: -6px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .wf-node {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .wf-node.check { background: var(--accent); color: #fff; }
+        .wf-node.yes { background: var(--green); color: #fff; }
+        .wf-node.no { background: var(--red); color: #fff; }
+        .wf-node.warn { background: var(--orange); color: #fff; }
+        .wf-node.info-node { background: var(--blue); color: #fff; }
+
+        .wf-content {
+            flex: 1;
+        }
+
+        .wf-content .wf-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .wf-content .wf-desc {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        /* ===== CHECKLIST ===== */
+        .checklist-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .checklist-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: var(--card2);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        .checklist-item .cl-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .checklist-item .cl-level {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .cl-level.req { background: var(--red-bg); color: var(--red); }
+        .cl-level.rec { background: var(--orange-bg); color: var(--orange); }
+        .cl-level.opt { background: var(--blue-bg); color: var(--blue); }
+
+        .checklist-item.checked .cl-name {
+            text-decoration: line-through;
+            color: var(--text2);
+        }
+
+        /* ===== SAVE BUTTON AREA ===== */
+        .save-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .save-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .save-btn.allowed {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .save-btn.allowed:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+        }
+
+        .save-btn.blocked {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .save-btn.warning-btn {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .save-status {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .bypass-area {
+            margin-top: 14px;
+            padding: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .bypass-area.visible {
+            display: block;
+        }
+
+        .bypass-area h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--orange);
+        }
+
+        .bypass-reason {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .bypass-reason:hover {
+            color: var(--text);
+        }
+
+        .bypass-reason input[type="radio"] {
+            accent-color: var(--orange);
+        }
+
+        .bypass-confirm {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .bypass-confirm.visible {
+            display: inline-block;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .section-mandatory .section-icon { background: var(--red-bg); }
+        .section-mandatory .section-title { color: var(--red); }
+
+        .section-recommended .section-icon { background: var(--orange-bg); }
+        .section-recommended .section-title { color: var(--orange); }
+
+        .section-additional .section-icon { background: var(--blue-bg); }
+        .section-additional .section-title { color: var(--blue); }
+
+        .section-differential .section-icon { background: var(--purple-bg); }
+        .section-differential .section-title { color: var(--purple); }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .test-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.2s;
+        }
+
+        .test-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .test-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .test-desc {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .test-available {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            margin-top: 6px;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .test-available.yes {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .test-available.no {
+            background: rgba(255,255,255,0.05);
+            color: var(--text2);
+        }
+
+        .section-mandatory .test-card { border-left: 3px solid var(--red); }
+        .section-recommended .test-card { border-left: 3px solid var(--orange); }
+        .section-additional .test-card { border-left: 3px solid var(--blue); }
+        .section-differential .test-card { border-left: 3px solid var(--purple); }
+
+        .diff-note {
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .diff-note h4 {
+            font-size: 13px;
+            color: var(--cyan);
+            margin-bottom: 8px;
+        }
+
+        .diff-list {
+            list-style: none;
+        }
+
+        .diff-list li {
+            font-size: 13px;
+            color: var(--text2);
+            padding: 3px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .diff-list li::before {
+            content: "\2192";
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 12px 16px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text2);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 3px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(108,123,247,0.3);
+            transition: all 0.2s;
+        }
+
+        .print-btn:hover {
+            background: var(--accent2);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 520px;
+            width: 90%;
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal.hard-modal {
+            border-color: var(--red);
+            box-shadow: 0 0 40px rgba(239,68,68,0.2);
+        }
+
+        .modal.soft-modal {
+            border-color: var(--orange);
+            box-shadow: 0 0 40px rgba(245,158,11,0.2);
+        }
+
+        .modal.success-modal {
+            border-color: var(--green);
+            box-shadow: 0 0 40px rgba(34,197,94,0.2);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .modal h3 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .modal.hard-modal h3 { color: var(--red); }
+        .modal.soft-modal h3 { color: var(--orange); }
+        .modal.success-modal h3 { color: var(--green); }
+
+        .modal p {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .modal .missing-tests {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .modal .missing-tests li {
+            font-size: 13px;
+            color: var(--text);
+            padding: 4px 0;
+            list-style: none;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .modal .missing-tests li::before {
+            content: "\2716";
+            position: absolute;
+            left: 0;
+            color: var(--red);
+            font-size: 12px;
+        }
+
+        .modal-reasons {
+            margin-bottom: 16px;
+        }
+
+        .modal-reasons label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text2);
+            transition: background 0.15s;
+        }
+
+        .modal-reasons label:hover {
+            background: var(--card2);
+            color: var(--text);
+        }
+
+        .modal-reasons input[type="radio"] {
+            accent-color: var(--orange);
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-btn.cancel {
+            background: var(--card2);
+            color: var(--text2);
+        }
+
+        .modal-btn.cancel:hover { background: var(--border); }
+
+        .modal-btn.proceed {
+            background: var(--orange);
+            color: #fff;
+            display: none;
+        }
+
+        .modal-btn.proceed.visible { display: block; }
+        .modal-btn.proceed:hover { filter: brightness(1.1); }
+
+        .modal-btn.ok {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .modal-btn.ok:hover { filter: brightness(1.1); }
+
+        .modal-btn.hard-ok {
+            background: var(--red);
+            color: #fff;
+        }
+
+        @media print {
+            .sidebar { display: none; }
+            .print-btn { display: none; }
+            .content { padding: 20px; }
+            body { background: #fff; color: #000; }
+            .test-card { border: 1px solid #ccc; background: #f9f9f9; }
+            .section-title { color: #333 !important; }
+        }
+
+        .back-btn {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            width: fit-content;
+        }
+
+        .back-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 14px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header-icon {
+                width: 40px; height: 40px;
+                border-radius: 10px;
+                font-size: 20px;
+            }
+
+            .header-text h1 {
+                font-size: 15px;
+            }
+
+            .header-text p {
+                font-size: 11px;
+            }
+
+            .header-stats {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .header-stat .val {
+                font-size: 18px;
+            }
+
+            .header-stat .lbl {
+                font-size: 9px;
+            }
+
+            .main {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 140px);
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: none;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 16px;
+                display: none;
+            }
+
+            .content.mobile-visible {
+                display: block;
+            }
+
+            .back-btn {
+                display: flex;
+            }
+
+            .filter-row {
+                padding: 8px 12px;
+                gap: 4px;
+            }
+
+            .cat-btn, .alert-btn {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            .search-box {
+                padding: 12px;
+            }
+
+            .diag-list {
+                max-height: none;
+                overflow-y: visible;
+            }
+
+            .diag-item {
+                padding: 10px 12px;
+            }
+
+            .detail-header h2 {
+                font-size: 18px;
+                flex-wrap: wrap;
+            }
+
+            .detail-meta {
+                gap: 8px;
+            }
+
+            .meta-tag {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+
+            .alert-banner {
+                padding: 14px 16px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .alert-banner-icon {
+                font-size: 24px;
+            }
+
+            .workflow-box {
+                padding: 14px;
+            }
+
+            .wf-step {
+                gap: 10px;
+            }
+
+            .wf-content .wf-title {
+                font-size: 12px;
+            }
+
+            .wf-content .wf-desc {
+                font-size: 11px;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .test-card {
+                padding: 10px 14px;
+            }
+
+            .checklist-section {
+                padding: 14px;
+            }
+
+            .save-area {
+                padding: 14px;
+            }
+
+            .legend {
+                flex-direction: column;
+                gap: 8px;
+                padding: 10px 14px;
+                font-size: 11px;
+            }
+
+            .print-btn {
+                bottom: 16px;
+                right: 16px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .modal {
+                padding: 20px;
+                max-width: 95%;
+                border-radius: 12px;
+            }
+
+            .modal-icon {
+                font-size: 36px;
+            }
+
+            .modal h3 {
+                font-size: 16px;
+            }
+
+            .modal p {
+                font-size: 13px;
+            }
+
+            .modal-btns {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .section-header {
+                gap: 8px;
+            }
+
+            .diff-note {
+                padding: 12px 14px;
+            }
+
+            .diff-list li {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header-text h1 {
+                font-size: 13px;
+            }
+
+            .header-stats {
+                gap: 4px;
+            }
+
+            .header-stat .val {
+                font-size: 16px;
+            }
+
+            .alert-badge {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+
+            .diag-item .diag-count {
+                display: none;
+            }
+        }
+
+        .cat-infect { background: #ef4444; }
+        .cat-derm { background: #f59e0b; }
+        .cat-gastro { background: #22c55e; }
+        .cat-cardio { background: #3b82f6; }
+        .cat-uro { background: #a855f7; }
+        .cat-onco { background: #ec4899; }
+        .cat-ophth { background: #06b6d4; }
+        .cat-ortho { background: #f97316; }
+        .cat-resp { background: #14b8a6; }
+        .cat-endo { background: #8b5cf6; }
+        .cat-neuro { background: #6366f1; }
+        .cat-repro { background: #e879f9; }
+        .cat-other { background: #64748b; }
+        .cat-dental { background: #fbbf24; }
+        .cat-hema { background: #f43f5e; }
+        .cat-hepato { background: #84cc16; }
+        .cat-immuno { background: #fb923c; }
+
+        /* Summary table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .summary-table th {
+            text-align: left;
+            padding: 8px 12px;
+            background: var(--bg);
+            color: var(--text2);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .summary-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-table tr:hover td {
+            background: var(--card2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-icon">&#9879;</div>
+    <div class="header-text">
+        <h1>CDSS - Baytarlıq Klinik Qərar Dəstək Sistemi</h1>
+        <p>Clinical Decision Support System | Xəbərdarlıq səviyyələri</p>
+    </div>
+    <div class="header-stats">
+        <div class="header-stat">
+            <div class="val" id="statHard">0</div>
+            <div class="lbl" style="color:var(--red)">&#9940; Sərt blok</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statSoft">0</div>
+            <div class="lbl" style="color:var(--orange)">&#9888; Yumşaq xəbərdarlıq</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statInfo">0</div>
+            <div class="lbl" style="color:var(--blue)">&#8505; Məlumat</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statTotal">0</div>
+            <div class="lbl">Cəmi protokollar</div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <div class="search-box">
+            <div class="search-wrap">
+                <input type="text" class="search-input" id="searchInput" placeholder="Diaqnoz axtar...">
+            </div>
+        </div>
+        <div class="filter-row" id="alertFilters">
+            <button class="alert-btn active-hard" data-alert="all" onclick="filterAlert('all',this)">Hamısı</button>
+            <button class="alert-btn" data-alert="hard" onclick="filterAlert('hard',this)">&#9940; Sərt</button>
+            <button class="alert-btn" data-alert="soft" onclick="filterAlert('soft',this)">&#9888; Yumşaq</button>
+            <button class="alert-btn" data-alert="info" onclick="filterAlert('info',this)">&#8505; Məlumat</button>
+        </div>
+        <div class="filter-row" id="catFilters">
+            <button class="cat-btn active" data-cat="all">Hamısı</button>
+        </div>
+        <div class="diag-list" id="diagList"></div>
+    </div>
+
+    <div class="content" id="detailContent">
+        <div class="empty-state">
+            <div class="icon">&#9879;</div>
+            <p>Müayinə protokolunu görmək üçün diaqnoz seçin</p>
+            <p style="font-size:12px">Hər diaqnozun xəbərdarlıq səviyyəsi var: Sərt / Yumşaq / Məlumat</p>
+        </div>
+    </div>
+</div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Sərt blok — müayinələrsiz saxlamaq olmaz</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Yumşaq xəbərdarlıq — xəbərdarlıq, səbəb göstərməklə keçmək olar</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Məlumat — həkim üçün göstəriş</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Klinikada mövcuddur</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox">
+        <div class="modal-icon" id="modalIcon"></div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+        <ul class="missing-tests" id="modalMissing" style="display:none"></ul>
+        <div class="modal-reasons" id="modalReasons" style="display:none"></div>
+        <div class="modal-btns" id="modalBtns"></div>
+    </div>
+</div>
+
+<button class="print-btn" onclick="window.print()">&#128424; Protokolu çap et</button>
+
+<script>
+// ===== CATEGORIES =====
+const CATEGORIES = {
+    "infect": { name: "İnfeksion", color: "cat-infect" },
+    "derm": { name: "Dermatologiya", color: "cat-derm" },
+    "gastro": { name: "Qastroenterologiya", color: "cat-gastro" },
+    "cardio": { name: "Kardiologiya", color: "cat-cardio" },
+    "uro": { name: "Urologiya / Nefrologiya", color: "cat-uro" },
+    "onco": { name: "Onkologiya", color: "cat-onco" },
+    "ophth": { name: "Oftalmologiya", color: "cat-ophth" },
+    "ortho": { name: "Ortopediya / Travma", color: "cat-ortho" },
+    "resp": { name: "Respirator", color: "cat-resp" },
+    "endo": { name: "Endokrinologiya", color: "cat-endo" },
+    "neuro": { name: "Nevrologiya", color: "cat-neuro" },
+    "repro": { name: "Reproduktiv", color: "cat-repro" },
+    "dental": { name: "Stomatologiya", color: "cat-dental" },
+    "hema": { name: "Hematologiya", color: "cat-hema" },
+    "hepato": { name: "Hepatologiya", color: "cat-hepato" },
+    "immuno": { name: "İmmunologiya / Allergologiya", color: "cat-immuno" },
+    "other": { name: "Digər", color: "cat-other" }
+};
+
+const BYPASS_REASONS = [
+    "Sahib müayinədən imtina etdi",
+    "Xarici laboratoriyaya göndərildi",
+    "Pasiyentin vəziyyətinə görə əks göstərişdir",
+    "Klinikada imkan yoxdur (avadanlıq/reaktivlər)",
+    "Təcili vəziyyət — müayinə sonra aparılacaq",
+    "Nəticələr başqa klinikadan alınıb (şifahi/sənəd)"
+];
+
+// ===== ALERT LEVELS =====
+// "hard" — məcburi müayinələrsiz saxlamaq olmaz
+// "soft" — xəbərdarlıq, səbəb gostərməklə kecmək olar
+// "info" — gostəris, sərbəst saxlama
+
+// ===== CDSS DATABASE =====
+const CDSS_DB = [
+    // ==================== HARD BLOCK — hayat ucun tehlukeli / kritik ====================
+    {
+        id: "parvovirus",
+        name: "Parvoviroz enterit",
+        category: "infect",
+        count: 108,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Müalicəsiz letallıq 90%-ə qədərdir. Aqressiv terapiya seçimi üçün təcili təsdiq lazımdır. Leykopeniya proqnozu müəyyən edir. Bala itlərdə hipoqlikemiya həyat üçün təhlükəli ağırlaşmadır.",
+        mandatory: [
+            { name: "SNAP Parvo", desc: "Parvovirüs antigeninə ekspres test. Həssaslıq ~95%.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykopeniya — əsas proqnostik marker. Dehidratasiyanın qiymətləndirilməsi üçün hematokrit.", available: true },
+            { name: "Qan qlükozası", desc: "Bala itlərdə hipoqlikemiya — həyat üçün təhlükəli ağırlaşma. Dərhal korreksiya tələb edir.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Elektrolitlər, albumin, sidik cövhəri. Dehidratasiya dərəcəsinin qiymətləndirilməsi.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "İnvaginasiya, yad cismin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "CPV-2 PZR", desc: "Virusun təsdiqi və tipləşdirilməsi.", available: false },
+            { name: "Qan əkini", desc: "Sepsis şübhəsində.", available: false }
+        ],
+        differential: [
+            "Koronavirus enterit — SNAP CPV/CCV, adeten yungul kecir",
+            "MBT-de yad cisim — rentgen/USM, leykopeniya yoxdur",
+            "Hemorragik qastroenterit (HGE) — leykopeniya yoxdur, PCV>60%",
+            "Etxor taunu — respirator/nevroloji simptomlar"
+        ]
+    },
+    {
+        id: "panleukopenia",
+        name: "Panleykopeniya",
+        category: "infect",
+        count: 76,
+        species: "Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Bala pişiklərdə letallıq 90%-ə qədərdir. Leykopeniya <2000/mkl — proqnozu və taktikanı müəyyən edən patoqnomonik əlamət. Bala pişiklərdə hipoqlikemiya həyat üçün təhlükəlidir.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykopeniya (< 2000/mkl) — patoqnomonik əlamət. Trombositopeniya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Elektrolitlər, zülal, qlükoza (bala pişiklərdə hipoqlikemiya).", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Parvo", desc: "FPV ilə çarpaz reaksiya. Ekspres təsdiq.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "Invaginasiya, obstruksiyanin istisna edilmesi.", available: true },
+            { name: "Qan qlükozası", desc: "Hipoqlikemiya nəzarəti, xüsusilə bala pişiklərdə.", available: true }
+        ],
+        additional: [
+            { name: "FPV PZR (nəcis)", desc: "Təsdiqin qızıl standartı.", available: false }
+        ],
+        differential: [
+            "Salmonellyoz — necis bak. ekini",
+            "Virus peritoniti (FIP) — Rivalta testi, A/G nisb.",
+            "Zeherlenmek — anamnez, toksikoloji analiz"
+        ]
+    },
+    {
+        id: "diabetes",
+        name: "Şəkərli diabet",
+        category: "endo",
+        count: 50,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Qan qlükozası və sidik analizi ilə təsdiq olunmadan diaqnoz — kobud səhvdir. Pişiklərdə stress hiperqlikemiyası diabeti imitasiya edir. Təsdiqsiz insulin təyini pasiyanı öldürə bilər.",
+        mandatory: [
+            { name: "Qan qlükozası", desc: "Hiperqlikemiya >11 mmol/l. Təsdiq üçün MƏCBURİDİR.", available: true },
+            { name: "Sidik analizi", desc: "Qlükozuriya + ketonuriya. Persistə edən hiperqlikemiyanın təsdiqi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Qaraciyər fermentləri (yüksəlmiş), xolesterin, triqliseridlər.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Stress leykoqramması, infeksiyanın qiymətləndirilməsi.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Mədəaltı vəzi, qaraciyər (hepatomeqaliya), böyrəküstü vəzilər.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Pankreatit — səbəb/ağırlaşma kimi.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4 (pisikler)", desc: "Hipertiroidizm diabeti ağırlaşdıra bilər.", available: true },
+            { name: "SNAP Cortisol", desc: "Hiperadrenokortisizmin istisna edilməsi (itlər).", available: true },
+            { name: "Sidik bak. əkini", desc: "SYİ — tez-tez rast gəlinən ağırlaşma.", available: true }
+        ],
+        differential: [
+            "Stress hiperqlikemiyasi (pisikler) — birdefeli yukselme, qlukozuriya yoxdur",
+            "Hiperadrenokortisizm — SNAP Cortisol, poliuriya/polidipsiya",
+            "Hipertiroidizm (pisikler) — T4/FT4",
+            "Boyrek qlukozuriyasi — normal qan qlukozasi"
+        ]
+    },
+    {
+        id: "acute_urinary_retention",
+        name: "Kəskin sidik tutulması",
+        category: "uro",
+        count: 79,
+        species: "Erkək pişiklər (əsasən)",
+        alertLevel: "hard",
+        alertReason: "Hiperkaliemiya >7 mmol/l — ürək dayanması. Biokimyasız həyat təhlükəsinin dərəcəsini qiymətləndirmək mümkün deyil. Kaliumun ötürülməsi = letal ağırlaşmanın ötürülməsi.",
+        mandatory: [
+            { name: "Qanın biokimyası (TƏCİLİ)", desc: "Kalium (!), sidik cövhəri, kreatinin. Hiperkaliemiya >7 — həyat təhlükəsi.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Ümumi statusun qiymətləndirilməsi.", available: true },
+            { name: "Qan qlükozası", desc: "Pişiklərdə stress hiperqlikemiyası.", available: true }
+        ],
+        recommended: [
+            { name: "Sidik analizi (kateterizasiyadan sonra)", desc: "Kristalluriya, bakteriuriya.", available: true },
+            { name: "Rentgen", desc: "Uretrada/sidik kisəsində konkrementlər.", available: true },
+            { name: "Sidik kisəsi USM", desc: "Aşırı gərilmə dərəcəsi, konkrementlər.", available: true }
+        ],
+        additional: [
+            { name: "EKQ", desc: "Hiperkaliemiyanın kardiotoksikliyi (pik T, bradikardiya).", available: false }
+        ],
+        differential: [
+            "Uretral tiqac — kateterizasiya diaqnostikani hell edir",
+            "Uretrada urolit — rentgen, palpasiya",
+            "Uretra strikturasi — anamnez (tekrar kateterizasiyalar)",
+            "Neyrogen sidik kisesi — nevroloji mueayine"
+        ]
+    },
+    {
+        id: "mammary_tumor",
+        name: "Süd vəzi şişi",
+        category: "onco",
+        count: 76,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Pişiklərdə süd vəzi şişlərinin 85-90%-i bədxassəlidir. Mərhələləmə olmadan (ağciyər rentgeni) cərrahiyyə — kobud səhvdir. Ağciyər metastazları pasientlərin 50%-ində aşkarlanır və taktikanı kökündən dəyişir.",
+        mandatory: [
+            { name: "Sinə rentgeni (3 proyeksiya)", desc: "Mərhələləmə. Ağciyər metastazları (bədxassəli SVŞ-lərin 50%-i).", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas əməliyyatönü profil.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönü qiymətləndirmə, orqan funksiyası.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "Limfa düyünləri, qaraciyər, dalağa metastazlar.", available: true },
+            { name: "Sitoloji müayinə (TİB)", desc: "Şiş tipinin əməliyyatönü qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Histologiya (çıxarıldıqdan sonra)", desc: "Son diaqnoz, tip, qreyd, rezeksiya kənarları.", available: true }
+        ],
+        differential: [
+            "Mastit — iltihab elemmetleri, laktasiya",
+            "Mastopatiya — diffuz boyume, hormonal asililliq",
+            "Lipoma — yumsaq, herekwtli, TIB"
+        ]
+    },
+    {
+        id: "pyometra",
+        name: "Piometra",
+        category: "repro",
+        count: 95,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Sepsis, peritonit, DYS — letal ağırlaşmalardır. USM diaqnozu və təcili cərrahiyyə zərurətini təsdiq edir. ÜQA sistemli iltihab dərəcəsini qiymətləndirir.",
+        mandatory: [
+            { name: "Qarın boşluğu USM", desc: "Mezmunlu boyumus usaqliq. Təsdiqin qızıl standartı.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Sola meyllilik ilə leykositoz, neytrofiliya. Toksik dənəvərlik.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Sidik cövhəri, kreatinin (sepsisdə KBÇ), zülal.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu rentgeni", desc: "Uşaqlığın böyüməsi, maye.", available: true },
+            { name: "Qan qlükozası", desc: "Sepsisdə hipoqlikemiya.", available: true },
+            { name: "Sidik analizi", desc: "Böyrək funksiyasının qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Koaquloqramma", desc: "Ağır sepsisdə DYS.", available: false },
+            { name: "İfrazat bak. əkini", desc: "E. coli — ən çox rast gəlinən törədici.", available: true }
+        ],
+        differential: [
+            "Mukometra — sistemli elemmetler yoxdur",
+            "Hamilwlik — USM (doller)",
+            "Usaqliq yeni torwmesi — USM, sitologiya"
+        ]
+    },
+    {
+        id: "heart_failure",
+        name: "Ürək çatışmazlığı",
+        category: "cardio",
+        count: 81,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Rentgen və exo olmadan kardiogen ödemi pnevmoniyadan ayırmaq mümkün deyil. Pnevmoniyada diuretik və ya ağciyər ödemində maye təyini — letaldır. ÜÇ-nin səbəbi bütün terapiyanı müəyyən edir.",
+        mandatory: [
+            { name: "Sinə rentgeni (2 proyeksiya)", desc: "Ağciyər ödemi, kardiomeqaliya, plevral efüzyon.", available: true },
+            { name: "Exokardioqrafiya", desc: "ÜÇ səbəbinin müəyyən edilməsi, atım fraksiyası, tip.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Anemiya ÜÇ-ni ağırlaşdıra bilər.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Böyrək funksiyası (terapiyadan əvvəl və zamanı), elektrolitlər (K+).", available: true },
+            { name: "SNAP feline proBNP (pisikler)", desc: "Təngnəfəsliyin kardial etiologiyasının sürətli təsdiqi.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4", desc: "Pişiklərdə hipertiroidizmin istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Pnevmoniya — UQA (neytrofiliya), rentgen (alveolyar pattern)",
+            "Plevrit — punksiya, efuzyon sitologiyasi",
+            "Astma (pisikler) — rentgen (bronxial pattern), eozinofiliya",
+            "Tromboemboliya — ani baslangic, etraflarda agri"
+        ]
+    },
+    {
+        id: "thromboembolism",
+        name: "Arterial tromboemboliya",
+        category: "cardio",
+        count: 14,
+        species: "Pişiklər (əsasən)",
+        alertLevel: "hard",
+        alertReason: "Təcili vəziyyət. Nekrozlaşmış əzələlərdən kalium → hiperkaliemiya → ürək dayanması. Exo sol qulaqcıqda trombu aşkarlayır və proqnozu müəyyən edir (sağqalma 30-40%).",
+        mandatory: [
+            { name: "Exokardioqrafiya", desc: "Əsas xəstəliyin qiymətləndirilməsi (HKMP), sol qulaqcıqda tromb.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "KFK (əzələ nekrozu), kalium (!), böyrək markerləri.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas profil, stress leykoqramması.", available: true }
+        ],
+        recommended: [
+            { name: "Sinə rentgeni", desc: "Kardiomeqaliya, ağciyər ödemi.", available: true },
+            { name: "Qan qlükozası", desc: "Stress hiperqlikemiyasi.", available: true }
+        ],
+        additional: [
+            { name: "Koaquloqramma", desc: "D-dimerlər, fibrinogen.", available: false }
+        ],
+        differential: [
+            "Travma — anamnez, rentgen",
+            "Diskopatiya — nevroloji defisit, lakin nwbz saxlanib"
+        ]
+    },
+    {
+        id: "epilepsy",
+        name: "Epilepsiya",
+        category: "neuro",
+        count: 26,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Qıcolmalar hipoqlikemiya, hipokalsemiya, qaraciyər ensefalopatiyası ilə əlaqədar ola bilər. Metabolik səbəblər istisna edilmədən antikonvulsant təyini — müalicə oluna bilən xəstəliyi maskalayan kobud səhvdir.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Qlükoza (!), qaraciyər (QE), böyrəklər, Ca2+, elektrolitlər. Metabolik səbəblərin istisna edilməsi.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "İnfeksion/iltihabi səbəblərin istisna edilməsi.", available: true },
+            { name: "Qan qlükozası", desc: "Hipoqlikemiya — qıcolmaların tez-tez rast gəlinən səbəbi, xüsusilə bala itlərdə.", available: true }
+        ],
+        recommended: [
+            { name: "Baş beyin MRT", desc: "Struktur səbəblərin istisna edilməsi (şiş, hidrosefailya).", available: true },
+            { name: "T4/FT4", desc: "Hipotiroidizm qıcolmalara səbəb ola bilər (itlər).", available: true }
+        ],
+        additional: [
+            { name: "Likvor analizi", desc: "Meninqoensefalit, MSS infeksiyaları.", available: false },
+            { name: "SNAP 4Dx", desc: "Neyroerlixioz qıcolma səbəbi kimi.", available: true }
+        ],
+        differential: [
+            "Metabolik qicolmalar — biokimya (qlukoza, Ca2+, NH3)",
+            "Intoksikasiya — anamnez, toksikoloji analiz",
+            "Meninqoensefalit — MRT, likvor analizi",
+            "Beyin sisi — MRT, yas >5 il"
+        ]
+    },
+    {
+        id: "fip",
+        name: "Pişiklərin virus peritoniti (FİP)",
+        category: "infect",
+        count: 34,
+        species: "Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Biokimya (A/G <0.8) və efüzyon analizi (Rivalta testi) olmadan FİP-i limfomadan, bakterial peritonitdən, ÜÇ-dən ayırmaq mümkün deyil. Yanlış diaqnoz = yanlış müalicə = ölüm.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Hiperqlobulinemiya, A/G <0.8, hiperbilirubinemiya.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Limfopeniya, qeyri-regenerativ anemiya.", available: true },
+            { name: "Efüzyon analizi (varsa)", desc: "Rivalta testi (+), sitologiya, zülal >35q/l.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Koinfeksiyalar.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Efüzyon, mezenterial LD, nefromaliya.", available: true },
+            { name: "Sinə rentgeni", desc: "Plevral efüzyon.", available: true }
+        ],
+        additional: [
+            { name: "FCoV PZR (efüzyon/toxuma)", desc: "Efüzyon və ya bioptatdan.", available: false }
+        ],
+        differential: [
+            "Limfoma — efuzyon sitologiyasi, biopsiya",
+            "Urek catismazliqi — exo, proBNP",
+            "Bakterial peritonit — efuzyon ekini"
+        ]
+    },
+    {
+        id: "jaundice",
+        name: "Sarılıq / Hiperbilirubinemiya",
+        category: "hepato",
+        count: 25,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Üç prinsipial fərqli səbəb (hemoliz, hepatopatiya, obstruksiya) — üç fərqli müalicə. ÜQA+biokimya+yaxma olmadan tipi müəyyən etmək mümkün deyil. Tipdə səhv = müalicədə səhv.",
+        mandatory: [
+            { name: "Qanın biokimyası (genişləndirilmiş)", desc: "Bilirubin (ümumi/birbaşa), ALT, AST, QF, QQT, zülal.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Anemiya (hemolitik sarılıq), retikulositlər.", available: true },
+            { name: "Qan yaxması", desc: "Sferositlər (AİHA), hemoparazitlər.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "Qaraciyər, öd kisəsi, öd yollarının obstruksiyası.", available: true },
+            { name: "SNAP 4Dx (itler)", desc: "Erlixioz, anaplazmoz hemolizin səbəbi kimi.", available: true }
+        ],
+        additional: [
+            { name: "Qaraciyer sitologiyasi (TIB)", desc: "Hepatopatiyaların differensiasiyası.", available: true },
+            { name: "SNAP Combo Plus (pisikler)", desc: "FeLV-assosiasiya olunmuş anemiya.", available: true }
+        ],
+        differential: [
+            "Qaraciywronu (hemolitik) — anemiya, retikulositoz",
+            "Qaraciyer — ALT, AST yukswlmesi, biopsiya",
+            "Qaraciyersonrasi (obstruktiv) — USM-de od kanallarinin genislenmesi"
+        ]
+    },
+    {
+        id: "neoplasia_general",
+        name: "Yeni törəmə (ümumi)",
+        category: "onco",
+        count: 41,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Sitologiya və mərhələləmə (ağciyər rentgeni) olmadan cərrahiyyə/kimyaterapiya — kobud səhvdir. TİB şişin tipini müəyyən edir, ağciyər rentgeni metastazları aşkarlayır. Bunsuz müalicə planı müəyyən etmək mümkün deyil.",
+        mandatory: [
+            { name: "Sitoloji müayinə (TİB)", desc: "İstənilən yeni törəmənin diaqnostikasının ilk addımı.", available: true },
+            { name: "Sinə rentgeni (3 proyeksiya)", desc: "Mərhələləmə — ağciyər metastazları.", available: true },
+            { name: "ÜQA + Qan biokimyası", desc: "Əsas profil, paraneoplastik sindromlar, hiperkalsemiya.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "Mərhələləmə — orqanlarda metastazlar.", available: true }
+        ],
+        additional: [
+            { name: "Histologiya (biopsiya)", desc: "Son diaqnoz ve qreyd.", available: true }
+        ],
+        differential: [
+            "Absses/qranuloma — sitologiya",
+            "Hematoma — anamnez, punksiya",
+            "Yirtiq — palpasiya, USM"
+        ]
+    },
+    {
+        id: "ascites",
+        name: "Assit / Qarın boşluğunda efüzyon",
+        category: "other",
+        count: 24,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Efüzyon — simptom, diaqnoz deyil. Səbəblər: ÜÇ, neoplaziya, FİP, peritonit, hipoalbuminemiya. Efüzyon analizi + biokimya olmadan etiologiyanı müəyyən etmək mümkün deyil. Kor müalicə təhlükəlidir.",
+        mandatory: [
+            { name: "Punksiya + efüzyon sitologiyası", desc: "Transsudat vs mod. transsudat vs ekssudat — taktikanı müəyyən edir.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Albumin, qaraciyər markerləri, zülal.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas profil.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "Efüzyonun mənbəyi, yeni törəmələr.", available: true },
+            { name: "Exokardioqrafiya", desc: "Sağtərəfli ÜÇ səbəb kimi.", available: true }
+        ],
+        additional: [
+            { name: "Efüzyon bak. əkini", desc: "Ekssudatda.", available: true }
+        ],
+        differential: [
+            "Urek catismazliqi — exo (sag sobelwr)",
+            "FIP (pisikler) — Rivalta testi, A/G nisb.",
+            "Peritonit — ekssudat, neytrofiliya",
+            "Neoplaziya — efuzyon sitologiyasi"
+        ]
+    },
+    {
+        id: "diaphragmatic_hernia",
+        name: "Diafragma yırtığı",
+        category: "ortho",
+        count: 18,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Təcili cərrahi vəziyyət. Rentgensiz diaqnozu təsdiq etmək mümkün deyil. Sinə boşluğunda bağırsaq ilgəkləri = ağciyər kompressiyası, bağırsaq işemiyası. ÜQA/biokimya narkozdan əvvəl məcburidir.",
+        mandatory: [
+            { name: "Sinə rentgeni (2 proyeksiya)", desc: "Sinə boşluğunda bağırsaq ilgəkləri. Diafragma kölgəsinin itirilməsi.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas profil, qan itkisinin qiymətləndirilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönü qiymətləndirmə.", available: true }
+        ],
+        recommended: [
+            { name: "Sinə/qarın boşluğu USM", desc: "Təsdiq, orqanların vizualizasiyası.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Plevral efuzyon — punksiya, sitologiya",
+            "Pnevmotoraks — rentgen"
+        ]
+    },
+
+    // ==================== SOFT WARNING — muhum, amma tecili deyil ====================
+    {
+        id: "virus_cat",
+        name: "Pişiklərin virus infeksiyası",
+        category: "infect",
+        count: 462,
+        species: "Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Ümumi diaqnoz. ÜQA və SNAP Combo olmadan konkret infeksiyanı müəyyən etmək və terapiya seçmək mümkün deyil. FeLV/FIV proqnozu kökündən dəyişir.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykopeniya/leykositoz, anemiya, trombositopeniya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Qaraciyər, böyrək markerləri, zülal, albumin.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Pişik leykemiyası və immunodefisitinin istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Qan yaxması", desc: "Hüceyrə morfologiyasının qiymətləndirilməsi, hemoparazitlərin istisna edilməsi.", available: true },
+            { name: "Sinə rentgeni", desc: "Efüzyonun, pnevmoniyanın istisna edilməsi.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Orqanların, efüzyonun, limfa düyünlərinin qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Panleykopeniya/kalisivirüs/herpesvirüs PZR", desc: "Törədicinin differensiasiyası.", available: false }
+        ],
+        differential: [
+            "Panleykopeniya (FPV) — necis PZR, leykopeniya < 2000",
+            "Kalisivirsus (FCV) — agiz bosluqunda xoralar",
+            "Rinotraxit (FHV-1) — keratit, asqirma",
+            "FIP — A/G nisbeti, Rivalta testi",
+            "FIV/FeLV — SNAP Combo Plus"
+        ]
+    },
+    {
+        id: "ehrlichiosis",
+        name: "Erlixioz",
+        category: "infect",
+        count: 106,
+        species: "İtlər",
+        alertLevel: "soft",
+        alertReason: "SNAP 4Dx və ÜQA (trombositopeniya) olmadan diaqnozu təsdiq etmək və ağırlığı qiymətləndirmək mümkün deyil. Qan yaxması — morulaların aşkarlanması üçün.",
+        mandatory: [
+            { name: "SNAP 4Dx", desc: "Ehrlichia + anaplazmoz, borrelioz, dirofilyarioza ekspres test.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Trombositopeniya — əsas marker. Xronik fazada pansitopenia.", available: true },
+            { name: "Qan yaxması", desc: "Monositlərdə Ehrlichia morulalarının axtarışı.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Hiperqlobulinemiya, qaraciyər fermentləri.", available: true },
+            { name: "Sidik analizi", desc: "Böyrək zədələnməsində proteinuriya.", available: true }
+        ],
+        additional: [
+            { name: "Ehrlichia canis PZR", desc: "Aktiv infeksiyanın təsdiqi.", available: false },
+            { name: "Qarın boşluğu USM", desc: "Splenomeqaliya, hepatomeqaliya.", available: true }
+        ],
+        differential: [
+            "Anaplazmoz — SNAP 4Dx-e daxildir",
+            "Leysmanioz — leysmanioz testi",
+            "Babezioz — qan yaxmasi, hemolitik anemiya",
+            "Immunovasiteli trombositopeniya — Kumbs testi"
+        ]
+    },
+    {
+        id: "calicivirus",
+        name: "Kalisiviroz",
+        category: "infect",
+        count: 79,
+        species: "Pişiklər",
+        alertLevel: "soft",
+        alertReason: "ÜQA ağırlığı qiymətləndirir. SNAP Combo proqnozu müəyyən edən immunosupressiyanı (FeLV/FIV) istisna edir.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykositar formulanın, anemiyanın qiymətləndirilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Sistemli formada qaraciyər, böyrək markerləri.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "İmmunosupressiyanın istisna edilməsi.", available: true },
+            { name: "Sinə rentgeni", desc: "Respirator simptomlarda.", available: true }
+        ],
+        additional: [
+            { name: "FCV PZR", desc: "Ağız boşluğu selikli qişasından.", available: false }
+        ],
+        differential: [
+            "Rinotraxit (FHV-1) — keratit, dendrit xoralari",
+            "Xlamidioz — esasen konyunktivit",
+            "Limfoplazmositar stomatit — xronik"
+        ]
+    },
+    {
+        id: "cardiomyopathy",
+        name: "Kardiomiopatiya",
+        category: "cardio",
+        count: 82,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Exo tipi (DKMP/HKMP/RKMP) və bütün terapiya taktikasını müəyyən edir. Exo olmadan «kor» müalicə. Rentgen dekompensasiyanı qiymətləndirir.",
+        mandatory: [
+            { name: "Exokardioqrafiya (Ürək USM)", desc: "Qizil standart. Tipin ve funksiyanin mueyyen edilmesi.", available: true },
+            { name: "Sinə rentgeni", desc: "Kardiomeqaliya, agciyer odemi, plevral efuzyon.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas profil.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Boyrekler (kardiorenal sindrom), elektrolitler.", available: true },
+            { name: "SNAP feline proBNP (pisikler)", desc: "UC skrininqi. Hessasliq >90%.", available: true },
+            { name: "T4/FT4 (pisikler)", desc: "Tireotoksik kardiomiopatiyanin istisna edilmesi.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "DKMP (itler) — sistolik disfunksiya",
+            "HKMP (pisikler) — sol medecik divarinin qalinlasmasi >6mm",
+            "Qapaq xestelilyi — kuy, MVDX",
+            "Tireotoksikoz (pisikler) — T4"
+        ]
+    },
+    {
+        id: "ckd",
+        name: "Xronik böyrək xəstəliyi (XBX)",
+        category: "uro",
+        count: 117,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "IRIS üzrə mərhələləmə (kreatinin + sidik analizi) terapiyanı və proqnozu müəyyən edir. Bunsuz pasiyenti düzgün idarə etmək mümkün deyil.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Kreatinin, sidik cövhəri, fosfor — IRIS üzrə mərhələləmə.", available: true },
+            { name: "Sidik analizi (xüsusi çəki ilə)", desc: "İzostenuriya — erkən marker.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Proqressivləşmə zamanı qeyri-regenerativ anemiya.", available: true }
+        ],
+        recommended: [
+            { name: "Böyrəklər USM", desc: "Ölçülər, exogenlik, struktur.", available: true },
+            { name: "T4/FT4 (pisikler)", desc: "Hipertiroidizm XBX-ni maskalaya bilər.", available: true }
+        ],
+        additional: [
+            { name: "Sidik bak. əkini", desc: "SYİ — tez-tez rast gəlinən ağırlaşma.", available: true }
+        ],
+        differential: [
+            "KBC — keskin baslangic, oliquriya",
+            "Hipertiroidizm (pisikler) — kreatinin yukselwmesini maskalayir",
+            "Pielonefrit — qizdirma, sidik bak. ekini"
+        ]
+    },
+    {
+        id: "urolithiasis",
+        name: "SXX / Urolitiaz",
+        category: "uro",
+        count: 37,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Daşların tipi müalicəni müəyyən edir (ərimə vs cərrahiyyə). Sidik analizi və vizualizasiya olmadan taktikanı müəyyən etmək mümkün deyil.",
+        mandatory: [
+            { name: "Sidik analizi", desc: "pH, kristalluriya (tip), xüsusi çəki, hematuriya.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "Rentgenokontrast konkrementlər.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Sidik cövhəri, kreatinin, kalium.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "İltihab markerləri.", available: true }
+        ],
+        recommended: [
+            { name: "Sidik kisəsi və böyrəklər USM", desc: "Qeyri-rentgenokontrast daşlar, hidronefros.", available: true },
+            { name: "Sidik bak. əkini", desc: "İtlərdə struvitlər çox vaxt infeksion mənşəlidir.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "IPK — rentgende/USM-de konkrementler yoxdur",
+            "SYI — sidik bak. ekini",
+            "Sidik kisesi yeni torwmesi — USM"
+        ]
+    },
+    {
+        id: "foreign_body",
+        name: "MBT-də yad cisim",
+        category: "gastro",
+        count: 143,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Rentgen/USM olmadan diaqnozu təsdiq etmək mümkün deyil. ÜQA perforasiya/peritoniti aşkarlayır. Biokimya dehidratasiyanı qiymətləndirir.",
+        mandatory: [
+            { name: "Qarın boşluğu rentgeni (2 proyeksiya)", desc: "Rentgenokontrast cisimlər, ilgəklərin genişlənməsi.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Perforasiya/peritonitdə leykositoz.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Elektrolitlər, turşu-qələvi balansı.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "Qeyri-rentgenokontrast cisimlər. Peristaltika.", available: true }
+        ],
+        additional: [
+            { name: "Qan qlükozası", desc: "Bala itlərdə/pişiklərdə.", available: true }
+        ],
+        differential: [
+            "Invaginasiya — USM (nisan simptomu)",
+            "Pankreatit — SNAP cPL/fPL",
+            "Peritonit — leykositoz, serbest maye"
+        ]
+    },
+    {
+        id: "cholangiohepatitis",
+        name: "Xolangiohepatit / Xolangit",
+        category: "hepato",
+        count: 80,
+        species: "Pişiklər (əsasən)",
+        alertLevel: "soft",
+        alertReason: "Tip (irinli vs limfositar) terapiyanı müəyyən edir: antibiotiklər vs immunosupressiya. Biokimya, ÜQA və USM olmadan differensiasiya mümkün deyil.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Bilirubin (!), ALT, AST, QF, QQT, albumin.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Neytrofiliya (irinli) vs limfositoz (limfositar).", available: true },
+            { name: "Qarın boşluğu USM", desc: "Öd kisəsi, qaraciyər, MV.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP fPL", desc: "Pankreatit triaditin bir hissəsi kimi.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "İmmunosupressiya.", available: true }
+        ],
+        additional: [
+            { name: "Qaraciyər sitologiya/biopsiya (TİB)", desc: "Tipin differensiasiyası.", available: true }
+        ],
+        differential: [
+            "Qaraciyer lipidozu (pisikler) — anoreksiya, piylenmwe, sitologiya",
+            "Triadit — xolangit + pankreatit + IBD",
+            "FIP — efuzyon, A/G, Rivalta testi"
+        ]
+    },
+    {
+        id: "anemia",
+        name: "Anemiya",
+        category: "hema",
+        count: 49,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Anemiya — sindrom, diaqnoz deyil. ÜQA (regenerativ vs qeyri-regenerativ) və qan yaxması olmadan səbəbi müəyyən etmək mümkün deyil.",
+        mandatory: [
+            { name: "ÜQA (retikulositlərlə)", desc: "Anemiya dərəcəsi, regenerativ vs qeyri-regenerativ.", available: true },
+            { name: "Qan yaxması", desc: "Morfologiya (sferositlər, hemoparazitlər, şistositlər).", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Böyrəklər (XBX-anemiya), qaraciyər, bilirubin.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP 4Dx (itler)", desc: "Erlixioz, anaplazmoz.", available: true },
+            { name: "SNAP Combo Plus (pisikler)", desc: "FeLV — qeyri-regenerativ anemiyanın səbəbi.", available: true }
+        ],
+        additional: [
+            { name: "Qarın boşluğu USM", desc: "Splenomeqaliya, yeni törəmələr.", available: true }
+        ],
+        differential: [
+            "Qan itkisi — anamnez, regenerativ",
+            "Hemoliz (AIHA) — sferositler, Kumbs+",
+            "Hemoparazitler — qan yaxmasi, SNAP 4Dx",
+            "XBX — qeyri-regenerativ, ↑ kreatinin",
+            "FeLV (pisikler) — qeyri-regenerativ, SNAP Combo+"
+        ]
+    },
+    {
+        id: "hemobartonellosis",
+        name: "Hemobartonelloz / Mikoplazmoz",
+        category: "hema",
+        count: 93,
+        species: "Pişiklər (əsasən)",
+        alertLevel: "soft",
+        alertReason: "ÜQA və qan yaxması — diaqnostikanın əsasıdır (eritrositlərdə parazitlər). SNAP Combo məcburidir — FeLV proqnozu pisləşdirir.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Anemiya (çox vaxt ağır), retikulositoz.", available: true },
+            { name: "Qan yaxması", desc: "Eritrositlərdə Mycoplasma haemofelis.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Koinfeksiya — FeLV proqnozu pisləşdirir.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Bilirubin (hemoliz), orqan funksiyası.", available: true }
+        ],
+        additional: [
+            { name: "M. haemofelis PZR", desc: "Təsdiqin qızıl standartı.", available: false }
+        ],
+        differential: [
+            "AIHA — Kumbs+, parazitler yoxdur",
+            "FeLV-assosiativ anemiya — SNAP Combo+",
+            "Babezioz — qan yaxmasi, diger parazitler"
+        ]
+    },
+    {
+        id: "pancreatitis",
+        name: "Pankreatit",
+        category: "gastro",
+        count: 22,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "SNAP cPL/fPL — təsdiq üçün əsas test. Biokimya olmadan ağırlaşmaları (KBÇ, DYS) qiymətləndirmək mümkün deyil.",
+        mandatory: [
+            { name: "SNAP cPL (itler) / SNAP fPL (pisikler)", desc: "Spesifik pankreatik lipaza.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Qaraciyər fermentləri, qlükoza.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykositoz, hemokonsentrasiya.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu USM", desc: "MV ödemi, peripankreatik efüzyon.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "Detalizasiyanın azalması.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "MBT-de yad cisim — rentgen/USM",
+            "Triadit (pisikler) — pankreatit + xolangit + IBD",
+            "Keskin qarin (peritonit) — efuzyon sitologiyasi"
+        ]
+    },
+    {
+        id: "fracture",
+        name: "Ətraf / çanaq sınığı",
+        category: "ortho",
+        count: 109,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Rentgen sınığın tipini və fiksasiya planını müəyyən edir. Avtoqəzada — sinə rentgeni və qarın USM gizli zədələri istisna edir. ÜQA/biokimya — əməliyyatönü minimum.",
+        mandatory: [
+            { name: "Rentgen (2 proyeksiya)", desc: "Sınığın tipi, lokalizasiyası. Fiksasiya planlaması.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əməliyyatönü profil, qan itkisinin qiymətləndirilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönü qiymətləndirmə.", available: true }
+        ],
+        recommended: [
+            { name: "Sinə rentgeni", desc: "Pnevmotoraksın istisna edilməsi (avtoqəza).", available: true },
+            { name: "Qarın boşluğu USM", desc: "Daxili qanaxmanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Sidik analizi", desc: "Sidik kisəsi cırılmasının istisna edilməsi (çanaq sınığı).", available: true }
+        ],
+        differential: [
+            "Cixxiq — rentgen",
+            "Patoloji siniq — yeni torwme",
+            "Uzanma — siniq xetti yoxdur"
+        ]
+    },
+    {
+        id: "pneumonia",
+        name: "Bronxopnevmoniya / Pnevmoniya",
+        category: "resp",
+        count: 56,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Rentgen diaqnozu və lokalizasiyanı təsdiq edir. ÜQA infeksiyanın ağırlığını qiymətləndirir. Bunsuz kardiogen ödemdən ayırmaq mümkün deyil.",
+        mandatory: [
+            { name: "Sinə rentgeni (2 proyeksiya)", desc: "Alveolyar pattern, lokalizasiya.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Sola meyllilik ilə neytrofiliya, leykositoz.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Ümumi statusun qiymətləndirilməsi.", available: true },
+            { name: "Bak. əkin (traxeal lavaj)", desc: "Törədicinin identifikasiyası.", available: true }
+        ],
+        additional: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Pişiklərdə — immunosupressiya.", available: true }
+        ],
+        differential: [
+            "Kardiogen odem — urek exosu, proBNP",
+            "Aspirasion pnevmoniya — anamnez",
+            "Agciyer parazitozu — necis analizi"
+        ]
+    },
+    {
+        id: "demodicosis",
+        name: "Demodekoz",
+        category: "derm",
+        count: 51,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Dərin qaşıma — demodekozu təsdiq etməyin yeganə yoludur. Bunsuz bakterial pioderma, dermatofitoz ilə ayırmaq mümkün deyil.",
+        mandatory: [
+            { name: "Dərin dəri qaşıması", desc: "Qızıl standart. Demodex-in bütün mərhələlərdə aşkarlanması.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Sistemli xəstəliyin istisna edilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Müalicədən əvvəl əsas profil.", available: true },
+            { name: "Sitoloji müayinə", desc: "İkincili piodermanın qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4", desc: "Hipotiroidizmin istisna edilməsi (itlər).", available: true },
+            { name: "Bak. əkin", desc: "Dərin piodermada.", available: true }
+        ],
+        differential: [
+            "Sarkoptoz — sethi qasima, ifade olunmus qasinma",
+            "Dermatofitoz — Vud lampasi, ekin",
+            "Bakterial pioderma — sitologiya"
+        ]
+    },
+    {
+        id: "dermatophytosis",
+        name: "Mikrosporiya / Dermatofitoz",
+        category: "derm",
+        count: 103,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Zoonoz xəstəlik. Vud lampası və qaşıma olmadan diaqnozu təsdiq etmək mümkün deyil. Bir çox dəri xəstəlikləri dərmatofitoza bənzəyir.",
+        mandatory: [
+            { name: "Lüminessent diaqnostika (Vud lampası)", desc: "M. canis flüoressensiyası (ştamların 50-70%-i).", available: true },
+            { name: "Qaşıma + tük mikroskopiyası", desc: "Zədələnmiş tüklərdə artrosporlar.", available: true }
+        ],
+        recommended: [
+            { name: "Göbələk bak. əkini", desc: "DTM. Qızıl standart, 7-21 gün.", available: true }
+        ],
+        additional: [
+            { name: "Biopsiya + histologiya", desc: "Şübhəli hallarda.", available: true }
+        ],
+        differential: [
+            "Demodekoz — derin qasima",
+            "Bakterial pioderma — sitologiya",
+            "Alopesiya X — biopsiya"
+        ]
+    },
+    {
+        id: "gastroenteritis",
+        name: "Qastroenterit / Qastroenterokolit",
+        category: "gastro",
+        count: 72,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "ÜQA və biokimya dehidratsiyanı və ağırlığı qiymətləndirir. Peyvənd olunmamışlarda SNAP Parvo parvovirusu istisna edir. Müayinələrsiz — kor müalicə.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykositar formula, hematokrit.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Elektrolitlər, zülal, böyrəklər/qaraciyər.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Parvo", desc: "Peyvənd olunmamışlarda parvovirusun istisna edilməsi.", available: true },
+            { name: "Nəcis analizi", desc: "Parazitoloji müayinə.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "Obstruksiyanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Qarın boşluğu USM", desc: "Bağırsaq divarının qalınlaşması.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Pankreatitin istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Parvoviroz enterit — SNAP Parvo, leykopeniya",
+            "Pankreatit — SNAP cPL/fPL",
+            "Yad cisim — rentgen/USM"
+        ]
+    },
+    {
+        id: "sarcoma_sticker",
+        name: "Ştikker sarkoması (TVŞ)",
+        category: "onco",
+        count: 44,
+        species: "İtlər",
+        alertLevel: "soft",
+        alertReason: "Sitologiya hallarin >90%-ində diaqnozu təsdiq edir. Bunsuz vinkristin təyini əsassızdır. Sinə rentgeni — mərhələləmə.",
+        mandatory: [
+            { name: "Sitoloji müayinə", desc: "Xarakterik girdə hüceyrələr. Hallarin >90%-ində diaqnoz.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əsas profil.", available: true }
+        ],
+        recommended: [
+            { name: "Sinə rentgeni", desc: "Mərhələləmə.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Kimyaterapiyadan əvvəl.", available: true }
+        ],
+        additional: [
+            { name: "Histologiya", desc: "Atipik sitologiyada.", available: true }
+        ],
+        differential: [
+            "Diger girdewhuceyreli sisler — histologiya, IHK",
+            "Qranuloma — sitologiya, bak. ekin"
+        ]
+    },
+    {
+        id: "discopathy",
+        name: "Diskopatiya / IVDD",
+        category: "neuro",
+        count: 12,
+        species: "İtlər (xondrodistrofik)",
+        alertLevel: "soft",
+        alertReason: "Rentgen — minimal vizualizasiya. MRT cərrahiyyə göstərişlərini müəyyən edir. Nevroloji müayinəsiz dərəcəni (I-V) müəyyən etmək mümkün deyil.",
+        mandatory: [
+            { name: "Nevroloji müayinə", desc: "Defisitin dərəcəsi (I-V).", available: true },
+            { name: "Onurğa rentgeni", desc: "Diskin daralması, kalsifikasiya.", available: true }
+        ],
+        recommended: [
+            { name: "MRT", desc: "Qızıl standart. Dəqiq lokalizasiya.", available: true },
+            { name: "ÜQA + Biokimya", desc: "Əməliyyatönü profil.", available: true }
+        ],
+        additional: [
+            { name: "Sidik analizi", desc: "Sidik kisəsi funksiyasının qiymətləndirilməsi.", available: true }
+        ],
+        differential: [
+            "Fibroz-qigirdaq emboliyasi — keskin, proqressivlwsmeywen",
+            "Diskospondilit — agri, qizdirma",
+            "Onurqa beyni yeni torwmesi — proqressivlwsme"
+        ]
+    },
+    {
+        id: "food_allergy",
+        name: "Qida allergiyası / Dözümsüzlük",
+        category: "immuno",
+        count: 220,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Dəri qaşıması olmadan parazitləri istisna etmək mümkün deyil. Eliminasion pəhriz — qida allergiyasını təsdiq etməyin yeganə etibarlı üsuludur.",
+        mandatory: [
+            { name: "Dəri qaşıması", desc: "Ektoparazitlərin istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Dəri sitologiyası", desc: "İkincili infeksiyalar.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Eozinofiliya.", available: true },
+            { name: "Lüminessent diaqnostika", desc: "Dermatofitozun istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Nəcis analizi", desc: "MBT parazitlərinin istisna edilməsi.", available: true },
+            { name: "Deri biopsiyasi", desc: "Atipik klinik mənzərədə.", available: true }
+        ],
+        differential: [
+            "Atopik dermatit — allerqoprob",
+            "Bire dermatiti — bire mualicesi",
+            "Kontakt dermatit — anamnez"
+        ]
+    },
+    {
+        id: "rhinotracheitis",
+        name: "Rinotraxit / FHV-1",
+        category: "infect",
+        count: 37,
+        species: "Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Göz simptomlarında fluoresein testi məcburidir — buynuz qişa xorasının ötürülməsi = gözün itirilməsi. ÜQA ağırlığı qiymətləndirir.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykositar formula.", available: true },
+            { name: "Fluoresein testi", desc: "Göz simptomlarında məcburidir — buynuz qişa xoraları.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Koinfeksiya.", available: true },
+            { name: "Şirmer testi", desc: "Gözyaşı istehsalının qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "İkincili bakterial flora.", available: true }
+        ],
+        differential: [
+            "Kalisivirsus — agiz bosluqunda xoralar",
+            "Xlamidioz — esasen konyunktivit",
+            "Mikoplazmoz — PZR"
+        ]
+    },
+    {
+        id: "gingivostomatitis",
+        name: "Gingivostomatit / LPGS",
+        category: "dental",
+        count: 89,
+        species: "Pişiklər (əsasən)",
+        alertLevel: "soft",
+        alertReason: "SNAP Combo (FeLV/FIV) məcburidir — viruslarla əlaqə proqnozu və taktikanı müəyyən edir. ÜQA xronik iltihabı qiymətləndirir.",
+        mandatory: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "FIV, FeLV ilə əlaqə. Proqnozu müəyyən edir.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Xronik iltihab, hiperqlobulinemiya.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Ümumi zülal, qlobulinlər.", available: true },
+            { name: "Diş rentgeni", desc: "Rezorbtiv zədələnmələr.", available: true }
+        ],
+        additional: [
+            { name: "Biopsiya + histologiya", desc: "Tipin təsdiqi, neoplaziyanın istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Kalisiviroz — keskin, sistemli elemmetler",
+            "Agiz boslugu karsinomu — biopsiya",
+            "Eozinofilik qranuloma — sitologiya"
+        ]
+    },
+
+    // ==================== INFORMATIONAL ====================
+    {
+        id: "flea_allergy",
+        name: "Birə allergik dermatiti",
+        category: "derm",
+        count: 250,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Diaqnoz çox vaxt klinikdir. Qaşıma və sitologiya tamamlayır, lakin müalicəni bloklamır (birə müalicəsi — əsas terapiya).",
+        mandatory: [
+            { name: "Klinik müayinə", desc: "Birələrin/nəcisin vizualizasiyası. Xarakterik lokalizasiya.", available: true },
+            { name: "Dəri qaşıması", desc: "Digər ektoparazitlərin istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Sitoloji müayinə", desc: "İkincili infeksiya.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Eozinofiliya.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "İkincili piodermada.", available: true }
+        ],
+        differential: [
+            "Atopik dermatit — bire eliminasiyasi + simptomlarin saxlanmasi",
+            "Qida allergiyasi — eliminasion pehriz",
+            "Sarkoptoz — qasima, ferqli paylanma"
+        ]
+    },
+    {
+        id: "otitis",
+        name: "Otit (xarici / orta)",
+        category: "derm",
+        count: 175,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Otoskopiya və sitologiya — əsas, lakin müalicəyə empirik başlamaq olar. Bak əkin — residivlərdə.",
+        mandatory: [
+            { name: "Otoskopiya", desc: "Eşitmə kanalının, təbil pərdəsinin qiymətləndirilməsi.", available: true },
+            { name: "Qulaq məzmununun sitologiyası", desc: "İnfeksiya tipi (kokklar, çöplər, Malassezia, gənələr).", available: true }
+        ],
+        recommended: [
+            { name: "Qaşıma (otodektoz müayinəsi)", desc: "Otodectes gənələri.", available: true },
+            { name: "Bak. əkin + antibiotkoqramma", desc: "Residivlərdə, çöp florasında.", available: true }
+        ],
+        additional: [
+            { name: "Bulla rentgeni", desc: "Orta qulaq otiti.", available: true },
+            { name: "T4/FT4 (itler)", desc: "Hipotiroidizm — predispoze edici faktor.", available: true }
+        ],
+        differential: [
+            "Otodektoz — sitologiyada geneler",
+            "Allergik otit — residivler, atopiya",
+            "Yeni torwme — biopsiya",
+            "Yad cisim — otoskopiya"
+        ]
+    },
+    {
+        id: "otodectosis",
+        name: "Otodektoz",
+        category: "derm",
+        count: 95,
+        species: "Pişiklər / İtlər",
+        alertLevel: "info",
+        alertReason: "Diaqnoz çox vaxt klinikdir (xarakterik sekret). Mikroskopiya təsdiq edir, lakin müalicəyə dərhal başlamaq olar.",
+        mandatory: [
+            { name: "Otoskopiya", desc: "Gənələrin vizualizasiyası (ağ hərəkətli nöqtələr).", available: true },
+            { name: "Qulaq məzmununun mikroskopiyası", desc: "Otodectes cynotis-in aşkarlanması.", available: true }
+        ],
+        recommended: [
+            { name: "Qulaq sekretinin sitologiyası", desc: "İkincili infeksiyanın qiymətləndirilməsi.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Bakterial otit — sitologiya",
+            "Malasseziya otiti — sitologiya",
+            "Allergik otit — anamnez"
+        ]
+    },
+    {
+        id: "conjunctivitis",
+        name: "Konyunktivit",
+        category: "ophth",
+        count: 218,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Fluoresein testi və Şirmer testi ciddi patologiyaları istisna etmək üçün vacibdir, lakin sadə konyunktiviti empirik müalicə etmək olar.",
+        mandatory: [
+            { name: "Fluoresein testi", desc: "Buynuz qişa xorasının/eroziyasının istisna edilməsi.", available: true },
+            { name: "Şirmer testi", desc: "QKK-nin istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Konyunktiva sitologiyası", desc: "İltihab tipi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "İrinli konyunktivitdə.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Residivli pişiklərdə.", available: true }
+        ],
+        differential: [
+            "Quru keratokonyunktivit — Sirmer testi <15",
+            "Uveit — mioz, presiptatlar",
+            "Qlaukoma — midriaz, GDT yukswlmesi",
+            "FHV-1 (pisikler) — simblefaron, dendrit xoralari"
+        ]
+    },
+    {
+        id: "gastritis",
+        name: "Qastrit",
+        category: "gastro",
+        count: 78,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Kəskin yüngül qastritdə — empirik terapiya məqbuldur. ÜQA və biokimya tövsiyə olunur, lakin müalicəni bloklamır.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "İltihab markerləri, anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Qaraciyər, böyrək markerləri. Elektrolitlər.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu rentgeni", desc: "Yad cisimlərin istisna edilməsi.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Mədə divarının, MV-nin qiymətləndirilməsi.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Pankreatitin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Nəcis analizi", desc: "Parazitoloji müayinə.", available: true }
+        ],
+        differential: [
+            "MBT-de yad cisim — rentgen/USM",
+            "Pankreatit — SNAP cPL/fPL",
+            "Uremik qastritwli XBX — biokimya",
+            "Addison xestelliyi — elektrolitler (Na/K)"
+        ]
+    },
+    {
+        id: "dental_calculus",
+        name: "Diş daşı / Paradontoz",
+        category: "dental",
+        count: 111,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "ÜQA və biokimya narkoz altında sanasiya üçün əməliyyatönü minimum kimi lazımdır, lakin diaqnoz klinik qoyulur.",
+        mandatory: [
+            { name: "Ağız boşluğu müayinəsi", desc: "Dis dasi derecesi, gingivit, dislerin hereketliliyi.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Əməliyyatönü profil.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönü profil.", available: true },
+            { name: "Diş rentgeni", desc: "Kök rezorbsiyası, absseslər.", available: true }
+        ],
+        additional: [
+            { name: "Exokardioqrafiya", desc: "Yaşlılarda narkozdan əvvəl.", available: true }
+        ],
+        differential: [
+            "Gingivostomatit — limfoplazmositar infiltrasiya",
+            "Agiz boslugu sisi — sitologiya"
+        ]
+    },
+    {
+        id: "constipation",
+        name: "Qəbizlik / Koprostaz",
+        category: "gastro",
+        count: 42,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Rentgen təsdiq edir və dərəcəni qiymətləndirir. Tək epizodda — tam müayinəsiz müalicə məqbuldur.",
+        mandatory: [
+            { name: "Qarın boşluğu rentgeni", desc: "Doluluğun qiymətləndirilməsi, meqakolon.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Kalium, kalsium, böyrək funksiyası.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Sistemli simptomlarda.", available: true }
+        ],
+        additional: [
+            { name: "Qarın boşluğu USM", desc: "Törəmələrin, strikturların istisna edilməsi.", available: true },
+            { name: "T4/FT4", desc: "Hipotiroidizmin istisna edilməsi (itlər).", available: true }
+        ],
+        differential: [
+            "Meqakolon — rentgen, xronik",
+            "Perineal yirtiq — palpasiya",
+            "Yeni torwme — USM, kolonoskopiya"
+        ]
+    },
+    {
+        id: "abscess",
+        name: "Absses",
+        category: "other",
+        count: 41,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Diaqnoz çox vaxt klinikdir. Sitologiya və bak əkin terapiyanı yaxşılaşdırır, lakin drenajı bloklamır.",
+        mandatory: [
+            { name: "Punktat sitologiyası", desc: "İrinin təsdiqi, flora tipi.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Leykositoz, neytrofiliya.", available: true }
+        ],
+        recommended: [
+            { name: "Bak. əkin + antibiotkoqramma", desc: "Törədicinin identifikasiyası.", available: true },
+            { name: "SNAP Combo Plus (pisikler)", desc: "FIV → absses riski yüksəlmişdir.", available: true }
+        ],
+        additional: [
+            { name: "USM", desc: "Ölçülərin, drenajın qiymətləndirilməsi.", available: true }
+        ],
+        differential: [
+            "Yeni torwme — sitologiya (TIB)",
+            "Qranuloma — sitologiya, histologiya",
+            "Seroma — steril mezmun"
+        ]
+    },
+    {
+        id: "cystitis",
+        name: "Sistit / Urosistit",
+        category: "uro",
+        count: 66,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Sidik analizi və USM tam diaqnostika üçün vacibdir, lakin ilk ağırlaşmamış epizodda empirik terapiya məqbuldur.",
+        mandatory: [
+            { name: "Sidik analizi", desc: "Leykosituriya, bakteriuriya, hematuriya, pH.", available: true },
+            { name: "Sidik kisəsi USM", desc: "Divarın qalınlaşması, çöküntü, konkrementlər.", available: true }
+        ],
+        recommended: [
+            { name: "Sidik bak. əkini (sistosentez)", desc: "Törədicinin identifikasiyası.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Sistemli simptomlarda.", available: true }
+        ],
+        additional: [
+            { name: "Qarın boşluğu rentgeni", desc: "Rentgenokontrast konkrementlər.", available: true }
+        ],
+        differential: [
+            "SXX — rentgen, USM",
+            "IPK (pisikler) — steril sidik",
+            "Yeni torwme — USM, sitologiya"
+        ]
+    },
+    {
+        id: "kennel_cough",
+        name: "İnfeksion larinqotraxit / Voler öskürəyi",
+        category: "resp",
+        count: 69,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Diaqnoz çox vaxt klinikdir (xarakterik öskürək). ÜQA və rentgen — ağır/uzunmüddətli gedişatda.",
+        mandatory: [
+            { name: "Klinik müayinə", desc: "«Qaz» öskürəyi, traxeya palpasiyasında provokasiya.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "İkincili pnevmoniyanın istisna edilməsi.", available: true },
+            { name: "Sinə rentgeni", desc: "Ağır/uzunmüddətli gedişatda.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "İrinli ifrazatda.", available: true }
+        ],
+        differential: [
+            "Traxeya kollapsi — nefesalma/nefesverme rentgeni",
+            "Urek catismazliqi — rentgen, exo",
+            "Dirofilyarioz — SNAP 4Dx"
+        ]
+    },
+    {
+        id: "hot_spot",
+        name: "Kəskin nəm dermatit (Hot Spot)",
+        category: "derm",
+        count: 20,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Diaqnoz klinikdir. Sitologiya faydalıdır, lakin müalicə (qırxma, emal) dərhal başlayır.",
+        mandatory: [
+            { name: "Sitoloji müayinə", desc: "İnfeksiya tipi.", available: true }
+        ],
+        recommended: [
+            { name: "Dəri qaşıması", desc: "Demodekozun istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Residivlərdə.", available: true }
+        ],
+        differential: [
+            "Derin pioderma — bak. ekin",
+            "Demodekoz — derin qasima",
+            "Dermatofitoz — Vud lampasi"
+        ]
+    },
+    {
+        id: "chlamydia",
+        name: "Xlamidioz",
+        category: "infect",
+        count: 65,
+        species: "Pişiklər",
+        alertLevel: "info",
+        alertReason: "Xarakterik klinikada tez-tez empirik müalicə olunur (doksisiklin). Konyunktiva sitologiyası təsdiq edir, lakin bloklamır.",
+        mandatory: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Eozinofiliya, leykositoz.", available: true },
+            { name: "Konyunktiva sitologiyası", desc: "Epitelial hüceyrələrdə inklüziyalar.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "İmmunosupressiyanın istisna edilməsi.", available: true },
+            { name: "Fluoresein testi", desc: "Buynuz qişa eroziyasının istisna edilməsi.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "FHV-1 — buynuz qisa dendrit xoralari",
+            "FCV — agiz bosluqunda xoralar",
+            "Allergik konyunktivit — anamnez"
+        ]
+    },
+    {
+        id: "cryptosporidiosis",
+        name: "Kriptosporidioz",
+        category: "gastro",
+        count: 45,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Nəcis analizi təsdiq edir, lakin xarakterik klinikada (sulu diareya) empirik terapiya məqbuldur.",
+        mandatory: [
+            { name: "Nəcis analizi", desc: "Flotasiya, boyama. Oosistlər.", available: true },
+            { name: "ÜQA (Ümumi qan analizi)", desc: "İltihab cavabının qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Dehidratasiyada elektrolitlər.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Pişiklərdə — immunosupressiya.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Lyamblioz — necis mikroskopiyasi",
+            "Parvoviroz enterit — SNAP Parvo",
+            "Koksidioz — flotasiya (oosistler)"
+        ]
+    },
+    {
+        id: "atopic_dermatitis",
+        name: "Atopik dermatit",
+        category: "derm",
+        count: 37,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "İstisna diaqnozu. Qaşıma və sitologiya istisna etmək üçün vacibdir, lakin diaqnozun özü Favrot kriteriyalarına görə klinik qoyulur.",
+        mandatory: [
+            { name: "Dəri qaşıması", desc: "Ektoparazitlərin istisna edilməsi.", available: true },
+            { name: "Sitoloji müayinə", desc: "İkincili infeksiyaların istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Lüminessent diaqnostika", desc: "Dermatofitozun istisna edilməsi.", available: true },
+            { name: "Göbələk bak. əkini", desc: "Dermatofitozun istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4 (itler)", desc: "Hipotiroidizmin istisna edilmesi.", available: true }
+        ],
+        differential: [
+            "Qida allergiyasi — eliminasion pehriz",
+            "Bire dermatiti — bire mualicesi",
+            "Sarkoptoz — sinaq mualicesi"
+        ]
+    },
+    {
+        id: "sarcoptosis",
+        name: "Sarkoptoz",
+        category: "derm",
+        count: 26,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Qaşıma yalnız halların ~50%-ində müsbətdir. Klinik şübhədə — laborator təsdiq olmadan sınaq müalicəsi məqbuldur.",
+        mandatory: [
+            { name: "Dəri qaşıması (səthi)", desc: "Çoxsaylı qaşımalar. Gənələr halların ~50%-ində aşkarlanır.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA (Ümumi qan analizi)", desc: "Eozinofiliya.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Demodekoz — derin qasima",
+            "Atopik dermatit — anamnez",
+            "Qida allergiyasi — eliminasion pehriz"
+        ]
+    },
+    {
+        id: "obesity",
+        name: "Piylənmə",
+        category: "endo",
+        count: 16,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "BCS üzrə diaqnoz. Endokrin səbəbləri istisna etmək üçün biokimya və T4 tövsiyə olunur, lakin pəhriz tövsiyələrini bloklamır.",
+        mandatory: [
+            { name: "Bədən kondisiyası qiymətləndirilməsi (BCS)", desc: "BCS 7-9/9 — piylənmə.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Qlükoza, qaraciyər, xolesterin.", available: true },
+            { name: "T4/FT4", desc: "Hipotiroidizmin istisna edilməsi (itlər).", available: true },
+            { name: "Qan qlükozası", desc: "Diabet skrininqi.", available: true }
+        ],
+        additional: [
+            { name: "SNAP Cortisol", desc: "Kuşinq sindromunun istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Hipotiroidizm — T4/FT4",
+            "Hiperadrenokortisizm — SNAP Cortisol",
+            "Odemler — palpasiya, albumin"
+        ]
+    }
+];
+
+// ===== STATE =====
+let selectedDiagId = null;
+let activeCategory = "all";
+let activeAlert = "all";
+let checkedTests = {};
+
+// ===== INIT =====
+function init() {
+    const hardCount = CDSS_DB.filter(d => d.alertLevel === "hard").length;
+    const softCount = CDSS_DB.filter(d => d.alertLevel === "soft").length;
+    const infoCount = CDSS_DB.filter(d => d.alertLevel === "info").length;
+
+    document.getElementById("statHard").textContent = hardCount;
+    document.getElementById("statSoft").textContent = softCount;
+    document.getElementById("statInfo").textContent = infoCount;
+    document.getElementById("statTotal").textContent = CDSS_DB.length;
+
+    // Category filters
+    const catContainer = document.getElementById("catFilters");
+    const usedCats = [...new Set(CDSS_DB.map(d => d.category))];
+    usedCats.forEach(catKey => {
+        const cat = CATEGORIES[catKey];
+        const btn = document.createElement("button");
+        btn.className = "cat-btn";
+        btn.dataset.cat = catKey;
+        btn.textContent = cat.name;
+        btn.onclick = () => filterCategory(catKey);
+        catContainer.appendChild(btn);
+    });
+
+    renderDiagList();
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+        renderDiagList(e.target.value.toLowerCase());
+    });
+}
+
+function filterCategory(cat) {
+    activeCategory = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.cat === cat);
+    });
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+}
+
+function filterAlert(level, btn) {
+    activeAlert = level;
+    document.querySelectorAll(".alert-btn").forEach(b => {
+        b.className = "alert-btn";
+    });
+    if (level === "all") btn.classList.add("active-hard");
+    else btn.classList.add("active-" + level);
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+}
+
+function renderDiagList(search = "") {
+    const container = document.getElementById("diagList");
+    container.innerHTML = "";
+
+    let filtered = CDSS_DB;
+    if (activeCategory !== "all") filtered = filtered.filter(d => d.category === activeCategory);
+    if (activeAlert !== "all") filtered = filtered.filter(d => d.alertLevel === activeAlert);
+    if (search) filtered = filtered.filter(d => d.name.toLowerCase().includes(search));
+
+    filtered.sort((a, b) => {
+        const order = { hard: 0, soft: 1, info: 2 };
+        if (order[a.alertLevel] !== order[b.alertLevel]) return order[a.alertLevel] - order[b.alertLevel];
+        return b.count - a.count;
+    });
+
+    filtered.forEach(d => {
+        const cat = CATEGORIES[d.category];
+        const item = document.createElement("div");
+        item.className = `diag-item${d.id === selectedDiagId ? ' selected' : ''}`;
+
+        const alertLabels = { hard: "BLOK", soft: "ALERT", info: "MƏLUMAT" };
+        item.innerHTML = `
+            <div class="cat-dot ${cat.color}"></div>
+            <div class="diag-name">${d.name}</div>
+            <span class="alert-badge ${d.alertLevel}">${alertLabels[d.alertLevel]}</span>
+            <div class="diag-count">${d.count}</div>
+        `;
+        item.onclick = () => selectDiagnosis(d.id);
+        container.appendChild(item);
+    });
+}
+
+function selectDiagnosis(id) {
+    selectedDiagId = id;
+    checkedTests = {};
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+    renderDetail(id);
+    if (window.innerWidth <= 768) {
+        document.querySelector(".sidebar").classList.add("mobile-hidden");
+        document.getElementById("detailContent").classList.add("mobile-visible");
+    }
+}
+
+function mobileBack() {
+    document.querySelector(".sidebar").classList.remove("mobile-hidden");
+    document.getElementById("detailContent").classList.remove("mobile-visible");
+    window.scrollTo(0, 0);
+}
+
+function renderDetail(id) {
+    const d = CDSS_DB.find(x => x.id === id);
+    if (!d) return;
+
+    const cat = CATEGORIES[d.category];
+    const content = document.getElementById("detailContent");
+
+    const alertConfig = {
+        hard: { icon: "&#9940;", title: "SƏRT BLOK — Məcburi müayinələrsiz saxlamaq qadağandır", desc: "Sistem məcburi müayinələr əlavə olunmayıbsa, diaqnozun saxlanmasını <strong>bloklayacaq</strong>. Bloklamadan keçmək üçün həkim hər müayinənin olmamasının səbəbini <strong>göstərməlidir</strong>." },
+        soft: { icon: "&#9888;&#65039;", title: "YUMŞAQ XƏBƏRDARLIQ — Saxlama zamanı xəbərdarlıq", desc: "Sistem həkimi bu diaqnoz üçün müayinələrin tövsiyə olunduğu barədə <strong>xəbərdar edəcək</strong>. Həkim səbəb göstərərək davam edə bilər, lakin bu fakt tibbi kartda <strong>qeyd ediləcək</strong>." },
+        info: { icon: "&#8505;&#65039;", title: "MƏLUMAT — Həkim üçün göstəriş", desc: "Sistem tövsiyə olunan müayinələrlə <strong>göstəriş göstərəcək</strong>. Həkim tövsiyələri görür, lakin onları yerinə yetirmək <strong>məcbur deyil</strong>. Saxlama sərbəstdir." }
+    };
+
+    const ac = alertConfig[d.alertLevel];
+
+    let html = `
+        <button class="back-btn" onclick="mobileBack()">&#8592; Siyahıya qayıt</button>
+        <div class="detail-header">
+            <h2>${d.name} <span class="alert-badge ${d.alertLevel}" style="font-size:14px">${d.alertLevel === 'hard' ? 'SƏRT BLOK' : d.alertLevel === 'soft' ? 'YUMŞAQ XƏBƏRDARLIQ' : 'MƏLUMAT'}</span></h2>
+            <div class="detail-meta">
+                <div class="meta-tag">${cat.name}</div>
+                <div class="meta-tag">&#128045; ${d.species}</div>
+                <div class="meta-tag">&#128200; ${d.count} bazada hal</div>
+            </div>
+        </div>
+
+        <div class="alert-banner ${d.alertLevel}">
+            <div class="alert-banner-icon">${ac.icon}</div>
+            <div class="alert-banner-content">
+                <h3>${ac.title}</h3>
+                <p>${ac.desc}</p>
+                <div class="alert-reason"><strong>Əsaslandırma:</strong> ${d.alertReason}</div>
+            </div>
+        </div>
+    `;
+
+    // Workflow
+    html += renderWorkflow(d);
+
+    // Interactive checklist
+    html += renderChecklist(d);
+
+    // Detailed sections
+    if (d.mandatory.length > 0) {
+        html += renderSection("mandatory", "&#9888;&#65039;", "MƏCBURİ MÜAYİNƏLƏR",
+            d.alertLevel === 'hard' ? 'Bu müayinələrsiz saxlama BLOKLANIB' :
+            d.alertLevel === 'soft' ? 'Yerinə yetirmək tövsiyə olunur — sistem ötürüldükdə xəbərdarlıq edəcək' :
+            'Diaqnostikanın tamlığı üçün tövsiyə olunur', d.mandatory);
+    }
+
+    if (d.recommended.length > 0) {
+        html += renderSection("recommended", "&#9889;", "TÖVSİYƏ OLUNAN MÜAYİNƏLƏR",
+            "Diaqnostikanin tamligi ucun ciddi sekilde tovsiye olunur", d.recommended);
+    }
+
+    if (d.additional.length > 0) {
+        html += renderSection("additional", "&#128300;", "ƏLAVƏ MÜAYİNƏLƏR",
+            "Gosterislere gore — atipik gedisatda, residivlerde", d.additional);
+    }
+
+    if (d.differential.length > 0) {
+        html += `
+            <div class="section section-differential">
+                <div class="section-header">
+                    <div class="section-icon">&#128256;</div>
+                    <div>
+                        <div class="section-title">DİFFERENSİAL DİAQNOSTİKA</div>
+                        <div class="section-subtitle">Alternativ diaqnozlarin istisna edilmesi</div>
+                    </div>
+                </div>
+                <div class="diff-note">
+                    <h4>Differensial diaqnozlar ve esas testler:</h4>
+                    <ul class="diff-list">
+                        ${d.differential.map(dd => `<li>${dd}</li>`).join("")}
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    content.innerHTML = html;
+    content.scrollTop = 0;
+}
+
+function renderWorkflow(d) {
+    if (d.alertLevel === "hard") {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Saxlama zamanı sistemin alqoritmi</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Həkim diaqnoz seçir: "${d.name}"</div>
+                        <div class="wf-desc">Sistem məcburi müayinələrin mövcudluğunu yoxlayır</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node no">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Məcburi müayinələr əlavə OLUNMAYIB?</div>
+                        <div class="wf-desc">&#9940; BLOKLAMA — "Saxla" düyməsi aktiv deyil</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node warn">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Həkim hər müayinənin olmamasının səbəbini göstərir</div>
+                        <div class="wf-desc">Siyahidan secim: "Sahib imtina etdi" / "Xarici laboratoriyaya göndərildi" / "Ǝks göstərisdir" / "İmkan yoxdur" / "Təcili vəziyyət" / "Neticeler basqa klinikadan"</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">4</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Bütün səbəblər göstərilib → Saxlamaya icazə verildi</div>
+                        <div class="wf-desc">&#9989; Ötürmə faktı və səbəblər pasiyentin tibbi kartında qeyd edilir</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    } else if (d.alertLevel === "soft") {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Saxlama zamanı sistemin alqoritmi</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Həkim diaqnoz seçir: "${d.name}"</div>
+                        <div class="wf-desc">Sistem məcburi müayinələrin mövcudluğunu yoxlayır</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node warn">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Məcburi müayinələr əlavə OLUNMAYIB?</div>
+                        <div class="wf-desc">&#9888; XƏBƏRDARLIQ — çatışmayan müayinələrin təsviri ilə açılan pəncərə</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Həkim: müayinələri əlavə edə BİLƏR VƏ YA səbəb göstərib davam edə bilər</div>
+                        <div class="wf-desc">&#9989; Xəbərdarlıq faktı və həkimin qərarı tibbi kartda qeyd edilir</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    } else {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Saxlama zamanı sistemin alqoritmi</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Həkim diaqnoz seçir: "${d.name}"</div>
+                        <div class="wf-desc">Sistem məlumat göstərişi göstərir</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node info-node">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Göstəris: "Tövsiyə olunan müayinələr: ..."</div>
+                        <div class="wf-desc">&#8505; Məlumat göstərilir, amma əməliyyatları bloklamır</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Saxlama sərbəstdir</div>
+                        <div class="wf-desc">&#9989; Həkim müstəqil qərar verir</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
+function renderChecklist(d) {
+    const allTests = [
+        ...d.mandatory.map(t => ({ ...t, level: "req", levelLabel: "MƏCBURİ" })),
+        ...d.recommended.map(t => ({ ...t, level: "rec", levelLabel: "TÖVSİYƏ" })),
+        ...d.additional.map(t => ({ ...t, level: "opt", levelLabel: "ƏLAVƏ" }))
+    ];
+
+    let html = `
+    <div class="checklist-section">
+        <h3>&#9745; İnteraktiv müayinə çeklistesi — simulyasiya</h3>
+        <div id="checklistItems">
+    `;
+
+    allTests.forEach((t, i) => {
+        const key = d.id + "_" + i;
+        const checked = checkedTests[key] ? 'checked' : '';
+        html += `
+        <div class="checklist-item ${checked ? 'checked' : ''}" onclick="toggleTest('${key}', '${d.id}')">
+            <input type="checkbox" ${checked} tabindex="-1">
+            <span class="cl-name">${t.name}</span>
+            <span class="cl-level ${t.level}">${t.levelLabel}</span>
+        </div>`;
+    });
+
+    html += `</div>`;
+
+    // Save button
+    html += `
+    <div class="save-area">
+        <button class="save-btn" id="saveBtn" onclick="trySave('${d.id}')">
+            &#128190; Diaqnozu saxlamağa cəhd
+        </button>
+        <div class="save-status" id="saveStatus"></div>
+    </div>
+    </div>`;
+
+    return html;
+}
+
+function toggleTest(key, diagId) {
+    checkedTests[key] = !checkedTests[key];
+    renderDetail(diagId);
+}
+
+function trySave(diagId) {
+    const d = CDSS_DB.find(x => x.id === diagId);
+    if (!d) return;
+
+    // Check mandatory tests
+    const missingMandatory = [];
+    d.mandatory.forEach((t, i) => {
+        const key = diagId + "_" + i;
+        if (!checkedTests[key]) missingMandatory.push(t.name);
+    });
+
+    // Check recommended tests
+    const missingRecommended = [];
+    d.recommended.forEach((t, i) => {
+        const key = diagId + "_" + (d.mandatory.length + i);
+        if (!checkedTests[key]) missingRecommended.push(t.name);
+    });
+
+    if (missingMandatory.length === 0) {
+        showModal("success", d.name, missingMandatory, missingRecommended);
+    } else if (d.alertLevel === "hard") {
+        showModal("hard", d.name, missingMandatory, missingRecommended);
+    } else if (d.alertLevel === "soft") {
+        showModal("soft", d.name, missingMandatory, missingRecommended);
+    } else {
+        showModal("success", d.name, missingMandatory, missingRecommended);
+    }
+}
+
+function showModal(type, diagName, missingMandatory, missingRecommended) {
+    const overlay = document.getElementById("modalOverlay");
+    const box = document.getElementById("modalBox");
+    const icon = document.getElementById("modalIcon");
+    const title = document.getElementById("modalTitle");
+    const desc = document.getElementById("modalDesc");
+    const missing = document.getElementById("modalMissing");
+    const reasons = document.getElementById("modalReasons");
+    const btns = document.getElementById("modalBtns");
+
+    overlay.classList.add("visible");
+    box.className = "modal";
+    missing.style.display = "none";
+    reasons.style.display = "none";
+
+    if (type === "success") {
+        box.classList.add("success-modal");
+        icon.innerHTML = "&#9989;";
+        title.textContent = "Diaqnoz saxlanıldı";
+        desc.innerHTML = `<strong>${diagName}</strong> — bütün məcburi müayinələr əlavə edilib.${missingRecommended.length > 0 ? '<br><span style="color:var(--orange)">Tovsiye olunanlar elave edilmeyib: ' + missingRecommended.join(", ") + '</span>' : ''}`;
+        btns.innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
+    } else if (type === "hard") {
+        box.classList.add("hard-modal");
+        icon.innerHTML = "&#9940;";
+        title.textContent = "SAXLAMA BLOKLANDI";
+        desc.innerHTML = `Diaqnoz <strong>${diagName}</strong> əlavə olunmamış məcburi müayinələr tələb edir:`;
+        missing.style.display = "block";
+        missing.innerHTML = missingMandatory.map(m => `<li>${m}</li>`).join("");
+
+        reasons.style.display = "block";
+        reasons.innerHTML = `<p style="font-size:13px;color:var(--text2);margin-bottom:8px">Bloklamadan keçmək üçün səbəb göstərin:</p>` +
+            BYPASS_REASONS.map((r, i) => `
+                <label><input type="radio" name="bypass" value="${i}" onchange="document.getElementById('proceedBtn').classList.add('visible')"> ${r}</label>
+            `).join("");
+
+        btns.innerHTML = `
+            <button class="modal-btn cancel" onclick="closeModal()">Qayit ve elave et</button>
+            <button class="modal-btn proceed" id="proceedBtn" onclick="bypassSave()">Sebeble saxla</button>
+        `;
+    } else if (type === "soft") {
+        box.classList.add("soft-modal");
+        icon.innerHTML = "&#9888;&#65039;";
+        title.textContent = "XƏBƏRDARLIQ";
+        desc.innerHTML = `Diaqnoz <strong>${diagName}</strong> üçün əlavə olunmamış müayinələr tövsiyə olunur:`;
+        missing.style.display = "block";
+        missing.innerHTML = missingMandatory.map(m => `<li>${m}</li>`).join("");
+
+        reasons.style.display = "block";
+        reasons.innerHTML = `<p style="font-size:13px;color:var(--text2);margin-bottom:8px">Davam etmək üçün səbəb göstərin:</p>` +
+            BYPASS_REASONS.map((r, i) => `
+                <label><input type="radio" name="bypass" value="${i}" onchange="document.getElementById('proceedBtn').classList.add('visible')"> ${r}</label>
+            `).join("");
+
+        btns.innerHTML = `
+            <button class="modal-btn cancel" onclick="closeModal()">Qayit ve elave et</button>
+            <button class="modal-btn proceed" id="proceedBtn" onclick="bypassSave()">Muayinelesiz davam et</button>
+        `;
+    }
+}
+
+function bypassSave() {
+    const selected = document.querySelector('input[name="bypass"]:checked');
+    if (!selected) return;
+
+    const overlay = document.getElementById("modalOverlay");
+    const box = document.getElementById("modalBox");
+    const icon = document.getElementById("modalIcon");
+    const title = document.getElementById("modalTitle");
+    const desc = document.getElementById("modalDesc");
+    const missing = document.getElementById("modalMissing");
+    const reasons = document.getElementById("modalReasons");
+    const btns = document.getElementById("modalBtns");
+
+    box.className = "modal success-modal";
+    icon.innerHTML = "&#9989;";
+    title.textContent = "Diaqnoz qeydlə saxlanıldı";
+    desc.innerHTML = `Müayinələrin ötürülmə səbəbi: <strong>"${BYPASS_REASONS[selected.value]}"</strong><br><br><span style="color:var(--orange)">Fakt pasiyentin tibbi kartında qeyd edildi.</span>`;
+    missing.style.display = "none";
+    reasons.style.display = "none";
+    btns.innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
+}
+
+function closeModal() {
+    document.getElementById("modalOverlay").classList.remove("visible");
+}
+
+function renderSection(type, icon, title, subtitle, tests) {
+    return `
+        <div class="section section-${type}">
+            <div class="section-header">
+                <div class="section-icon">${icon}</div>
+                <div>
+                    <div class="section-title">${title}</div>
+                    <div class="section-subtitle">${subtitle}</div>
+                </div>
+            </div>
+            <div class="test-grid">
+                ${tests.map(t => `
+                    <div class="test-card">
+                        <div class="test-name">${t.name}</div>
+                        <div class="test-desc">${t.desc}</div>
+                        <div class="test-available ${t.available ? 'yes' : 'no'}">
+                            ${t.available ? '&#9989; Klinikada mövcuddur' : '&#10060; Xarici laboratoriya'}
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+    `;
+}
+
+// Close modal on overlay click
+document.getElementById("modalOverlay").addEventListener("click", function(e) {
+    if (e.target === this) closeModal();
+});
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

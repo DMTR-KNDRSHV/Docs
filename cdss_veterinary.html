@@ -1,0 +1,3162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDSS - Ветеринарная система поддержки клинических решений</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: #1a1d27;
+            --card2: #222535;
+            --border: #2d3148;
+            --text: #e4e6f0;
+            --text2: #9599b3;
+            --accent: #6c7bf7;
+            --accent2: #4e5bdb;
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.12);
+            --orange: #f59e0b;
+            --orange-bg: rgba(245,158,11,0.12);
+            --blue: #3b82f6;
+            --blue-bg: rgba(59,130,246,0.12);
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,0.12);
+            --purple: #a855f7;
+            --purple-bg: rgba(168,85,247,0.12);
+            --cyan: #06b6d4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e2235 0%, #161929 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 22px; font-weight: 700;
+            background: linear-gradient(135deg, #fff, #c4c8e8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            font-size: 13px; color: var(--text2); margin-top: 3px;
+        }
+
+        .header-stats {
+            margin-left: auto;
+            display: flex; gap: 24px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat .val {
+            font-size: 24px; font-weight: 700; color: var(--accent);
+        }
+
+        .header-stat .lbl {
+            font-size: 11px; color: var(--text2); text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main {
+            display: flex;
+            height: calc(100vh - 100px);
+        }
+
+        .sidebar {
+            width: 420px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-wrap {
+            position: relative;
+        }
+
+        .search-wrap::before {
+            content: "\1F50D";
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .filter-row {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .cat-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .alert-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .alert-btn:hover, .alert-btn.active-hard {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+
+        .alert-btn.active-soft {
+            background: var(--orange);
+            color: #fff;
+            border-color: var(--orange);
+        }
+
+        .alert-btn.active-info {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+        }
+
+        .diag-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .diag-list::-webkit-scrollbar { width: 6px; }
+        .diag-list::-webkit-scrollbar-track { background: transparent; }
+        .diag-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .diag-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2px;
+        }
+
+        .diag-item:hover {
+            background: var(--card2);
+        }
+
+        .diag-item.selected {
+            background: rgba(108,123,247,0.15);
+            border-left: 3px solid var(--accent);
+        }
+
+        .diag-item .cat-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .diag-item .diag-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .diag-item .diag-count {
+            font-size: 11px;
+            color: var(--text2);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .alert-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .alert-badge.hard {
+            background: var(--red-bg);
+            color: var(--red);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .alert-badge.soft {
+            background: var(--orange-bg);
+            color: var(--orange);
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+
+        .alert-badge.info {
+            background: var(--blue-bg);
+            color: var(--blue);
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px;
+        }
+
+        .content::-webkit-scrollbar { width: 6px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text2);
+            gap: 12px;
+        }
+
+        .empty-state .icon { font-size: 48px; opacity: 0.3; }
+        .empty-state p { font-size: 15px; }
+
+        .detail-header {
+            margin-bottom: 24px;
+        }
+
+        .detail-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text2);
+            background: var(--card);
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+
+        /* ===== ALERT LEVEL BANNER ===== */
+        .alert-banner {
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .alert-banner.hard {
+            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05));
+            border: 1px solid rgba(239,68,68,0.4);
+        }
+
+        .alert-banner.soft {
+            background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05));
+            border: 1px solid rgba(245,158,11,0.4);
+        }
+
+        .alert-banner.info {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+            border: 1px solid rgba(59,130,246,0.4);
+        }
+
+        .alert-banner-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .alert-banner-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .alert-banner.hard h3 { color: var(--red); }
+        .alert-banner.soft h3 { color: var(--orange); }
+        .alert-banner.info h3 { color: var(--blue); }
+
+        .alert-banner-content p {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .alert-banner-content .alert-reason {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        /* ===== WORKFLOW DEMO ===== */
+        .workflow-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .workflow-box h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .wf-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .wf-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 36px;
+            bottom: -6px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .wf-node {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .wf-node.check { background: var(--accent); color: #fff; }
+        .wf-node.yes { background: var(--green); color: #fff; }
+        .wf-node.no { background: var(--red); color: #fff; }
+        .wf-node.warn { background: var(--orange); color: #fff; }
+        .wf-node.info-node { background: var(--blue); color: #fff; }
+
+        .wf-content {
+            flex: 1;
+        }
+
+        .wf-content .wf-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .wf-content .wf-desc {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        /* ===== CHECKLIST ===== */
+        .checklist-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .checklist-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: var(--card2);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        .checklist-item .cl-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .checklist-item .cl-level {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .cl-level.req { background: var(--red-bg); color: var(--red); }
+        .cl-level.rec { background: var(--orange-bg); color: var(--orange); }
+        .cl-level.opt { background: var(--blue-bg); color: var(--blue); }
+
+        .checklist-item.checked .cl-name {
+            text-decoration: line-through;
+            color: var(--text2);
+        }
+
+        /* ===== SAVE BUTTON AREA ===== */
+        .save-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .save-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .save-btn.allowed {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .save-btn.allowed:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+        }
+
+        .save-btn.blocked {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .save-btn.warning-btn {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .save-status {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .bypass-area {
+            margin-top: 14px;
+            padding: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .bypass-area.visible {
+            display: block;
+        }
+
+        .bypass-area h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--orange);
+        }
+
+        .bypass-reason {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .bypass-reason:hover {
+            color: var(--text);
+        }
+
+        .bypass-reason input[type="radio"] {
+            accent-color: var(--orange);
+        }
+
+        .bypass-confirm {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .bypass-confirm.visible {
+            display: inline-block;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .section-mandatory .section-icon { background: var(--red-bg); }
+        .section-mandatory .section-title { color: var(--red); }
+
+        .section-recommended .section-icon { background: var(--orange-bg); }
+        .section-recommended .section-title { color: var(--orange); }
+
+        .section-additional .section-icon { background: var(--blue-bg); }
+        .section-additional .section-title { color: var(--blue); }
+
+        .section-differential .section-icon { background: var(--purple-bg); }
+        .section-differential .section-title { color: var(--purple); }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .test-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.2s;
+        }
+
+        .test-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .test-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .test-desc {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .test-available {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            margin-top: 6px;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .test-available.yes {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .test-available.no {
+            background: rgba(255,255,255,0.05);
+            color: var(--text2);
+        }
+
+        .section-mandatory .test-card { border-left: 3px solid var(--red); }
+        .section-recommended .test-card { border-left: 3px solid var(--orange); }
+        .section-additional .test-card { border-left: 3px solid var(--blue); }
+        .section-differential .test-card { border-left: 3px solid var(--purple); }
+
+        .diff-note {
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .diff-note h4 {
+            font-size: 13px;
+            color: var(--cyan);
+            margin-bottom: 8px;
+        }
+
+        .diff-list {
+            list-style: none;
+        }
+
+        .diff-list li {
+            font-size: 13px;
+            color: var(--text2);
+            padding: 3px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .diff-list li::before {
+            content: "\2192";
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 12px 16px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text2);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 3px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(108,123,247,0.3);
+            transition: all 0.2s;
+        }
+
+        .print-btn:hover {
+            background: var(--accent2);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 520px;
+            width: 90%;
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal.hard-modal {
+            border-color: var(--red);
+            box-shadow: 0 0 40px rgba(239,68,68,0.2);
+        }
+
+        .modal.soft-modal {
+            border-color: var(--orange);
+            box-shadow: 0 0 40px rgba(245,158,11,0.2);
+        }
+
+        .modal.success-modal {
+            border-color: var(--green);
+            box-shadow: 0 0 40px rgba(34,197,94,0.2);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .modal h3 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .modal.hard-modal h3 { color: var(--red); }
+        .modal.soft-modal h3 { color: var(--orange); }
+        .modal.success-modal h3 { color: var(--green); }
+
+        .modal p {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .modal .missing-tests {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .modal .missing-tests li {
+            font-size: 13px;
+            color: var(--text);
+            padding: 4px 0;
+            list-style: none;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .modal .missing-tests li::before {
+            content: "\2716";
+            position: absolute;
+            left: 0;
+            color: var(--red);
+            font-size: 12px;
+        }
+
+        .modal-reasons {
+            margin-bottom: 16px;
+        }
+
+        .modal-reasons label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text2);
+            transition: background 0.15s;
+        }
+
+        .modal-reasons label:hover {
+            background: var(--card2);
+            color: var(--text);
+        }
+
+        .modal-reasons input[type="radio"] {
+            accent-color: var(--orange);
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-btn.cancel {
+            background: var(--card2);
+            color: var(--text2);
+        }
+
+        .modal-btn.cancel:hover { background: var(--border); }
+
+        .modal-btn.proceed {
+            background: var(--orange);
+            color: #fff;
+            display: none;
+        }
+
+        .modal-btn.proceed.visible { display: block; }
+        .modal-btn.proceed:hover { filter: brightness(1.1); }
+
+        .modal-btn.ok {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .modal-btn.ok:hover { filter: brightness(1.1); }
+
+        .modal-btn.hard-ok {
+            background: var(--red);
+            color: #fff;
+        }
+
+        @media print {
+            .sidebar { display: none; }
+            .print-btn { display: none; }
+            .content { padding: 20px; }
+            body { background: #fff; color: #000; }
+            .test-card { border: 1px solid #ccc; background: #f9f9f9; }
+            .section-title { color: #333 !important; }
+        }
+
+        /* ===== MOBILE BACK BUTTON ===== */
+        .back-btn {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            width: fit-content;
+        }
+
+        .back-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header {
+                padding: 14px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header-icon {
+                width: 40px; height: 40px;
+                border-radius: 10px;
+                font-size: 20px;
+            }
+
+            .header-text h1 {
+                font-size: 15px;
+            }
+
+            .header-text p {
+                font-size: 11px;
+            }
+
+            .header-stats {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .header-stat .val {
+                font-size: 18px;
+            }
+
+            .header-stat .lbl {
+                font-size: 9px;
+            }
+
+            .main {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 140px);
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: none;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 16px;
+                display: none;
+            }
+
+            .content.mobile-visible {
+                display: block;
+            }
+
+            .back-btn {
+                display: flex;
+            }
+
+            .filter-row {
+                padding: 8px 12px;
+                gap: 4px;
+            }
+
+            .cat-btn, .alert-btn {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            .search-box {
+                padding: 12px;
+            }
+
+            .diag-list {
+                max-height: none;
+                overflow-y: visible;
+            }
+
+            .diag-item {
+                padding: 10px 12px;
+            }
+
+            .diag-item .diag-name {
+                font-size: 13px;
+            }
+
+            .detail-header h2 {
+                font-size: 18px;
+                flex-wrap: wrap;
+            }
+
+            .detail-meta {
+                gap: 8px;
+            }
+
+            .meta-tag {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+
+            .alert-banner {
+                padding: 14px 16px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .alert-banner-icon {
+                font-size: 24px;
+            }
+
+            .workflow-box {
+                padding: 14px;
+            }
+
+            .wf-step {
+                gap: 10px;
+            }
+
+            .wf-content .wf-title {
+                font-size: 12px;
+            }
+
+            .wf-content .wf-desc {
+                font-size: 11px;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .test-card {
+                padding: 10px 14px;
+            }
+
+            .checklist-section {
+                padding: 14px;
+            }
+
+            .save-area {
+                padding: 14px;
+            }
+
+            .legend {
+                flex-direction: column;
+                gap: 8px;
+                padding: 10px 14px;
+                font-size: 11px;
+            }
+
+            .print-btn {
+                bottom: 16px;
+                right: 16px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .modal {
+                padding: 20px;
+                max-width: 95%;
+                border-radius: 12px;
+            }
+
+            .modal-icon {
+                font-size: 36px;
+            }
+
+            .modal h3 {
+                font-size: 16px;
+            }
+
+            .modal p {
+                font-size: 13px;
+            }
+
+            .modal-btns {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .section-header {
+                gap: 8px;
+            }
+
+            .diff-note {
+                padding: 12px 14px;
+            }
+
+            .diff-list li {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header-text h1 {
+                font-size: 13px;
+            }
+
+            .header-stats {
+                gap: 4px;
+            }
+
+            .header-stat .val {
+                font-size: 16px;
+            }
+
+            .alert-badge {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+
+            .diag-item .diag-count {
+                display: none;
+            }
+        }
+
+        .cat-infect { background: #ef4444; }
+        .cat-derm { background: #f59e0b; }
+        .cat-gastro { background: #22c55e; }
+        .cat-cardio { background: #3b82f6; }
+        .cat-uro { background: #a855f7; }
+        .cat-onco { background: #ec4899; }
+        .cat-ophth { background: #06b6d4; }
+        .cat-ortho { background: #f97316; }
+        .cat-resp { background: #14b8a6; }
+        .cat-endo { background: #8b5cf6; }
+        .cat-neuro { background: #6366f1; }
+        .cat-repro { background: #e879f9; }
+        .cat-other { background: #64748b; }
+        .cat-dental { background: #fbbf24; }
+        .cat-hema { background: #f43f5e; }
+        .cat-hepato { background: #84cc16; }
+        .cat-immuno { background: #fb923c; }
+
+        /* Summary table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .summary-table th {
+            text-align: left;
+            padding: 8px 12px;
+            background: var(--bg);
+            color: var(--text2);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .summary-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-table tr:hover td {
+            background: var(--card2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-icon">&#9879;</div>
+    <div class="header-text">
+        <h1>CDSS - Ветеринарная система поддержки клинических решений</h1>
+        <p>Clinical Decision Support System | Уровни алертов</p>
+    </div>
+    <div class="header-stats">
+        <div class="header-stat">
+            <div class="val" id="statHard">0</div>
+            <div class="lbl" style="color:var(--red)">&#9940; Жёсткий блок</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statSoft">0</div>
+            <div class="lbl" style="color:var(--orange)">&#9888; Мягкий алерт</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statInfo">0</div>
+            <div class="lbl" style="color:var(--blue)">&#8505; Информационный</div>
+        </div>
+        <div class="header-stat">
+            <div class="val" id="statTotal">0</div>
+            <div class="lbl">Всего протоколов</div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <div class="search-box">
+            <div class="search-wrap">
+                <input type="text" class="search-input" id="searchInput" placeholder="Поиск диагноза...">
+            </div>
+        </div>
+        <div class="filter-row" id="alertFilters">
+            <button class="alert-btn active-hard" data-alert="all" onclick="filterAlert('all',this)">Все</button>
+            <button class="alert-btn" data-alert="hard" onclick="filterAlert('hard',this)">&#9940; Жёсткий</button>
+            <button class="alert-btn" data-alert="soft" onclick="filterAlert('soft',this)">&#9888; Мягкий</button>
+            <button class="alert-btn" data-alert="info" onclick="filterAlert('info',this)">&#8505; Инфо</button>
+        </div>
+        <div class="filter-row" id="catFilters">
+            <button class="cat-btn active" data-cat="all">Все</button>
+        </div>
+        <div class="diag-list" id="diagList"></div>
+    </div>
+
+    <div class="content" id="detailContent">
+        <div class="empty-state">
+            <div class="icon">&#9879;</div>
+            <p>Выберите диагноз для просмотра протокола исследований</p>
+            <p style="font-size:12px">Каждый диагноз имеет уровень алерта: Жёсткий / Мягкий / Информационный</p>
+        </div>
+    </div>
+</div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Жёсткий блок — нельзя сохранить без исследований</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Мягкий алерт — предупреждение, можно обойти с причиной</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Информационный — подсказка для врача</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Доступно в клинике</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox">
+        <div class="modal-icon" id="modalIcon"></div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+        <ul class="missing-tests" id="modalMissing" style="display:none"></ul>
+        <div class="modal-reasons" id="modalReasons" style="display:none"></div>
+        <div class="modal-btns" id="modalBtns"></div>
+    </div>
+</div>
+
+<button class="print-btn" onclick="window.print()">&#128424; Печать протокола</button>
+
+<script>
+// ===== CATEGORIES =====
+const CATEGORIES = {
+    "infect": { name: "Инфекционные", color: "cat-infect" },
+    "derm": { name: "Дерматология", color: "cat-derm" },
+    "gastro": { name: "Гастроэнтерология", color: "cat-gastro" },
+    "cardio": { name: "Кардиология", color: "cat-cardio" },
+    "uro": { name: "Урология / Нефрология", color: "cat-uro" },
+    "onco": { name: "Онкология", color: "cat-onco" },
+    "ophth": { name: "Офтальмология", color: "cat-ophth" },
+    "ortho": { name: "Ортопедия / Травма", color: "cat-ortho" },
+    "resp": { name: "Респираторная", color: "cat-resp" },
+    "endo": { name: "Эндокринология", color: "cat-endo" },
+    "neuro": { name: "Неврология", color: "cat-neuro" },
+    "repro": { name: "Репродуктивная", color: "cat-repro" },
+    "dental": { name: "Стоматология", color: "cat-dental" },
+    "hema": { name: "Гематология", color: "cat-hema" },
+    "hepato": { name: "Гепатология", color: "cat-hepato" },
+    "immuno": { name: "Иммунология / Аллергология", color: "cat-immuno" },
+    "other": { name: "Прочие", color: "cat-other" }
+};
+
+const BYPASS_REASONS = [
+    "Владелец отказался от исследования",
+    "Направлен в стороннюю лабораторию",
+    "Противопоказано по состоянию пациента",
+    "Нет возможности в клинике (оборудование/реагенты)",
+    "Экстренная ситуация — исследование будет проведено позже",
+    "Результаты получены из другой клиники (устно/документ)"
+];
+
+// ===== ALERT LEVELS =====
+// "hard" — нельзя сохранить без обязательных исследований
+// "soft" — предупреждение, можно обойти с указанием причины
+// "info" — подсказка, свободное сохранение
+
+// ===== CDSS DATABASE =====
+const CDSS_DB = [
+    // ==================== HARD BLOCK — жизнеугрожающие / критические ====================
+    {
+        id: "parvovirus",
+        name: "Парвовирусный энтерит",
+        category: "infect",
+        count: 108,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Летальность до 90% без лечения. Необходимо экстренное подтверждение для выбора агрессивной терапии. Лейкопения определяет прогноз. Гипогликемия у щенков — жизнеугрожающее осложнение.",
+        mandatory: [
+            { name: "SNAP Parvo", desc: "Экспресс-тест на парвовирусный антиген. Чувствительность ~95%.", available: true },
+            { name: "ОАК", desc: "Лейкопения — ключевой прогностический маркер. Гематокрит для оценки дегидратации.", available: true },
+            { name: "Глюкоза крови", desc: "Гипогликемия у щенков — жизнеугрожающее осложнение. Требует немедленной коррекции.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Электролиты, альбумин, мочевина. Оценка степени обезвоживания.", available: true },
+            { name: "Рентген брюшной полости", desc: "Исключение инвагинации, инородного тела.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на CPV-2", desc: "Подтверждение и типирование вируса.", available: false },
+            { name: "Посев крови", desc: "При подозрении на сепсис.", available: false }
+        ],
+        differential: [
+            "Коронавирусный энтерит — SNAP CPV/CCV, обычно легче протекает",
+            "Инородное тело ЖКТ — рентген/УЗИ, отсутствие лейкопении",
+            "Геморрагический гастроэнтерит (HGE) — нет лейкопении, PCV>60%",
+            "Чума плотоядных — респираторные/неврологические симптомы"
+        ]
+    },
+    {
+        id: "panleukopenia",
+        name: "Панлейкопения",
+        category: "infect",
+        count: 76,
+        species: "Кошки",
+        alertLevel: "hard",
+        alertReason: "Летальность у котят до 90%. Лейкопения <2000/мкл — патогномоничный признак, определяющий прогноз и тактику. Гипогликемия у котят — жизнеугрожающа.",
+        mandatory: [
+            { name: "ОАК", desc: "Лейкопения (< 2000/мкл) — патогномоничный признак. Тромбоцитопения.", available: true },
+            { name: "Биохимия крови", desc: "Электролиты, белок, глюкоза (гипогликемия у котят).", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Parvo", desc: "Перекрёстная реакция с FPV. Экспресс-подтверждение.", available: true },
+            { name: "Рентген брюшной полости", desc: "Исключение инвагинации, обструкции.", available: true },
+            { name: "Глюкоза крови", desc: "Контроль гипогликемии, особенно у котят.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на FPV (кал)", desc: "Золотой стандарт подтверждения.", available: false }
+        ],
+        differential: [
+            "Сальмонеллёз — бакпосев кала",
+            "Вирусный перитонит (FIP) — тест Ривальта, соотн. А/Г",
+            "Отравление — анамнез, токсикологический анализ"
+        ]
+    },
+    {
+        id: "diabetes",
+        name: "Сахарный диабет",
+        category: "endo",
+        count: 50,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Диагноз без подтверждения глюкозой крови и ОАМ — грубая ошибка. Стрессовая гипергликемия у кошек имитирует диабет. Назначение инсулина без подтверждения может убить пациента.",
+        mandatory: [
+            { name: "Глюкоза крови", desc: "Гипергликемия >11 ммоль/л. ОБЯЗАТЕЛЬНО для подтверждения.", available: true },
+            { name: "ОАМ", desc: "Глюкозурия + кетонурия. Подтверждение персистирующей гипергликемии.", available: true },
+            { name: "Биохимия крови", desc: "Печёночные ферменты (повышены), холестерин, триглицериды.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Стрессовая лейкограмма, оценка инфекции.", available: true },
+            { name: "УЗИ брюшной полости", desc: "Поджелудочная, печень (гепатомегалия), надпочечники.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Панкреатит как причина/осложнение.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4 (кошки)", desc: "Гипертиреоз может усугублять диабет.", available: true },
+            { name: "SNAP Cortisol", desc: "Исключение гиперадренокортицизма (собаки).", available: true },
+            { name: "Бак. посев мочи", desc: "ИМП — частое осложнение.", available: true }
+        ],
+        differential: [
+            "Стрессовая гипергликемия (кошки) — однократное повышение, нет глюкозурии",
+            "Гиперадренокортицизм — SNAP Cortisol, полиурия/полидипсия",
+            "Гипертиреоз (кошки) — T4/FT4",
+            "Почечная глюкозурия — нормальная глюкоза крови"
+        ]
+    },
+    {
+        id: "acute_urinary_retention",
+        name: "Острая задержка мочи (ОЗМ)",
+        category: "uro",
+        count: 79,
+        species: "Коты (преимущественно)",
+        alertLevel: "hard",
+        alertReason: "Гиперкалиемия >7 ммоль/л — остановка сердца. Без биохимии невозможно оценить степень угрозы жизни. Пропуск калия = пропуск летального осложнения.",
+        mandatory: [
+            { name: "Биохимия крови (ЭКСТРЕННО)", desc: "Калий (!), мочевина, креатинин. Гиперкалиемия >7 — угроза жизни.", available: true },
+            { name: "ОАК", desc: "Оценка общего статуса.", available: true },
+            { name: "Глюкоза крови", desc: "Стрессовая гипергликемия у кошек.", available: true }
+        ],
+        recommended: [
+            { name: "ОАМ (после катетеризации)", desc: "Кристаллурия, бактериурия.", available: true },
+            { name: "Рентген", desc: "Конкременты в уретре/мочевом пузыре.", available: true },
+            { name: "УЗИ мочевого пузыря", desc: "Степень перерастяжения, конкременты.", available: true }
+        ],
+        additional: [
+            { name: "ЭКГ", desc: "Кардиотоксичность гиперкалиемии (пиковые Т, брадикардия).", available: false }
+        ],
+        differential: [
+            "Уретральная пробка — катетеризация решает диагностику",
+            "Уролит в уретре — рентген, пальпация",
+            "Стриктура уретры — анамнез (повторные катетеризации)",
+            "Нейрогенный мочевой пузырь — неврологический осмотр"
+        ]
+    },
+    {
+        id: "mammary_tumor",
+        name: "Опухоль молочной железы",
+        category: "onco",
+        count: 76,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "У кошек 85-90% ОМЖ злокачественные. Хирургия без стадирования (рентген лёгких) — грубая ошибка. Метастазы в лёгкие обнаруживаются у 50% пациентов и кардинально меняют тактику.",
+        mandatory: [
+            { name: "Рентген грудной клетки (3 проекции)", desc: "Стадирование. Метастазы в лёгкие (50% злокачественных ОМЖ).", available: true },
+            { name: "ОАК", desc: "Базовый предоперационный профиль.", available: true },
+            { name: "Биохимия крови", desc: "Предоперационная оценка, функция органов.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Метастазы в лимфоузлы, печень, селезёнку.", available: true },
+            { name: "Цитологическое исследование (ТАБ)", desc: "Предоперационная оценка типа опухоли.", available: true }
+        ],
+        additional: [
+            { name: "Гистология (после удаления)", desc: "Окончательный диагноз, тип, грейд, края резекции.", available: true }
+        ],
+        differential: [
+            "Мастит — воспалительные признаки, лактация",
+            "Мастопатия — диффузное увеличение, гормонозависимость",
+            "Липома — мягкая, подвижная, ТАБ"
+        ]
+    },
+    {
+        id: "pyometra",
+        name: "Пиометра",
+        category: "repro",
+        count: 95,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Сепсис, перитонит, ДВС — летальные осложнения. УЗИ подтверждает диагноз и необходимость экстренной хирургии. ОАК оценивает степень системного воспаления.",
+        mandatory: [
+            { name: "УЗИ брюшной полости", desc: "Увеличенная матка с содержимым. Золотой стандарт подтверждения.", available: true },
+            { name: "ОАК", desc: "Лейкоцитоз со сдвигом влево, нейтрофилия. Токсическая зернистость.", available: true },
+            { name: "Биохимия крови", desc: "Мочевина, креатинин (ОПН при сепсисе), белок.", available: true }
+        ],
+        recommended: [
+            { name: "Рентген брюшной полости", desc: "Увеличение матки, жидкость.", available: true },
+            { name: "Глюкоза крови", desc: "Гипогликемия при сепсисе.", available: true },
+            { name: "ОАМ", desc: "Оценка функции почек.", available: true }
+        ],
+        additional: [
+            { name: "Коагулограмма", desc: "ДВС при тяжёлом сепсисе.", available: false },
+            { name: "Бак. посев выделений", desc: "E. coli — наиболее частый возбудитель.", available: true }
+        ],
+        differential: [
+            "Мукометра — нет системных признаков",
+            "Беременность — УЗИ (плоды)",
+            "Новообразование матки — УЗИ, цитология"
+        ]
+    },
+    {
+        id: "heart_failure",
+        name: "Сердечная недостаточность",
+        category: "cardio",
+        count: 81,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Без рентгена и эхо невозможно отличить кардиогенный отёк от пневмонии. Назначение диуретиков при пневмонии или жидкости при отёке лёгких — летально. Причина СН определяет всю терапию.",
+        mandatory: [
+            { name: "Рентген грудной клетки (2 проекции)", desc: "Отёк лёгких, кардиомегалия, плевральный выпот.", available: true },
+            { name: "Эхокардиография", desc: "Определение причины СН, фракция выброса, тип.", available: true },
+            { name: "ОАК", desc: "Анемия может усугублять СН.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Функция почек (до и на фоне терапии), электролиты (К+).", available: true },
+            { name: "SNAP feline proBNP (кошки)", desc: "Быстрое подтверждение кардиальной этиологии одышки.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4", desc: "Исключение гипертиреоза у кошек.", available: true }
+        ],
+        differential: [
+            "Пневмония — ОАК (нейтрофилия), рентген (альвеолярный паттерн)",
+            "Плеврит — пункция, цитология выпота",
+            "Астма (кошки) — рентген (бронхиальный паттерн), эозинофилия",
+            "Тромбоэмболия — внезапное начало, боль в конечностях"
+        ]
+    },
+    {
+        id: "thromboembolism",
+        name: "Тромбоэмболия артериальная",
+        category: "cardio",
+        count: 14,
+        species: "Кошки (преимущественно)",
+        alertLevel: "hard",
+        alertReason: "Экстренное состояние. Калий из некротизированных мышц → гиперкалиемия → остановка сердца. Эхо выявляет тромб в ЛП и определяет прогноз (выживаемость 30-40%).",
+        mandatory: [
+            { name: "Эхокардиография", desc: "Оценка основного заболевания (ГКМП), тромб в ЛП.", available: true },
+            { name: "Биохимия крови", desc: "КФК (некроз мышц), калий (!), почечные маркеры.", available: true },
+            { name: "ОАК", desc: "Базовый профиль, стрессовая лейкограмма.", available: true }
+        ],
+        recommended: [
+            { name: "Рентген грудной клетки", desc: "Кардиомегалия, отёк лёгких.", available: true },
+            { name: "Глюкоза крови", desc: "Стрессовая гипергликемия.", available: true }
+        ],
+        additional: [
+            { name: "Коагулограмма", desc: "D-димеры, фибриноген.", available: false }
+        ],
+        differential: [
+            "Травма — анамнез, рентген",
+            "Дископатия — неврологический дефицит, но пульс сохранён"
+        ]
+    },
+    {
+        id: "epilepsy",
+        name: "Эпилепсия",
+        category: "neuro",
+        count: 26,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Судороги могут быть вызваны гипогликемией, гипокальциемией, печёночной энцефалопатией. Назначение антиконвульсантов без исключения метаболических причин — грубая ошибка, маскирующая излечимое заболевание.",
+        mandatory: [
+            { name: "Биохимия крови", desc: "Глюкоза (!), печень (ПЭ), почки, Са2+, электролиты. Исключение метаболических причин.", available: true },
+            { name: "ОАК", desc: "Исключение инфекционных/воспалительных причин.", available: true },
+            { name: "Глюкоза крови", desc: "Гипогликемия — частая причина судорог, особенно у щенков.", available: true }
+        ],
+        recommended: [
+            { name: "МРТ головного мозга", desc: "Исключение структурных причин (опухоль, гидроцефалия).", available: true },
+            { name: "T4/FT4", desc: "Гипотиреоз может вызывать судороги (собаки).", available: true }
+        ],
+        additional: [
+            { name: "Анализ ликвора", desc: "Менингоэнцефалит, инфекции ЦНС.", available: false },
+            { name: "SNAP 4Dx", desc: "Нейроэрлихиоз как причина судорог.", available: true }
+        ],
+        differential: [
+            "Метаболические судороги — биохимия (глюкоза, Са2+, NH3)",
+            "Интоксикация — анамнез, токсикологический анализ",
+            "Менингоэнцефалит — МРТ, анализ ликвора",
+            "Опухоль мозга — МРТ, возраст >5 лет"
+        ]
+    },
+    {
+        id: "fip",
+        name: "Вирусный перитонит кошек (FIP)",
+        category: "infect",
+        count: 34,
+        species: "Кошки",
+        alertLevel: "hard",
+        alertReason: "Без биохимии (A/G <0.8) и анализа выпота (тест Ривальта) невозможно отличить FIP от лимфомы, бактериального перитонита, СН. Неправильный диагноз = неправильное лечение = гибель.",
+        mandatory: [
+            { name: "Биохимия крови", desc: "Гиперглобулинемия, A/G <0.8, гипербилирубинемия.", available: true },
+            { name: "ОАК", desc: "Лимфопения, нерегенеративная анемия.", available: true },
+            { name: "Анализ выпота (если есть)", desc: "Тест Ривальта (+), цитология, белок >35г/л.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Коинфекции.", available: true },
+            { name: "УЗИ брюшной полости", desc: "Выпот, мезентериальные ЛУ, нефромегалия.", available: true },
+            { name: "Рентген грудной клетки", desc: "Плевральный выпот.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на FCoV (выпот/ткани)", desc: "Из выпота или биоптата.", available: false }
+        ],
+        differential: [
+            "Лимфома — цитология выпота, биопсия",
+            "Сердечная недостаточность — эхо, proBNP",
+            "Бактериальный перитонит — посев выпота"
+        ]
+    },
+    {
+        id: "jaundice",
+        name: "Желтуха / Гипербилирубинемия",
+        category: "hepato",
+        count: 25,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Три принципиально разных причины (гемолиз, гепатопатия, обструкция) — три разных лечения. Без ОАК+биохимии+мазка невозможно определить тип. Ошибка в типе = ошибка в лечении.",
+        mandatory: [
+            { name: "Биохимия крови (расширенная)", desc: "Билирубин (общий/прямой), ALT, AST, ЩФ, ГГТ, белок.", available: true },
+            { name: "ОАК", desc: "Анемия (гемолитическая желтуха), ретикулоциты.", available: true },
+            { name: "Мазок крови", desc: "Сфероциты (АИГА), гемопаразиты.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Печень, желчный пузырь, обструкция желчных путей.", available: true },
+            { name: "SNAP 4Dx (собаки)", desc: "Эрлихиоз, анаплазмоз как причина гемолиза.", available: true }
+        ],
+        additional: [
+            { name: "Цитология печени (ТАБ)", desc: "Дифференциация гепатопатий.", available: true },
+            { name: "SNAP Combo Plus (кошки)", desc: "FeLV-ассоциированная анемия.", available: true }
+        ],
+        differential: [
+            "Предпечёночная (гемолитическая) — анемия, ретикулоцитоз",
+            "Печёночная — повышение ALT, AST, биопсия",
+            "Постпечёночная (обструктивная) — расширение желчных протоков на УЗИ"
+        ]
+    },
+    {
+        id: "neoplasia_general",
+        name: "Новообразование (общее)",
+        category: "onco",
+        count: 41,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Хирургия/химиотерапия без цитологии и стадирования (рентген лёгких) — грубая ошибка. ТАБ определяет тип опухоли, рентген лёгких выявляет метастазы. Без этого невозможно определить план лечения.",
+        mandatory: [
+            { name: "Цитологическое исследование (ТАБ)", desc: "Первый шаг диагностики любого новообразования.", available: true },
+            { name: "Рентген грудной клетки (3 проекции)", desc: "Стадирование — лёгочные метастазы.", available: true },
+            { name: "ОАК + Биохимия крови", desc: "Базовый профиль, паранеопластические синдромы, гиперкальциемия.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Стадирование — метастазы в органах.", available: true }
+        ],
+        additional: [
+            { name: "Гистология (биопсия)", desc: "Окончательный диагноз и грейд.", available: true }
+        ],
+        differential: [
+            "Абсцесс/гранулёма — цитология",
+            "Гематома — анамнез, пункция",
+            "Грыжа — пальпация, УЗИ"
+        ]
+    },
+    {
+        id: "ascites",
+        name: "Асцит / Выпот в брюшную полость",
+        category: "other",
+        count: 24,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Выпот — симптом, а не диагноз. Причины: СН, неоплазия, FIP, перитонит, гипоальбуминемия. Без анализа выпота + биохимии невозможно установить этиологию. Слепое лечение опасно.",
+        mandatory: [
+            { name: "Пункция + цитология выпота", desc: "Транссудат vs мод. транссудат vs экссудат — определяет тактику.", available: true },
+            { name: "Биохимия крови", desc: "Альбумин, печёночные маркеры, белок.", available: true },
+            { name: "ОАК", desc: "Базовый профиль.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Источник выпота, новообразования.", available: true },
+            { name: "Эхокардиография", desc: "Правосторонняя СН как причина.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев выпота", desc: "При экссудате.", available: true }
+        ],
+        differential: [
+            "Сердечная недостаточность — эхо (правые отделы)",
+            "FIP (кошки) — тест Ривальта, соотн. А/Г",
+            "Перитонит — экссудат, нейтрофилия",
+            "Неоплазия — цитология выпота"
+        ]
+    },
+    {
+        id: "diaphragmatic_hernia",
+        name: "Диафрагмальная грыжа",
+        category: "ortho",
+        count: 18,
+        species: "Собаки / Кошки",
+        alertLevel: "hard",
+        alertReason: "Экстренное хирургическое состояние. Без рентгена невозможно подтвердить диагноз. Петли кишечника в грудной полости = компрессия лёгких, ишемия кишечника. ОАК/биохимия обязательны перед наркозом.",
+        mandatory: [
+            { name: "Рентген грудной клетки (2 проекции)", desc: "Петли кишечника в грудной полости. Потеря диафрагмальной тени.", available: true },
+            { name: "ОАК", desc: "Базовый профиль, оценка кровопотери.", available: true },
+            { name: "Биохимия крови", desc: "Предоперационная оценка.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ грудной/брюшной полости", desc: "Подтверждение, визуализация органов.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Плевральный выпот — пункция, цитология",
+            "Пневмоторакс — рентген"
+        ]
+    },
+
+    // ==================== SOFT WARNING — важные, но не экстренные ====================
+    {
+        id: "virus_cat",
+        name: "Вирусная инфекция кошек",
+        category: "infect",
+        count: 462,
+        species: "Кошки",
+        alertLevel: "soft",
+        alertReason: "Собирательный диагноз. Без ОАК и SNAP Combo невозможно определить конкретную инфекцию и выбрать терапию. FeLV/FIV кардинально меняют прогноз.",
+        mandatory: [
+            { name: "ОАК", desc: "Лейкопения/лейкоцитоз, анемия, тромбоцитопения.", available: true },
+            { name: "Биохимия крови", desc: "Печёночные, почечные маркеры, белок, альбумин.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Исключение лейкемии и иммунодефицита кошек.", available: true }
+        ],
+        recommended: [
+            { name: "Мазок крови", desc: "Оценка морфологии клеток, исключение гемопаразитов.", available: true },
+            { name: "Рентген грудной клетки", desc: "Исключение выпота, пневмонии.", available: true },
+            { name: "УЗИ брюшной полости", desc: "Оценка органов, выпота, лимфоузлов.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на панлейкопению/калицивирус/герпесвирус", desc: "Дифференциация возбудителя.", available: false }
+        ],
+        differential: [
+            "Панлейкопения (FPV) — ПЦР кала, лейкопения < 2000",
+            "Калицивирус (FCV) — язвы в ротовой полости",
+            "Ринотрахеит (FHV-1) — кератит, чихание",
+            "FIP — соотношение A/G, тест Ривальта",
+            "FIV/FeLV — SNAP Combo Plus"
+        ]
+    },
+    {
+        id: "ehrlichiosis",
+        name: "Эрлихиоз",
+        category: "infect",
+        count: 106,
+        species: "Собаки",
+        alertLevel: "soft",
+        alertReason: "Без SNAP 4Dx и ОАК (тромбоцитопения) невозможно подтвердить диагноз и оценить тяжесть. Мазок крови — для обнаружения морул.",
+        mandatory: [
+            { name: "SNAP 4Dx", desc: "Экспресс-тест на Ehrlichia + анаплазмоз, боррелиоз, дирофиляриоз.", available: true },
+            { name: "ОАК", desc: "Тромбоцитопения — ключевой маркер. Панцитопения в хронической фазе.", available: true },
+            { name: "Мазок крови", desc: "Поиск морул Ehrlichia в моноцитах.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Гиперглобулинемия, печёночные ферменты.", available: true },
+            { name: "ОАМ", desc: "Протеинурия при поражении почек.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на Ehrlichia canis", desc: "Подтверждение активной инфекции.", available: false },
+            { name: "УЗИ брюшной полости", desc: "Спленомегалия, гепатомегалия.", available: true }
+        ],
+        differential: [
+            "Анаплазмоз — включён в SNAP 4Dx",
+            "Лейшманиоз — тест на лейшманиоз",
+            "Бабезиоз — мазок крови, гемолитическая анемия",
+            "Иммуноопосредованная тромбоцитопения — тест Кумбса"
+        ]
+    },
+    {
+        id: "calicivirus",
+        name: "Калицивироз",
+        category: "infect",
+        count: 79,
+        species: "Кошки",
+        alertLevel: "soft",
+        alertReason: "ОАК оценивает тяжесть. SNAP Combo исключает иммуносупрессию (FeLV/FIV), которая определяет прогноз.",
+        mandatory: [
+            { name: "ОАК", desc: "Оценка лейкоцитарной формулы, анемии.", available: true },
+            { name: "Биохимия крови", desc: "Печёночные, почечные маркеры при системной форме.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Исключение иммуносупрессии.", available: true },
+            { name: "Рентген грудной клетки", desc: "При респираторных симптомах.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на FCV", desc: "Со слизистой ротовой полости.", available: false }
+        ],
+        differential: [
+            "Ринотрахеит (FHV-1) — кератит, дендритные язвы",
+            "Хламидиоз — преимущественно конъюнктивит",
+            "Лимфоплазмацитарный стоматит — хронический"
+        ]
+    },
+    {
+        id: "cardiomyopathy",
+        name: "Кардиомиопатия",
+        category: "cardio",
+        count: 82,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Эхо определяет тип (ДКМП/ГКМП/РКМП) и всю тактику терапии. Без эхо лечение «вслепую». Рентген оценивает декомпенсацию.",
+        mandatory: [
+            { name: "Эхокардиография (УЗИ сердца)", desc: "Золотой стандарт. Определение типа и функции.", available: true },
+            { name: "Рентген грудной клетки", desc: "Кардиомегалия, отёк лёгких, плевральный выпот.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Базовый профиль.", available: true },
+            { name: "Биохимия крови", desc: "Почки (кардиоренальный синдром), электролиты.", available: true },
+            { name: "SNAP feline proBNP (кошки)", desc: "Скрининг СН. Чувствительность >90%.", available: true },
+            { name: "T4/FT4 (кошки)", desc: "Исключение тиреотоксической кардиомиопатии.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "ДКМП (собаки) — систолическая дисфункция",
+            "ГКМП (кошки) — утолщение стенки ЛЖ >6мм",
+            "Клапанная болезнь — шум, МВДС",
+            "Тиреотоксикоз (кошки) — T4"
+        ]
+    },
+    {
+        id: "ckd",
+        name: "Хроническая болезнь почек (ХБП)",
+        category: "uro",
+        count: 117,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Стадирование по IRIS (креатинин + ОАМ) определяет терапию и прогноз. Без этого — невозможно правильно вести пациента.",
+        mandatory: [
+            { name: "Биохимия крови", desc: "Креатинин, мочевина, фосфор — стадирование по IRIS.", available: true },
+            { name: "ОАМ (с удельным весом)", desc: "Изостенурия — ранний маркер.", available: true },
+            { name: "ОАК", desc: "Нерегенеративная анемия при прогрессировании.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ почек", desc: "Размеры, эхогенность, структура.", available: true },
+            { name: "T4/FT4 (кошки)", desc: "Гипертиреоз может маскировать ХБП.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев мочи", desc: "ИМП — частое осложнение.", available: true }
+        ],
+        differential: [
+            "ОПН — острое начало, олигурия",
+            "Гипертиреоз (кошки) — маскирует повышение креатинина",
+            "Пиелонефрит — лихорадка, бакпосев мочи"
+        ]
+    },
+    {
+        id: "urolithiasis",
+        name: "МКБ / Уролитиаз",
+        category: "uro",
+        count: 37,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Тип камней определяет лечение (растворение vs хирургия). Без ОАМ и визуализации невозможно определить тактику.",
+        mandatory: [
+            { name: "ОАМ", desc: "pH, кристаллурия (тип), удельный вес, гематурия.", available: true },
+            { name: "Рентген брюшной полости", desc: "Рентгеноконтрастные конкременты.", available: true },
+            { name: "Биохимия крови", desc: "Мочевина, креатинин, калий.", available: true },
+            { name: "ОАК", desc: "Воспалительные маркеры.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ мочевого пузыря и почек", desc: "Нерентгеноконтрастные камни, гидронефроз.", available: true },
+            { name: "Бак. посев мочи", desc: "Струвиты у собак часто инфекционной природы.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "ИЦК — нет конкрементов на рентгене/УЗИ",
+            "ИМП — бакпосев мочи",
+            "Новообразование мочевого пузыря — УЗИ"
+        ]
+    },
+    {
+        id: "foreign_body",
+        name: "Инородное тело ЖКТ",
+        category: "gastro",
+        count: 143,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Без рентгена/УЗИ невозможно подтвердить диагноз. ОАК выявляет перфорацию/перитонит. Биохимия оценивает обезвоживание.",
+        mandatory: [
+            { name: "Рентген брюшной полости (2 проекции)", desc: "Рентгеноконтрастные тела, расширение петель.", available: true },
+            { name: "ОАК", desc: "Лейкоцитоз при перфорации/перитоните.", available: true },
+            { name: "Биохимия крови", desc: "Электролиты, кислотно-щелочной баланс.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Нерентгеноконтрастные тела. Перистальтика.", available: true }
+        ],
+        additional: [
+            { name: "Глюкоза крови", desc: "У щенков/котят.", available: true }
+        ],
+        differential: [
+            "Инвагинация — УЗИ (симптом «мишени»)",
+            "Панкреатит — SNAP cPL/fPL",
+            "Перитонит — лейкоцитоз, свободная жидкость"
+        ]
+    },
+    {
+        id: "cholangiohepatitis",
+        name: "Холангиогепатит / Холангит",
+        category: "hepato",
+        count: 80,
+        species: "Кошки (преимущественно)",
+        alertLevel: "soft",
+        alertReason: "Тип (гнойный vs лимфоцитарный) определяет терапию: антибиотики vs иммуносупрессия. Без биохимии, ОАК и УЗИ — невозможно дифференцировать.",
+        mandatory: [
+            { name: "Биохимия крови", desc: "Билирубин (!), ALT, AST, ЩФ, ГГТ, альбумин.", available: true },
+            { name: "ОАК", desc: "Нейтрофилия (гнойная) vs лимфоцитоз (лимфоцитарная).", available: true },
+            { name: "УЗИ брюшной полости", desc: "Желчный пузырь, печень, ПЖ.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP fPL", desc: "Панкреатит как часть триадита.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Иммуносупрессия.", available: true }
+        ],
+        additional: [
+            { name: "Цитология/биопсия печени (ТАБ)", desc: "Дифференциация типа.", available: true }
+        ],
+        differential: [
+            "Липидоз печени (кошки) — анорексия, ожирение, цитология",
+            "Триадит — холангит + панкреатит + IBD",
+            "FIP — выпот, A/G, тест Ривальта"
+        ]
+    },
+    {
+        id: "anemia",
+        name: "Анемия",
+        category: "hema",
+        count: 49,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Анемия — синдром, а не диагноз. Без ОАК (регенеративная vs нерегенеративная) и мазка крови невозможно определить причину.",
+        mandatory: [
+            { name: "ОАК (с ретикулоцитами)", desc: "Степень анемии, регенеративная vs нерегенеративная.", available: true },
+            { name: "Мазок крови", desc: "Морфология (сфероциты, гемопаразиты, шистоциты).", available: true },
+            { name: "Биохимия крови", desc: "Почки (ХБП-анемия), печень, билирубин.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP 4Dx (собаки)", desc: "Эрлихиоз, анаплазмоз.", available: true },
+            { name: "SNAP Combo Plus (кошки)", desc: "FeLV — причина нерегенеративной анемии.", available: true }
+        ],
+        additional: [
+            { name: "УЗИ брюшной полости", desc: "Спленомегалия, новообразования.", available: true }
+        ],
+        differential: [
+            "Кровопотеря — анамнез, регенеративная",
+            "Гемолиз (АИГА) — сфероциты, Кумбс+",
+            "Гемопаразиты — мазок крови, SNAP 4Dx",
+            "ХБП — нерегенеративная, ↑ креатинин",
+            "FeLV (кошки) — нерегенеративная, SNAP Combo+"
+        ]
+    },
+    {
+        id: "hemobartonellosis",
+        name: "Гемобартонеллёз / Микоплазмоз",
+        category: "hema",
+        count: 93,
+        species: "Кошки (преимущественно)",
+        alertLevel: "soft",
+        alertReason: "ОАК и мазок крови — основа диагностики (паразиты на эритроцитах). SNAP Combo обязателен — FeLV ухудшает прогноз.",
+        mandatory: [
+            { name: "ОАК", desc: "Анемия (часто тяжёлая), ретикулоцитоз.", available: true },
+            { name: "Мазок крови", desc: "Mycoplasma haemofelis на эритроцитах.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Коинфекция — FeLV ухудшает прогноз.", available: true },
+            { name: "Биохимия крови", desc: "Билирубин (гемолиз), функция органов.", available: true }
+        ],
+        additional: [
+            { name: "ПЦР на M. haemofelis", desc: "Золотой стандарт подтверждения.", available: false }
+        ],
+        differential: [
+            "АИГА — Кумбс+, нет паразитов",
+            "FeLV-ассоциированная анемия — SNAP Combo+",
+            "Бабезиоз — мазок крови, другие паразиты"
+        ]
+    },
+    {
+        id: "pancreatitis",
+        name: "Панкреатит",
+        category: "gastro",
+        count: 22,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "SNAP cPL/fPL — ключевой тест для подтверждения. Без биохимии невозможно оценить осложнения (ОПН, ДВС).",
+        mandatory: [
+            { name: "SNAP cPL (собаки) / SNAP fPL (кошки)", desc: "Специфическая панкреатическая липаза.", available: true },
+            { name: "Биохимия крови", desc: "Печёночные ферменты, глюкоза.", available: true },
+            { name: "ОАК", desc: "Лейкоцитоз, гемоконцентрация.", available: true }
+        ],
+        recommended: [
+            { name: "УЗИ брюшной полости", desc: "Отёк ПЖ, перипанкреатический выпот.", available: true },
+            { name: "Рентген брюшной полости", desc: "Снижение детализации.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Инородное тело ЖКТ — рентген/УЗИ",
+            "Триадит (кошки) — панкреатит + холангит + IBD",
+            "Острый живот (перитонит) — цитология выпота"
+        ]
+    },
+    {
+        id: "fracture",
+        name: "Перелом конечности / таза",
+        category: "ortho",
+        count: 109,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Рентген определяет тип перелома и план фиксации. При автотравме — рентген ГК и УЗИ БП исключают скрытые повреждения. ОАК/биохимия — предоперационный минимум.",
+        mandatory: [
+            { name: "Рентген (2 проекции)", desc: "Тип, локализация перелома. Планирование фиксации.", available: true },
+            { name: "ОАК", desc: "Предоперационный профиль, оценка кровопотери.", available: true },
+            { name: "Биохимия крови", desc: "Предоперационная оценка.", available: true }
+        ],
+        recommended: [
+            { name: "Рентген грудной клетки", desc: "Исключение пневмоторакса (автотравма).", available: true },
+            { name: "УЗИ брюшной полости", desc: "Исключение внутреннего кровотечения.", available: true }
+        ],
+        additional: [
+            { name: "ОАМ", desc: "Исключение разрыва мочевого пузыря (перелом таза).", available: true }
+        ],
+        differential: [
+            "Вывих — рентген",
+            "Патологический перелом — новообразование",
+            "Растяжение — нет линии перелома"
+        ]
+    },
+    {
+        id: "pneumonia",
+        name: "Бронхопневмония / Пневмония",
+        category: "resp",
+        count: 56,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Рентген подтверждает диагноз и локализацию. ОАК оценивает тяжесть инфекции. Без этого невозможно отличить от кардиогенного отёка.",
+        mandatory: [
+            { name: "Рентген грудной клетки (2 проекции)", desc: "Альвеолярный паттерн, локализация.", available: true },
+            { name: "ОАК", desc: "Нейтрофилия со сдвигом влево, лейкоцитоз.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Оценка общего статуса.", available: true },
+            { name: "Бак. посев (трахеальный лаваж)", desc: "Идентификация возбудителя.", available: true }
+        ],
+        additional: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "У кошек — иммуносупрессия.", available: true }
+        ],
+        differential: [
+            "Кардиогенный отёк — эхо сердца, proBNP",
+            "Аспирационная пневмония — анамнез",
+            "Лёгочный паразитоз — анализ кала"
+        ]
+    },
+    {
+        id: "demodicosis",
+        name: "Демодекоз",
+        category: "derm",
+        count: 51,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Глубокий соскоб — единственный способ подтвердить демодекоз. Без него невозможно отличить от бакпиодермы, дерматофитоза.",
+        mandatory: [
+            { name: "Глубокий соскоб кожи", desc: "Золотой стандарт. Обнаружение Demodex на всех стадиях.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Исключение системного заболевания.", available: true },
+            { name: "Биохимия крови", desc: "Базовый профиль перед лечением.", available: true },
+            { name: "Цитологическое исследование", desc: "Оценка вторичной пиодермы.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4", desc: "Исключение гипотиреоза (собаки).", available: true },
+            { name: "Бак. посев", desc: "При глубокой пиодерме.", available: true }
+        ],
+        differential: [
+            "Саркоптоз — поверхностный соскоб, выраженный зуд",
+            "Дерматофитоз — лампа Вуда, посев",
+            "Бактериальная пиодерма — цитология"
+        ]
+    },
+    {
+        id: "dermatophytosis",
+        name: "Микроспория / Дерматофитоз (Лишай)",
+        category: "derm",
+        count: 103,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Зоонозное заболевание. Без лампы Вуда и соскоба невозможно подтвердить диагноз. Многие кожные болезни имитируют лишай.",
+        mandatory: [
+            { name: "Люминесцентная диагностика (лампа Вуда)", desc: "Флуоресценция M. canis (50-70% штаммов).", available: true },
+            { name: "Соскоб + микроскопия шерсти", desc: "Артроспоры на поражённых волосах.", available: true }
+        ],
+        recommended: [
+            { name: "Бак. посев на грибы", desc: "DTM. Золотой стандарт, 7-21 день.", available: true }
+        ],
+        additional: [
+            { name: "Биопсия + гистология", desc: "В сомнительных случаях.", available: true }
+        ],
+        differential: [
+            "Демодекоз — глубокий соскоб",
+            "Бактериальная пиодерма — цитология",
+            "Алопеция Х — биопсия"
+        ]
+    },
+    {
+        id: "gastroenteritis",
+        name: "Гастроэнтерит / Гастроэнтероколит",
+        category: "gastro",
+        count: 72,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "ОАК и биохимия оценивают обезвоживание и тяжесть. У непривитых SNAP Parvo исключает парвовирус. Без исследований — лечение вслепую.",
+        mandatory: [
+            { name: "ОАК", desc: "Лейкоцитарная формула, гематокрит.", available: true },
+            { name: "Биохимия крови", desc: "Электролиты, белок, почки/печень.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Parvo", desc: "Исключение парвовируса у непривитых.", available: true },
+            { name: "Анализ кала", desc: "Паразитологическое исследование.", available: true },
+            { name: "Рентген брюшной полости", desc: "Исключение обструкции.", available: true }
+        ],
+        additional: [
+            { name: "УЗИ брюшной полости", desc: "Утолщение стенки кишечника.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Исключение панкреатита.", available: true }
+        ],
+        differential: [
+            "Парвовирусный энтерит — SNAP Parvo, лейкопения",
+            "Панкреатит — SNAP cPL/fPL",
+            "Инородное тело — рентген/УЗИ"
+        ]
+    },
+    {
+        id: "sarcoma_sticker",
+        name: "Саркома Штиккера (ТВО)",
+        category: "onco",
+        count: 44,
+        species: "Собаки",
+        alertLevel: "soft",
+        alertReason: "Цитология подтверждает диагноз в >90% случаев. Без неё назначение винкристина неоправданно. Рентген ГК — стадирование.",
+        mandatory: [
+            { name: "Цитологическое исследование", desc: "Характерные круглые клетки. Диагноз в >90%.", available: true },
+            { name: "ОАК", desc: "Базовый профиль.", available: true }
+        ],
+        recommended: [
+            { name: "Рентген грудной клетки", desc: "Стадирование.", available: true },
+            { name: "Биохимия крови", desc: "Перед химиотерапией.", available: true }
+        ],
+        additional: [
+            { name: "Гистология", desc: "При нетипичной цитологии.", available: true }
+        ],
+        differential: [
+            "Другие круглоклеточные опухоли — гистология, ИГХ",
+            "Гранулёма — цитология, бакпосев"
+        ]
+    },
+    {
+        id: "discopathy",
+        name: "Дископатия / IVDD",
+        category: "neuro",
+        count: 12,
+        species: "Собаки (хондродистрофичные)",
+        alertLevel: "soft",
+        alertReason: "Рентген — минимальная визуализация. МРТ определяет показания к хирургии. Без неврологического осмотра невозможно определить степень (I-V).",
+        mandatory: [
+            { name: "Неврологический осмотр", desc: "Степень дефицита (I-V).", available: true },
+            { name: "Рентген позвоночника", desc: "Сужение диска, кальцификация.", available: true }
+        ],
+        recommended: [
+            { name: "МРТ", desc: "Золотой стандарт. Точная локализация.", available: true },
+            { name: "ОАК + Биохимия", desc: "Предоперационный профиль.", available: true }
+        ],
+        additional: [
+            { name: "ОАМ", desc: "Оценка функции мочевого пузыря.", available: true }
+        ],
+        differential: [
+            "Фиброзно-хрящевая эмболия — острое, непрогрессирующее",
+            "Дискоспондилит — боль, лихорадка",
+            "Новообразование спинного мозга — прогрессирование"
+        ]
+    },
+    {
+        id: "food_allergy",
+        name: "Пищевая аллергия / Непереносимость",
+        category: "immuno",
+        count: 220,
+        species: "Собаки / Кошки",
+        alertLevel: "soft",
+        alertReason: "Без соскоба кожи невозможно исключить паразитов. Элиминационная диета — единственный достоверный метод подтверждения пищевой аллергии.",
+        mandatory: [
+            { name: "Соскоб кожи", desc: "Исключение эктопаразитов.", available: true }
+        ],
+        recommended: [
+            { name: "Цитология кожи", desc: "Вторичные инфекции.", available: true },
+            { name: "ОАК", desc: "Эозинофилия.", available: true },
+            { name: "Люминесцентная диагностика", desc: "Исключение дерматофитоза.", available: true }
+        ],
+        additional: [
+            { name: "Анализ кала", desc: "Исключение паразитов ЖКТ.", available: true },
+            { name: "Биопсия кожи", desc: "При нетипичной картине.", available: true }
+        ],
+        differential: [
+            "Атопический дерматит — аллергопробы",
+            "Блошиный дерматит — обработка от блох",
+            "Контактный дерматит — анамнез"
+        ]
+    },
+    {
+        id: "rhinotracheitis",
+        name: "Ринотрахеит / FHV-1",
+        category: "infect",
+        count: 37,
+        species: "Кошки",
+        alertLevel: "soft",
+        alertReason: "Флуоресцеиновый тест обязателен при глазных симптомах — пропуск язвы роговицы = потеря глаза. ОАК оценивает тяжесть.",
+        mandatory: [
+            { name: "ОАК", desc: "Лейкоцитарная формула.", available: true },
+            { name: "Флуоресцеиновый тест", desc: "Обязателен при глазных симптомах — язвы роговицы.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Коинфекция.", available: true },
+            { name: "Тест Ширмера", desc: "Оценка слезопродукции.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев", desc: "Вторичная бактериальная флора.", available: true }
+        ],
+        differential: [
+            "Калицивирус — язвы в ротовой полости",
+            "Хламидиоз — преимущественно конъюнктивит",
+            "Микоплазмоз — ПЦР"
+        ]
+    },
+    {
+        id: "gingivostomatitis",
+        name: "Гингивостоматит / ЛПГС",
+        category: "dental",
+        count: 89,
+        species: "Кошки (преимущественно)",
+        alertLevel: "soft",
+        alertReason: "SNAP Combo (FeLV/FIV) обязателен — ассоциация с вирусами определяет прогноз и тактику. ОАК оценивает хроническое воспаление.",
+        mandatory: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Ассоциация с FIV, FeLV. Определяет прогноз.", available: true },
+            { name: "ОАК", desc: "Хроническое воспаление, гиперглобулинемия.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Общий белок, глобулины.", available: true },
+            { name: "Рентген зубов", desc: "Резорбтивные поражения.", available: true }
+        ],
+        additional: [
+            { name: "Биопсия + гистология", desc: "Подтверждение типа, исключение неоплазии.", available: true }
+        ],
+        differential: [
+            "Калицивироз — острое, системные признаки",
+            "Карцинома ротовой полости — биопсия",
+            "Эозинофильная гранулёма — цитология"
+        ]
+    },
+
+    // ==================== INFORMATIONAL — подсказки ====================
+    {
+        id: "flea_allergy",
+        name: "Блошиный аллергический дерматит",
+        category: "derm",
+        count: 250,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Диагноз часто клинический. Соскоб и цитология дополняют, но не блокируют лечение (обработка от блох — основная терапия).",
+        mandatory: [
+            { name: "Клинический осмотр", desc: "Визуализация блох/фекалий. Характерная локализация.", available: true },
+            { name: "Соскоб кожи", desc: "Исключение других эктопаразитов.", available: true }
+        ],
+        recommended: [
+            { name: "Цитологическое исследование", desc: "Вторичная инфекция.", available: true },
+            { name: "ОАК", desc: "Эозинофилия.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев", desc: "При вторичной пиодерме.", available: true }
+        ],
+        differential: [
+            "Атопический дерматит — элиминация блох + сохранение симптомов",
+            "Пищевая аллергия — элиминационная диета",
+            "Саркоптоз — соскоб, другое распределение"
+        ]
+    },
+    {
+        id: "otitis",
+        name: "Отит (наружный / средний)",
+        category: "derm",
+        count: 175,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Отоскопия и цитология — базовые, но лечение можно начинать эмпирически. Бакпосев — при рецидивах.",
+        mandatory: [
+            { name: "Отоскопия", desc: "Оценка слухового прохода, барабанной перепонки.", available: true },
+            { name: "Цитология ушного содержимого", desc: "Тип инфекции (кокки, палочки, Malassezia, клещи).", available: true }
+        ],
+        recommended: [
+            { name: "Соскоб (исследование на отодектоз)", desc: "Клещи Otodectes.", available: true },
+            { name: "Бак. посев + антибиотикограмма", desc: "При рецидивах, палочковой флоре.", available: true }
+        ],
+        additional: [
+            { name: "Рентген буллы", desc: "Отит среднего уха.", available: true },
+            { name: "T4/FT4 (собаки)", desc: "Гипотиреоз — предрасполагающий фактор.", available: true }
+        ],
+        differential: [
+            "Отодектоз — клещи на цитологии",
+            "Аллергический отит — рецидивы, атопия",
+            "Новообразование — биопсия",
+            "Инородное тело — отоскопия"
+        ]
+    },
+    {
+        id: "otodectosis",
+        name: "Отодектоз",
+        category: "derm",
+        count: 95,
+        species: "Кошки / Собаки",
+        alertLevel: "info",
+        alertReason: "Диагноз часто клинический (характерный секрет). Микроскопия подтверждает, но лечение можно начинать сразу.",
+        mandatory: [
+            { name: "Отоскопия", desc: "Визуализация клещей (белые подвижные точки).", available: true },
+            { name: "Микроскопия ушного содержимого", desc: "Обнаружение Otodectes cynotis.", available: true }
+        ],
+        recommended: [
+            { name: "Цитология ушного секрета", desc: "Оценка вторичной инфекции.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Бактериальный отит — цитология",
+            "Малассезиозный отит — цитология",
+            "Аллергический отит — анамнез"
+        ]
+    },
+    {
+        id: "conjunctivitis",
+        name: "Конъюнктивит",
+        category: "ophth",
+        count: 218,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Флуоресцеиновый тест и тест Ширмера важны для исключения серьёзных патологий, но простой конъюнктивит можно лечить эмпирически.",
+        mandatory: [
+            { name: "Флуоресцеиновый тест", desc: "Исключение язвы/эрозии роговицы.", available: true },
+            { name: "Тест Ширмера", desc: "Исключение СКК.", available: true }
+        ],
+        recommended: [
+            { name: "Цитология конъюнктивы", desc: "Тип воспаления.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев", desc: "При гнойном конъюнктивите.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "У кошек с рецидивами.", available: true }
+        ],
+        differential: [
+            "Сухой кератоконъюнктивит — тест Ширмера <15",
+            "Увеит — миоз, преципитаты",
+            "Глаукома — мидриаз, повышение ВГД",
+            "FHV-1 (кошки) — симблефарон, дендритные язвы"
+        ]
+    },
+    {
+        id: "gastritis",
+        name: "Гастрит",
+        category: "gastro",
+        count: 78,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "При остром нетяжёлом гастрите — эмпирическая терапия допустима. ОАК и биохимия рекомендуются, но не блокируют лечение.",
+        mandatory: [
+            { name: "ОАК", desc: "Воспалительные маркеры, анемия.", available: true },
+            { name: "Биохимия крови", desc: "Печёночные, почечные маркеры. Электролиты.", available: true }
+        ],
+        recommended: [
+            { name: "Рентген брюшной полости", desc: "Исключение инородных тел.", available: true },
+            { name: "УЗИ брюшной полости", desc: "Оценка стенки желудка, ПЖ.", available: true },
+            { name: "SNAP cPL / SNAP fPL", desc: "Исключение панкреатита.", available: true }
+        ],
+        additional: [
+            { name: "Анализ кала", desc: "Паразитологическое исследование.", available: true }
+        ],
+        differential: [
+            "Инородное тело ЖКТ — рентген/УЗИ",
+            "Панкреатит — SNAP cPL/fPL",
+            "ХБП с уремическим гастритом — биохимия",
+            "Болезнь Аддисона — электролиты (Na/K)"
+        ]
+    },
+    {
+        id: "dental_calculus",
+        name: "Зубной камень / Пародонтоз",
+        category: "dental",
+        count: 111,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "ОАК и биохимия нужны как предоперационный минимум перед санацией под наркозом, но диагноз ставится клинически.",
+        mandatory: [
+            { name: "Осмотр ротовой полости", desc: "Степень камня, гингивит, подвижность зубов.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Предоперационный профиль.", available: true },
+            { name: "Биохимия крови", desc: "Предоперационный профиль.", available: true },
+            { name: "Рентген зубов", desc: "Резорбция корней, абсцессы.", available: true }
+        ],
+        additional: [
+            { name: "Эхокардиография", desc: "У возрастных перед наркозом.", available: true }
+        ],
+        differential: [
+            "Гингивостоматит — лимфоплазмоцитарная инфильтрация",
+            "Опухоль ротовой полости — цитология"
+        ]
+    },
+    {
+        id: "constipation",
+        name: "Запоры / Копростаз",
+        category: "gastro",
+        count: 42,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Рентген подтверждает и оценивает степень. При однократном эпизоде — лечение допустимо без полного обследования.",
+        mandatory: [
+            { name: "Рентген брюшной полости", desc: "Оценка заполнения, мегаколон.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Калий, кальций, функция почек.", available: true },
+            { name: "ОАК", desc: "При системных симптомах.", available: true }
+        ],
+        additional: [
+            { name: "УЗИ брюшной полости", desc: "Исключение образований, стриктур.", available: true },
+            { name: "T4/FT4", desc: "Исключение гипотиреоза (собаки).", available: true }
+        ],
+        differential: [
+            "Мегаколон — рентген, хроническое",
+            "Перинеальная грыжа — пальпация",
+            "Новообразование — УЗИ, колоноскопия"
+        ]
+    },
+    {
+        id: "abscess",
+        name: "Абсцесс",
+        category: "other",
+        count: 41,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Диагноз часто клинический. Цитология и бакпосев улучшают терапию, но не блокируют дренирование.",
+        mandatory: [
+            { name: "Цитология пунктата", desc: "Подтверждение гноя, тип флоры.", available: true },
+            { name: "ОАК", desc: "Лейкоцитоз, нейтрофилия.", available: true }
+        ],
+        recommended: [
+            { name: "Бак. посев + антибиотикограмма", desc: "Идентификация возбудителя.", available: true },
+            { name: "SNAP Combo Plus (кошки)", desc: "FIV → повышен риск абсцессов.", available: true }
+        ],
+        additional: [
+            { name: "УЗИ", desc: "Оценка размеров, дренирования.", available: true }
+        ],
+        differential: [
+            "Новообразование — цитология (ТАБ)",
+            "Гранулёма — цитология, гистология",
+            "Серома — стерильное содержимое"
+        ]
+    },
+    {
+        id: "cystitis",
+        name: "Цистит / Уроцистит",
+        category: "uro",
+        count: 66,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "ОАМ и УЗИ важны для полной диагностики, но при первом неосложнённом эпизоде допустима эмпирическая терапия.",
+        mandatory: [
+            { name: "ОАМ", desc: "Лейкоцитурия, бактериурия, гематурия, pH.", available: true },
+            { name: "УЗИ мочевого пузыря", desc: "Утолщение стенки, осадок, конкременты.", available: true }
+        ],
+        recommended: [
+            { name: "Бак. посев мочи (цистоцентез)", desc: "Идентификация возбудителя.", available: true },
+            { name: "ОАК", desc: "При системных симптомах.", available: true }
+        ],
+        additional: [
+            { name: "Рентген брюшной полости", desc: "Рентгеноконтрастные конкременты.", available: true }
+        ],
+        differential: [
+            "МКБ — рентген, УЗИ",
+            "ИЦК (кошки) — стерильная моча",
+            "Новообразование — УЗИ, цитология"
+        ]
+    },
+    {
+        id: "kennel_cough",
+        name: "Инфекционный ларинготрахеит / Вольерный кашель",
+        category: "resp",
+        count: 69,
+        species: "Собаки",
+        alertLevel: "info",
+        alertReason: "Диагноз часто клинический (характерный кашель). ОАК и рентген — при тяжёлом/затяжном течении.",
+        mandatory: [
+            { name: "Клинический осмотр", desc: "«Гусиный» кашель, провокация при пальпации трахеи.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Исключение вторичной пневмонии.", available: true },
+            { name: "Рентген грудной клетки", desc: "При тяжёлом/затяжном течении.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев", desc: "При гнойных выделениях.", available: true }
+        ],
+        differential: [
+            "Коллапс трахеи — рентген вдох/выдох",
+            "Сердечная недостаточность — рентген, эхо",
+            "Дирофиляриоз — SNAP 4Dx"
+        ]
+    },
+    {
+        id: "hot_spot",
+        name: "Острый влажный дерматит (Hot Spot)",
+        category: "derm",
+        count: 20,
+        species: "Собаки",
+        alertLevel: "info",
+        alertReason: "Диагноз клинический. Цитология полезна, но лечение (стрижка, обработка) начинается сразу.",
+        mandatory: [
+            { name: "Цитологическое исследование", desc: "Тип инфекции.", available: true }
+        ],
+        recommended: [
+            { name: "Соскоб кожи", desc: "Исключение демодекоза.", available: true }
+        ],
+        additional: [
+            { name: "Бак. посев", desc: "При рецидивах.", available: true }
+        ],
+        differential: [
+            "Глубокая пиодерма — бакпосев",
+            "Демодекоз — глубокий соскоб",
+            "Дерматофитоз — лампа Вуда"
+        ]
+    },
+    {
+        id: "chlamydia",
+        name: "Хламидиоз",
+        category: "infect",
+        count: 65,
+        species: "Кошки",
+        alertLevel: "info",
+        alertReason: "Часто лечится эмпирически (доксициклин) при характерной клинике. Цитология конъюнктивы подтверждает, но не блокирует.",
+        mandatory: [
+            { name: "ОАК", desc: "Эозинофилия, лейкоцитоз.", available: true },
+            { name: "Цитология конъюнктивы", desc: "Включения в эпителиальных клетках.", available: true }
+        ],
+        recommended: [
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "Исключение иммуносупрессии.", available: true },
+            { name: "Флуоресцеиновый тест", desc: "Исключение эрозии роговицы.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "FHV-1 — дендритные язвы роговицы",
+            "FCV — язвы в ротовой полости",
+            "Аллергический конъюнктивит — анамнез"
+        ]
+    },
+    {
+        id: "cryptosporidiosis",
+        name: "Криптоспоридиоз",
+        category: "gastro",
+        count: 45,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Анализ кала подтверждает, но эмпирическая терапия допустима при характерной клинике (водянистая диарея).",
+        mandatory: [
+            { name: "Анализ кала", desc: "Флотация, окрашивание. Ооцисты.", available: true },
+            { name: "ОАК", desc: "Оценка воспалительного ответа.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Электролиты при обезвоживании.", available: true },
+            { name: "SNAP Combo Plus (FeLV/FIV)", desc: "У кошек — иммуносупрессия.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Лямблиоз — микроскопия кала",
+            "Парвовирусный энтерит — SNAP Parvo",
+            "Кокцидиоз — флотация (ооцисты)"
+        ]
+    },
+    {
+        id: "atopic_dermatitis",
+        name: "Атопический дерматит",
+        category: "derm",
+        count: 37,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Диагноз исключения. Соскоб и цитология важны для исключения, но сам диагноз ставится клинически по критериям Favrot.",
+        mandatory: [
+            { name: "Соскоб кожи", desc: "Исключение эктопаразитов.", available: true },
+            { name: "Цитологическое исследование", desc: "Исключение вторичных инфекций.", available: true }
+        ],
+        recommended: [
+            { name: "Люминесцентная диагностика", desc: "Исключение дерматофитоза.", available: true },
+            { name: "Бак. посев на грибы", desc: "Исключение дерматофитоза.", available: true }
+        ],
+        additional: [
+            { name: "T4/FT4 (собаки)", desc: "Исключение гипотиреоза.", available: true }
+        ],
+        differential: [
+            "Пищевая аллергия — элиминационная диета",
+            "Блошиный дерматит — обработка от блох",
+            "Саркоптоз — пробное лечение"
+        ]
+    },
+    {
+        id: "sarcoptosis",
+        name: "Саркоптоз",
+        category: "derm",
+        count: 26,
+        species: "Собаки",
+        alertLevel: "info",
+        alertReason: "Соскоб положительный только в ~50% случаев. При клиническом подозрении — пробное лечение допустимо без лабораторного подтверждения.",
+        mandatory: [
+            { name: "Соскоб кожи (поверхностный)", desc: "Множественные соскобы. Клещи обнаруживаются в ~50%.", available: true }
+        ],
+        recommended: [
+            { name: "ОАК", desc: "Эозинофилия.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Демодекоз — глубокий соскоб",
+            "Атопический дерматит — анамнез",
+            "Пищевая аллергия — элиминационная диета"
+        ]
+    },
+    {
+        id: "obesity",
+        name: "Ожирение",
+        category: "endo",
+        count: 16,
+        species: "Собаки / Кошки",
+        alertLevel: "info",
+        alertReason: "Диагноз по BCS. Биохимия и T4 рекомендуются для исключения эндокринных причин, но не блокируют рекомендации по диете.",
+        mandatory: [
+            { name: "Оценка кондиции тела (BCS)", desc: "BCS 7-9/9 — ожирение.", available: true }
+        ],
+        recommended: [
+            { name: "Биохимия крови", desc: "Глюкоза, печень, холестерин.", available: true },
+            { name: "T4/FT4", desc: "Исключение гипотиреоза (собаки).", available: true },
+            { name: "Глюкоза крови", desc: "Скрининг диабета.", available: true }
+        ],
+        additional: [
+            { name: "SNAP Cortisol", desc: "Исключение Кушинга.", available: true }
+        ],
+        differential: [
+            "Гипотиреоз — T4/FT4",
+            "Гиперадренокортицизм — SNAP Cortisol",
+            "Отёки — пальпация, альбумин"
+        ]
+    }
+];
+
+// ===== STATE =====
+let selectedDiagId = null;
+let activeCategory = "all";
+let activeAlert = "all";
+let checkedTests = {};
+
+// ===== INIT =====
+function init() {
+    const hardCount = CDSS_DB.filter(d => d.alertLevel === "hard").length;
+    const softCount = CDSS_DB.filter(d => d.alertLevel === "soft").length;
+    const infoCount = CDSS_DB.filter(d => d.alertLevel === "info").length;
+
+    document.getElementById("statHard").textContent = hardCount;
+    document.getElementById("statSoft").textContent = softCount;
+    document.getElementById("statInfo").textContent = infoCount;
+    document.getElementById("statTotal").textContent = CDSS_DB.length;
+
+    // Category filters
+    const catContainer = document.getElementById("catFilters");
+    const usedCats = [...new Set(CDSS_DB.map(d => d.category))];
+    usedCats.forEach(catKey => {
+        const cat = CATEGORIES[catKey];
+        const btn = document.createElement("button");
+        btn.className = "cat-btn";
+        btn.dataset.cat = catKey;
+        btn.textContent = cat.name;
+        btn.onclick = () => filterCategory(catKey);
+        catContainer.appendChild(btn);
+    });
+
+    renderDiagList();
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+        renderDiagList(e.target.value.toLowerCase());
+    });
+}
+
+function filterCategory(cat) {
+    activeCategory = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.cat === cat);
+    });
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+}
+
+function filterAlert(level, btn) {
+    activeAlert = level;
+    document.querySelectorAll(".alert-btn").forEach(b => {
+        b.className = "alert-btn";
+    });
+    if (level === "all") btn.classList.add("active-hard");
+    else btn.classList.add("active-" + level);
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+}
+
+function renderDiagList(search = "") {
+    const container = document.getElementById("diagList");
+    container.innerHTML = "";
+
+    let filtered = CDSS_DB;
+    if (activeCategory !== "all") filtered = filtered.filter(d => d.category === activeCategory);
+    if (activeAlert !== "all") filtered = filtered.filter(d => d.alertLevel === activeAlert);
+    if (search) filtered = filtered.filter(d => d.name.toLowerCase().includes(search));
+
+    filtered.sort((a, b) => {
+        const order = { hard: 0, soft: 1, info: 2 };
+        if (order[a.alertLevel] !== order[b.alertLevel]) return order[a.alertLevel] - order[b.alertLevel];
+        return b.count - a.count;
+    });
+
+    filtered.forEach(d => {
+        const cat = CATEGORIES[d.category];
+        const item = document.createElement("div");
+        item.className = `diag-item${d.id === selectedDiagId ? ' selected' : ''}`;
+
+        const alertLabels = { hard: "БЛОК", soft: "АЛЕРТ", info: "ИНФО" };
+        item.innerHTML = `
+            <div class="cat-dot ${cat.color}"></div>
+            <div class="diag-name">${d.name}</div>
+            <span class="alert-badge ${d.alertLevel}">${alertLabels[d.alertLevel]}</span>
+            <div class="diag-count">${d.count}</div>
+        `;
+        item.onclick = () => selectDiagnosis(d.id);
+        container.appendChild(item);
+    });
+}
+
+function selectDiagnosis(id) {
+    selectedDiagId = id;
+    checkedTests = {};
+    renderDiagList(document.getElementById("searchInput").value.toLowerCase());
+    renderDetail(id);
+    // Mobile: show content, hide sidebar
+    if (window.innerWidth <= 768) {
+        document.querySelector(".sidebar").classList.add("mobile-hidden");
+        document.getElementById("detailContent").classList.add("mobile-visible");
+    }
+}
+
+function mobileBack() {
+    document.querySelector(".sidebar").classList.remove("mobile-hidden");
+    document.getElementById("detailContent").classList.remove("mobile-visible");
+    window.scrollTo(0, 0);
+}
+
+function renderDetail(id) {
+    const d = CDSS_DB.find(x => x.id === id);
+    if (!d) return;
+
+    const cat = CATEGORIES[d.category];
+    const content = document.getElementById("detailContent");
+
+    const alertConfig = {
+        hard: { icon: "&#9940;", title: "ЖЁСТКИЙ БЛОК — Сохранение запрещено без обязательных исследований", desc: "Система <strong>заблокирует</strong> сохранение диагноза, если обязательные исследования не прикреплены. Для обхода блокировки врач <strong>обязан</strong> указать причину отсутствия каждого исследования." },
+        soft: { icon: "&#9888;&#65039;", title: "МЯГКИЙ АЛЕРТ — Предупреждение при сохранении", desc: "Система <strong>предупредит</strong> врача, что для этого диагноза рекомендованы исследования. Врач может продолжить, указав причину, но факт будет <strong>зафиксирован</strong> в медкарте." },
+        info: { icon: "&#8505;&#65039;", title: "ИНФОРМАЦИОННЫЙ — Подсказка для врача", desc: "Система <strong>покажет подсказку</strong> с рекомендуемыми исследованиями. Врач видит рекомендации, но <strong>не обязан</strong> их выполнять. Сохранение свободное." }
+    };
+
+    const ac = alertConfig[d.alertLevel];
+
+    let html = `
+        <button class="back-btn" onclick="mobileBack()">&#8592; Назад к списку</button>
+        <div class="detail-header">
+            <h2>${d.name} <span class="alert-badge ${d.alertLevel}" style="font-size:14px">${d.alertLevel === 'hard' ? 'ЖЁСТКИЙ БЛОК' : d.alertLevel === 'soft' ? 'МЯГКИЙ АЛЕРТ' : 'ИНФОРМАЦИОННЫЙ'}</span></h2>
+            <div class="detail-meta">
+                <div class="meta-tag">${cat.name}</div>
+                <div class="meta-tag">&#128045; ${d.species}</div>
+                <div class="meta-tag">&#128200; ${d.count} случаев в базе</div>
+            </div>
+        </div>
+
+        <div class="alert-banner ${d.alertLevel}">
+            <div class="alert-banner-icon">${ac.icon}</div>
+            <div class="alert-banner-content">
+                <h3>${ac.title}</h3>
+                <p>${ac.desc}</p>
+                <div class="alert-reason"><strong>Обоснование:</strong> ${d.alertReason}</div>
+            </div>
+        </div>
+    `;
+
+    // Workflow
+    html += renderWorkflow(d);
+
+    // Interactive checklist
+    html += renderChecklist(d);
+
+    // Detailed sections
+    if (d.mandatory.length > 0) {
+        html += renderSection("mandatory", "&#9888;&#65039;", "ОБЯЗАТЕЛЬНЫЕ ИССЛЕДОВАНИЯ",
+            d.alertLevel === 'hard' ? 'Без этих исследований сохранение ЗАБЛОКИРОВАНО' :
+            d.alertLevel === 'soft' ? 'Рекомендуется выполнить — система предупредит при пропуске' :
+            'Рекомендуется для полноты диагностики', d.mandatory);
+    }
+
+    if (d.recommended.length > 0) {
+        html += renderSection("recommended", "&#9889;", "РЕКОМЕНДУЕМЫЕ ИССЛЕДОВАНИЯ",
+            "Настоятельно рекомендуются для полноты диагностики", d.recommended);
+    }
+
+    if (d.additional.length > 0) {
+        html += renderSection("additional", "&#128300;", "ДОПОЛНИТЕЛЬНЫЕ ИССЛЕДОВАНИЯ",
+            "По показаниям — при нетипичном течении, рецидивах", d.additional);
+    }
+
+    if (d.differential.length > 0) {
+        html += `
+            <div class="section section-differential">
+                <div class="section-header">
+                    <div class="section-icon">&#128256;</div>
+                    <div>
+                        <div class="section-title">ДИФФЕРЕНЦИАЛЬНАЯ ДИАГНОСТИКА</div>
+                        <div class="section-subtitle">Исключение альтернативных диагнозов</div>
+                    </div>
+                </div>
+                <div class="diff-note">
+                    <h4>Дифференциальные диагнозы и ключевые тесты:</h4>
+                    <ul class="diff-list">
+                        ${d.differential.map(dd => `<li>${dd}</li>`).join("")}
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    content.innerHTML = html;
+    content.scrollTop = 0;
+}
+
+function renderWorkflow(d) {
+    if (d.alertLevel === "hard") {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Алгоритм системы при сохранении</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Врач выбирает диагноз: "${d.name}"</div>
+                        <div class="wf-desc">Система проверяет наличие обязательных исследований</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node no">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Обязательные исследования НЕ прикреплены?</div>
+                        <div class="wf-desc">&#9940; БЛОКИРОВКА — кнопка "Сохранить" неактивна</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node warn">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Врач указывает причину отсутствия каждого исследования</div>
+                        <div class="wf-desc">Выбор из списка: "Владелец отказался" / "Направлен в стороннюю лабораторию" / "Противопоказано" / "Нет возможности" / "Экстренная ситуация" / "Результаты из другой клиники"</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">4</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Все причины указаны → Сохранение разрешено</div>
+                        <div class="wf-desc">&#9989; Факт пропуска и причины фиксируются в медкарте пациента</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    } else if (d.alertLevel === "soft") {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Алгоритм системы при сохранении</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Врач выбирает диагноз: "${d.name}"</div>
+                        <div class="wf-desc">Система проверяет наличие обязательных исследований</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node warn">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Обязательные исследования НЕ прикреплены?</div>
+                        <div class="wf-desc">&#9888; ПРЕДУПРЕЖДЕНИЕ — всплывающее окно с описанием недостающих исследований</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Врач может: прикрепить исследования ИЛИ указать причину и продолжить</div>
+                        <div class="wf-desc">&#9989; Факт предупреждения и решение врача фиксируются в медкарте</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    } else {
+        return `
+        <div class="workflow-box">
+            <h3>&#9881;&#65039; Алгоритм системы при сохранении</h3>
+            <div class="workflow-steps">
+                <div class="wf-step">
+                    <div class="wf-node check">1</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Врач выбирает диагноз: "${d.name}"</div>
+                        <div class="wf-desc">Система показывает информационную подсказку</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node info-node">2</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Подсказка: "Рекомендуемые исследования: ..."</div>
+                        <div class="wf-desc">&#8505; Информация отображается, но не блокирует действия</div>
+                    </div>
+                </div>
+                <div class="wf-step">
+                    <div class="wf-node yes">3</div>
+                    <div class="wf-content">
+                        <div class="wf-title">Сохранение свободное</div>
+                        <div class="wf-desc">&#9989; Врач решает самостоятельно</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
+function renderChecklist(d) {
+    const allTests = [
+        ...d.mandatory.map(t => ({ ...t, level: "req", levelLabel: "ОБЯЗАТ." })),
+        ...d.recommended.map(t => ({ ...t, level: "rec", levelLabel: "РЕКОМЕНД." })),
+        ...d.additional.map(t => ({ ...t, level: "opt", levelLabel: "ДОПОЛНИТ." }))
+    ];
+
+    let html = `
+    <div class="checklist-section">
+        <h3>&#9745; Интерактивный чеклист исследований — симуляция</h3>
+        <div id="checklistItems">
+    `;
+
+    allTests.forEach((t, i) => {
+        const key = d.id + "_" + i;
+        const checked = checkedTests[key] ? 'checked' : '';
+        html += `
+        <div class="checklist-item ${checked ? 'checked' : ''}" onclick="toggleTest('${key}', '${d.id}')">
+            <input type="checkbox" ${checked} tabindex="-1">
+            <span class="cl-name">${t.name}</span>
+            <span class="cl-level ${t.level}">${t.levelLabel}</span>
+        </div>`;
+    });
+
+    html += `</div>`;
+
+    // Save button
+    html += `
+    <div class="save-area">
+        <button class="save-btn" id="saveBtn" onclick="trySave('${d.id}')">
+            &#128190; Попытка сохранить диагноз
+        </button>
+        <div class="save-status" id="saveStatus"></div>
+    </div>
+    </div>`;
+
+    return html;
+}
+
+function toggleTest(key, diagId) {
+    checkedTests[key] = !checkedTests[key];
+    renderDetail(diagId);
+}
+
+function trySave(diagId) {
+    const d = CDSS_DB.find(x => x.id === diagId);
+    if (!d) return;
+
+    // Check mandatory tests
+    const missingMandatory = [];
+    d.mandatory.forEach((t, i) => {
+        const key = diagId + "_" + i;
+        if (!checkedTests[key]) missingMandatory.push(t.name);
+    });
+
+    // Check recommended tests
+    const missingRecommended = [];
+    d.recommended.forEach((t, i) => {
+        const key = diagId + "_" + (d.mandatory.length + i);
+        if (!checkedTests[key]) missingRecommended.push(t.name);
+    });
+
+    if (missingMandatory.length === 0) {
+        showModal("success", d.name, missingMandatory, missingRecommended);
+    } else if (d.alertLevel === "hard") {
+        showModal("hard", d.name, missingMandatory, missingRecommended);
+    } else if (d.alertLevel === "soft") {
+        showModal("soft", d.name, missingMandatory, missingRecommended);
+    } else {
+        showModal("success", d.name, missingMandatory, missingRecommended);
+    }
+}
+
+function showModal(type, diagName, missingMandatory, missingRecommended) {
+    const overlay = document.getElementById("modalOverlay");
+    const box = document.getElementById("modalBox");
+    const icon = document.getElementById("modalIcon");
+    const title = document.getElementById("modalTitle");
+    const desc = document.getElementById("modalDesc");
+    const missing = document.getElementById("modalMissing");
+    const reasons = document.getElementById("modalReasons");
+    const btns = document.getElementById("modalBtns");
+
+    overlay.classList.add("visible");
+    box.className = "modal";
+    missing.style.display = "none";
+    reasons.style.display = "none";
+
+    if (type === "success") {
+        box.classList.add("success-modal");
+        icon.innerHTML = "&#9989;";
+        title.textContent = "Диагноз сохранён";
+        desc.innerHTML = `<strong>${diagName}</strong> — все обязательные исследования прикреплены.${missingRecommended.length > 0 ? '<br><span style="color:var(--orange)">Рекомендуемые не прикреплены: ' + missingRecommended.join(", ") + '</span>' : ''}`;
+        btns.innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
+    } else if (type === "hard") {
+        box.classList.add("hard-modal");
+        icon.innerHTML = "&#9940;";
+        title.textContent = "БЛОКИРОВКА СОХРАНЕНИЯ";
+        desc.innerHTML = `Диагноз <strong>${diagName}</strong> требует обязательные исследования, которые не прикреплены:`;
+        missing.style.display = "block";
+        missing.innerHTML = missingMandatory.map(m => `<li>${m}</li>`).join("");
+
+        reasons.style.display = "block";
+        reasons.innerHTML = `<p style="font-size:13px;color:var(--text2);margin-bottom:8px">Для обхода блокировки укажите причину:</p>` +
+            BYPASS_REASONS.map((r, i) => `
+                <label><input type="radio" name="bypass" value="${i}" onchange="document.getElementById('proceedBtn').classList.add('visible')"> ${r}</label>
+            `).join("");
+
+        btns.innerHTML = `
+            <button class="modal-btn cancel" onclick="closeModal()">Вернуться и прикрепить</button>
+            <button class="modal-btn proceed" id="proceedBtn" onclick="bypassSave()">Сохранить с причиной</button>
+        `;
+    } else if (type === "soft") {
+        box.classList.add("soft-modal");
+        icon.innerHTML = "&#9888;&#65039;";
+        title.textContent = "ПРЕДУПРЕЖДЕНИЕ";
+        desc.innerHTML = `Для диагноза <strong>${diagName}</strong> рекомендованы исследования, которые не прикреплены:`;
+        missing.style.display = "block";
+        missing.innerHTML = missingMandatory.map(m => `<li>${m}</li>`).join("");
+
+        reasons.style.display = "block";
+        reasons.innerHTML = `<p style="font-size:13px;color:var(--text2);margin-bottom:8px">Укажите причину для продолжения:</p>` +
+            BYPASS_REASONS.map((r, i) => `
+                <label><input type="radio" name="bypass" value="${i}" onchange="document.getElementById('proceedBtn').classList.add('visible')"> ${r}</label>
+            `).join("");
+
+        btns.innerHTML = `
+            <button class="modal-btn cancel" onclick="closeModal()">Вернуться и прикрепить</button>
+            <button class="modal-btn proceed" id="proceedBtn" onclick="bypassSave()">Продолжить без исследований</button>
+        `;
+    }
+}
+
+function bypassSave() {
+    const selected = document.querySelector('input[name="bypass"]:checked');
+    if (!selected) return;
+
+    const overlay = document.getElementById("modalOverlay");
+    const box = document.getElementById("modalBox");
+    const icon = document.getElementById("modalIcon");
+    const title = document.getElementById("modalTitle");
+    const desc = document.getElementById("modalDesc");
+    const missing = document.getElementById("modalMissing");
+    const reasons = document.getElementById("modalReasons");
+    const btns = document.getElementById("modalBtns");
+
+    box.className = "modal success-modal";
+    icon.innerHTML = "&#9989;";
+    title.textContent = "Диагноз сохранён с примечанием";
+    desc.innerHTML = `Причина пропуска исследований: <strong>"${BYPASS_REASONS[selected.value]}"</strong><br><br><span style="color:var(--orange)">Факт зафиксирован в медкарте пациента.</span>`;
+    missing.style.display = "none";
+    reasons.style.display = "none";
+    btns.innerHTML = `<button class="modal-btn ok" onclick="closeModal()">OK</button>`;
+}
+
+function closeModal() {
+    document.getElementById("modalOverlay").classList.remove("visible");
+}
+
+function renderSection(type, icon, title, subtitle, tests) {
+    return `
+        <div class="section section-${type}">
+            <div class="section-header">
+                <div class="section-icon">${icon}</div>
+                <div>
+                    <div class="section-title">${title}</div>
+                    <div class="section-subtitle">${subtitle}</div>
+                </div>
+            </div>
+            <div class="test-grid">
+                ${tests.map(t => `
+                    <div class="test-card">
+                        <div class="test-name">${t.name}</div>
+                        <div class="test-desc">${t.desc}</div>
+                        <div class="test-available ${t.available ? 'yes' : 'no'}">
+                            ${t.available ? '&#9989; Доступно в клинике' : '&#10060; Внешняя лаборатория'}
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+    `;
+}
+
+// Close modal on overlay click
+document.getElementById("modalOverlay").addEventListener("click", function(e) {
+    if (e.target === this) closeModal();
+});
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
