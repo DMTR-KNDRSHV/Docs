@@ -724,6 +724,50 @@
             border: 1px solid var(--border);
         }
 
+        .section-chains .section-icon { background: rgba(6,182,212,0.12); }
+        .section-chains .section-title { color: var(--cyan); }
+
+        .chain-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--cyan);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+        }
+
+        .chain-card:hover { border-color: var(--cyan); }
+
+        .chain-type-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 6px; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 8px; display: inline-block;
+        }
+
+        .chain-type-badge.sequential { background: rgba(168,85,247,0.15); color: var(--purple); }
+        .chain-type-badge.paired { background: rgba(6,182,212,0.15); color: var(--cyan); }
+        .chain-type-badge.confirmatory { background: rgba(34,197,94,0.15); color: var(--green); }
+
+        .chain-flow {
+            display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 8px 0;
+        }
+
+        .chain-node {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 8px; padding: 6px 12px;
+            font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap;
+        }
+
+        .chain-arrow { color: var(--cyan); font-size: 16px; padding: 0 6px; flex-shrink: 0; }
+        .chain-plus { color: var(--orange); font-size: 16px; font-weight: 700; padding: 0 6px; flex-shrink: 0; }
+        .chain-reason { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+
+        @media (max-width: 768px) {
+            .chain-flow { gap: 4px; }
+            .chain-node { font-size: 11px; padding: 4px 8px; }
+            .chain-arrow, .chain-plus { font-size: 14px; padding: 0 3px; }
+        }
+
         .diff-note h4 {
             font-size: 13px;
             color: var(--cyan);
@@ -2677,6 +2721,63 @@ const CDSS_DB = [
     }
 ];
 
+
+// ===== CHAINS DATA =====
+const CHAINS_DATA = {
+    "parvovirus": [{type: "sequential", nodes: ["SNAP Parvo (+)", "UQA (leykopeniya?)"], reason: "Musbet SNAP + leykopeniya <2000 = tesdiq olunmus agir gedisli parvoviroz"}, {type: "paired", nodes: ["UQA", "Qan qlukozasi"], reason: "Bala itlerde leykopeniya + hipoqlikemiya — eyni vaxtda korreksiya teleb edir"}, {type: "sequential", nodes: ["UQA (leykositler normada)", "Rentgen/USM"], reason: "Leykopeniya yoxdur → yad cismi, invaginasiyanl istisna etmek"}],
+    "panleukopenia": [{type: "paired", nodes: ["UQA", "Qanin biokimyasi"], reason: "Leykopeniya + elektrolitler + qlukoza — proqnozu mueyyen etmek ucun eyni vaxtda qiymetlendirilir"}, {type: "confirmatory", nodes: ["UQA (leykopeniya)", "SNAP Parvo"], reason: "Leykopeniya <2000 → SNAP Parvo ile tesdiq etmek (FPV ile carpaz reaksiya)"}],
+    "diabetes": [{type: "sequential", nodes: ["Qan qlukozasi (>11)", "Sidik analizi (qlukozuriya?)"], reason: "Hiperqlikemiya → qlukozuriya ile tesdiq. Qlukozuriya olmadan = stress hiperqlikemiyasi (pisikler)"}, {type: "sequential", nodes: ["Biokimya", "SNAP cPL/fPL"], reason: "Qaraciyer fermentlerinin yukselisisi → pankreatiti istisna etmek (sebeb/agilasma kimi)"}, {type: "confirmatory", nodes: ["Qlukoza (+)", "Fruktozamin"], reason: "Birdefeli hiperqlikemiya → fruktozamin xronik yukselmeni tesdiq edir (2-3 hefte)"}],
+    "acute_urinary_retention": [{type: "sequential", nodes: ["Biokimya (K+)", "EKQ"], reason: "Kalium >7 mmol/l → kardiotoksikliyi qiymetlendirmek ucun EKQ (pik T, bradikardiya)"}, {type: "sequential", nodes: ["Kateterizasiya", "Sidik analizi + USM"], reason: "Evvelce sidik axinini berpa etmek → sonra sebebi mueyyen etmek ucun analiz ve vizualizasiya"}, {type: "paired", nodes: ["Biokimya (K+, CREA)", "Qlukoza"], reason: "Eyni vaxtda qiymetlendirilir — hiperkaliemiya + azotemiya + pisiklerde stress hiperqlikemiyasi"}],
+    "mammary_tumor": [{type: "paired", nodes: ["Agciyer rentgeni (3 proyeksiya)", "Qarin boslugu USM"], reason: "Tam merhelewleme: agciyerler (metastazlar) + qarin boslugu (limfa duyunleri, qaraciyer, dalaq)"}, {type: "sequential", nodes: ["Sitologiya (TIB)", "Histologiya (emeliyyatdan sonra)"], reason: "TIB emeliyyatdan evvel → taktikani mueyyen edir. Histologiya sonra → son diaqnoz ve qreyd"}, {type: "sequential", nodes: ["Agciyer rentgeni (metastazlar?)", "Emeliyyat qerari"], reason: "Agciyer metastazlari = IV merhele → radikal cerrahiyye evezine palliativ"}],
+    "pyometra": [{type: "paired", nodes: ["USM", "UQA"], reason: "USM diaqnozu tesdiq edir + UQA sepsisin derecesini qiymetlendirir — birlikde emeliyyatin tecililiyini mueyyen edir"}, {type: "sequential", nodes: ["UQA (leykositoz)", "Biokimya (CREA, sidik covheri)"], reason: "Ifade olunmus leykositoz → boyrek funksiyasini yoxlamaq (sepsis → KBC)"}, {type: "sequential", nodes: ["Qlukoza (hipoqlikemiya?)", "Laktat"], reason: "Hipoqlikemiya → sepsis markeri, proqnozu mueyyen edir"}],
+    "heart_failure": [{type: "paired", nodes: ["Sine rentgeni", "Exokardioqrafiya"], reason: "Rentgen odem/efuzyonu gosterir, exo sebebi gosterir — biri digeri olmadan tam diaqnoz vermir"}, {type: "sequential", nodes: ["SNAP proBNP (+)", "Exokardioqrafiya"], reason: "Tengnefeslikli pisiklerde: proBNP kardial sebebi tesdiq edir → exo tipi mueyyen edir"}, {type: "sequential", nodes: ["Rentgen (agciyer odemi)", "Biokimya (boyrekler)"], reason: "Diuretik teyin etmezden evvel → boyrek funksiyasini qiymetlendirmek (kardiorenal sindrom)"}],
+    "thromboembolism": [{type: "paired", nodes: ["Exokardioqrafiya", "Biokimya (KFK, K+)"], reason: "Exo = sebeb (HKMP, tromb), biokimya = agillasmalar (nekrozlasmes ezelelerden hiperkaliemiya)"}, {type: "sequential", nodes: ["Biokimya (K+ >7)", "EKQ"], reason: "Reperfuzion hiperkaliemiya → kardiotoksikliyi qiymetlendirmek"}],
+    "epilepsy": [{type: "sequential", nodes: ["Qan qlukozasi", "Biokimya (Ca2+, qaraciyer)"], reason: "Evvelce hipoqlikemiyanl istisna etmek (tecili) → sonra diger metabolik sebebler"}, {type: "sequential", nodes: ["Biokimya (hamisi normada)", "Bas beyin MRT"], reason: "Metabolik sebebler istisna olunub → struktur sebebleri axtarmaq (sis, iltihab)"}, {type: "confirmatory", nodes: ["SNAP 4Dx (+)", "MRT"], reason: "Erlixioz tesdiq olunub → nevroloji formada MRT (neyroerlixioz)"}],
+    "fip": [{type: "paired", nodes: ["Biokimya (A/G)", "Efuzyon analizi (Rivalta)"], reason: "A/G <0.8 + musbet Rivalta = yuksek FIP ehtimali"}, {type: "sequential", nodes: ["SNAP Combo (FeLV-)", "Biokimya (hiperqlobulinemiya)"], reason: "FeLV istisna etmek → menfi FeLV zamani hiperqlobulinemiya FIP subhesini guclendirir"}],
+    "jaundice": [{type: "sequential", nodes: ["UQA (anemiya?)", "Qan yaxmasi"], reason: "Anemiya → yaxma tipi mueyyen edir: sferositler (AIHA), hemoparazitler → sariliq tipi"}, {type: "sequential", nodes: ["Biokimya (bilirubin)", "Qarin boslugu USM"], reason: "Birbase bilirubinin yukselisi → USM od yollarinin obstruksiyasini axtarir (qaraciyersonrasi)"}, {type: "paired", nodes: ["UQA", "Biokimya", "Qan yaxmasi"], reason: "Uc test birlikde sariliq tipini mueyyen edir: qaraciyeronusu / qaraciyer / qaraciyersonrasi"}],
+    "neoplasia_general": [{type: "sequential", nodes: ["Sitologiya (TIB)", "Agciyer rentgeni (3 proyeksiya)"], reason: "TIB tipi mueyyen edir → rentgen merhelewleme. Ardicilik vacibdir: tipsiz merhelewlemenin menasi yoxdur"}, {type: "sequential", nodes: ["Sitologiya (qeyri-informativ)", "Biopsiya + histologiya"], reason: "TIB diaqnoz vermirse → son verifikasiya ucun biopsiya"}],
+    "ascites": [{type: "sequential", nodes: ["Punksiya + efuzyon sitologiyasi", "Qan biokimyasi"], reason: "Efuzyon tipi (transsudat/ekssudat) → sonraki mueayineni istiqametlendirir"}, {type: "sequential", nodes: ["Sitologiya (transsudat)", "Exokardioqrafiya"], reason: "Transsudat → sagterfeli urek catismazligini istisna etmek"}, {type: "sequential", nodes: ["Sitologiya (ekssudat)", "Efuzyon bak. ekini"], reason: "Ekssudat → infeksion sebebi mueyyen etmek"}],
+    "diaphragmatic_hernia": [{type: "paired", nodes: ["Sine rentgeni", "UQA + Biokimya"], reason: "Rentgen tesdiq edir → UQA/biokimya emeliyyatonussu hazirliq. Hamisi tecili, paralel aparilir"}],
+    "virus_cat": [{type: "sequential", nodes: ["SNAP Combo (FeLV/FIV)", "UQA"], reason: "FeLV/FIV statusu = proqnoz ve taktika → UQA cari infeksiyanin agirligini qiymetlendirir"}, {type: "sequential", nodes: ["UQA (leykopeniya)", "SNAP Parvo / PZR"], reason: "Leykopeniya → panleykopeniya subhesi → ekspres-test ve ya PZR ile tesdiq etmek"}],
+    "ehrlichiosis": [{type: "paired", nodes: ["SNAP 4Dx", "UQA", "Qan yaxmasi"], reason: "Uc test birlikde: anticismler (SNAP) + trombositopeniya (UQA) + monositlerde morulalar (yaxma)"}, {type: "confirmatory", nodes: ["SNAP 4Dx (+)", "Ehrlichia PZR"], reason: "SNAP musbet (anticismler) → PZR aktiv infeksiyanl tesdiq edir"}],
+    "calicivirus": [{type: "sequential", nodes: ["UQA", "SNAP Combo (FeLV/FIV)"], reason: "Agirliqi qiymetlendirmek → proqnozu pislesdirecek immunosupressiyanl istisna etmek"}],
+    "cardiomyopathy": [{type: "paired", nodes: ["Exokardioqrafiya", "Sine rentgeni"], reason: "Exo = tip ve funksiya, rentgen = dekompensasiya. Tam qiymetlendirme ucun her ikisi lazimdir"}, {type: "sequential", nodes: ["T4/FT4 (yukselmiis)", "Exo (4-6 hefteden sonra tekrar)"], reason: "Pisiklerde: hipertiroidizm → mualice → tekrar exo, tireotoksik KMP-ni haqiqi HKMP-den ayirmaq ucun"}],
+    "ckd": [{type: "paired", nodes: ["Biokimya (kreatinin)", "Sidik analizi (xususi ceki)"], reason: "IRIS uzre merhelewleme: kreatinin = merhele (I-IV), xususi ceki = konsentrasiya itkisinin tesdiqi"}, {type: "sequential", nodes: ["T4/FT4 (pisikler)", "Mualiceden sonra tekrar biokimya"], reason: "Hipertiroidizm XBX-ni maskalayir → hipertiroidizm mualicesi → tekrar kreatinin haqiqi merheleni gosterir"}],
+    "urolithiasis": [{type: "paired", nodes: ["Sidik analizi (pH, kristallar)", "Rentgen/USM"], reason: "Kristal tipi + vizualizasiya = das terkibi ve taktikanin (erime vs cerrahiyye) mueyyen edilmesi"}, {type: "sequential", nodes: ["Sidik analizi (bakteriuriya)", "Sidik bak. ekini"], reason: "Sidikde bakteriyalar → antibioqramma ile ekin. Itlerde struvitler cox vaxt infeksion menselidir"}],
+    "foreign_body": [{type: "sequential", nodes: ["Rentgen (kontrast yoxdur)", "Qarin boslugu USM"], reason: "Qeyri-rentgenokontrast cisim → USM xetti/toxuma yad cisimlerini vizualizasiya edir"}, {type: "sequential", nodes: ["UQA (leykositoz)", "Rentgen (serbest qaz?)"], reason: "Leykositoz → perforasiya subhesi → tekrar rentgen qarin bosluqunda serbest qaz axtarir"}],
+    "cholangiohepatitis": [{type: "paired", nodes: ["Biokimya (bilirubin, ALT)", "Qarin boslugu USM"], reason: "Biokimya = zedelenme derecesi, USM = struktur deyisiklikler (od kisesi, qaraciyer). Birlikde tipi mueyyen edir"}, {type: "sequential", nodes: ["SNAP fPL (pankreatit?)", "USM (MV)"], reason: "Pisiklerde triadit: xolangit + pankreatit + IBD. fPL skrininq → USM tesdiq"}],
+    "anemia": [{type: "sequential", nodes: ["UQA (anemiya)", "Qan yaxmasi"], reason: "UQA derece ve regenerasiyanl mueyyen edir → yaxma sebebi mueyyen edir (sferositler, parazitler, sistositler)"}, {type: "sequential", nodes: ["Yaxma (hemoparazitler?)", "SNAP 4Dx / SNAP Combo"], reason: "Hemoparazit subhesi → ekspres-test konkret torediciini tesdiq edir"}],
+    "hemobartonellosis": [{type: "paired", nodes: ["UQA", "Qan yaxmasi"], reason: "UQA = anemiya derecesi, yaxma = eritrositlerde M. haemofelis vizualizasiyasi. Ayri-ayriliqda qeyri-informativ"}, {type: "sequential", nodes: ["SNAP Combo (FeLV+?)", "Proqnozun korreksiyasi"], reason: "FeLV-musbet pisikler → proqnoz xeyli pisdir, daha aqressiv terapiya"}],
+    "pancreatitis": [{type: "sequential", nodes: ["SNAP cPL/fPL (+)", "Qarin boslugu USM"], reason: "Ekspres-test tesdiq edir → USM dereceni (MV odemi, efuzyon) ve agilasmalari qiymetlendirir"}, {type: "paired", nodes: ["Biokimya", "UQA"], reason: "Biokimya (fermentler, qlukoza) + UQA (leykositoz) — agirligi mueyyen etmek ucun birlikde qiymetlendirilir"}],
+    "fracture": [{type: "sequential", nodes: ["Rentgen (siniq)", "Sine rentgeni + Qarin USM"], reason: "Avtoqezada: siniq tesdiq olunduqdan sonra → gizli zedelemeleri istisna etmek (pnevmotoraks, qanaxma)"}, {type: "paired", nodes: ["UQA", "Biokimya"], reason: "Emeliyyatonussu minimum — anesteziyadan evvel her ikisi eyni vaxtda"}],
+    "pneumonia": [{type: "sequential", nodes: ["Sine rentgeni", "UQA (neytrofiliya?)"], reason: "Rentgen tesdiq edir → UQA infeksiyanin derecesini ve terapiyaya cavabi qiymetlendirir"}, {type: "sequential", nodes: ["UQA (yaxsilasma yoxdur)", "Bak. ekin (lavaj)"], reason: "Empirik terapiyaya cavab yoxdur → hedefe yonelik antibiotik secimi ucun bak. ekin"}],
+    "demodicosis": [{type: "sequential", nodes: ["Derin qasima (+)", "Deri sitologiyasi"], reason: "Demodekoz tesdiq olunub → sitologiya ikincili bakterial infeksiyanl (piodermanl) qiymetlendirir"}, {type: "sequential", nodes: ["Demodekoz tesdiq olunub", "T4/FT4 (itler)"], reason: "Boyuklerde generalize demodekoz → ilkin sebebi axtarmaq: hipotiroidizm, hiperadrenokortisizm"}],
+    "dermatophytosis": [{type: "sequential", nodes: ["Vud lampasi (isiq)", "Gobelek bak. ekini"], reason: "Fluoressensiya = subhe → ekin = tesdiq ve nov identifikasiyasi (7-21 gun)"}, {type: "sequential", nodes: ["Vud lampasi (isiq yoxdur)", "Qasima + ekin"], reason: "Stamlarin 30-50%-i fluoresensiya vermir → menfi lampa lisayi istisna etmir, ekin lazimdir"}],
+    "gastroenteritis": [{type: "sequential", nodes: ["UQA + Biokimya", "SNAP Parvo (peyvend olunmamislarda)"], reason: "Esas qiymetlendirme → peyvend olunmamislarda parvovirusu mutleq istisna etmek"}, {type: "sequential", nodes: ["Terapiyaya cavab yoxdur", "USM + SNAP cPL/fPL"], reason: "Empirik terapiya komek etmir → sebebi axtarmaq: pankreatit, yad cisim, IBD"}],
+    "sarcoma_sticker": [{type: "sequential", nodes: ["Sitologiya (TVS)", "Sine rentgeni + biokimya"], reason: "Sitologiya tesdiq edir → kimyaterapiyadan (vinkristin) evvel merhelewleme ve qiymetlendirme"}],
+    "discopathy": [{type: "sequential", nodes: ["Nevroloji mueayine (derece)", "Onurga rentgeni"], reason: "Defisitin derecesi tecililiy mueyyen edir → rentgen = ilkin vizualizasiya"}, {type: "sequential", nodes: ["Rentgen (subhe)", "MRT"], reason: "Rentgen yumsaq toxumalar ucun deqiq deyil → MRT deqiq lokalizasiyanl ve emeliyyat gosterislerini mueyyen edir"}],
+    "food_allergy": [{type: "sequential", nodes: ["Deri qasimasi (temiz)", "Eliminasion pehriz"], reason: "Parazitler istisna olunub → 8-12 heftelik pehriz baslamaq. Parazit istisna olunmadan pehriz menasizdir"}, {type: "paired", nodes: ["Qasima", "Sitologiya", "Vud lampasi/ekin"], reason: "Uc istisna: parazitler + infeksiyalar + gobelekler — «allergiya» diaqnozundan evvel hamisl"}],
+    "rhinotracheitis": [{type: "paired", nodes: ["UQA", "Fluoresein testi"], reason: "UQA = sistemli qiymetlendirme + fluoresein = buynuz qisa xoralarinin istisna edilmesi. Goz simptomlarinda her ikisi mecburidir"}, {type: "sequential", nodes: ["Fluoresein (+, xora)", "Sirmer testi"], reason: "Xora askarlanib → gozyasi istehsalini qiymetlendirmek (catismazliq → xronik residivler)"}],
+    "gingivostomatitis": [{type: "sequential", nodes: ["SNAP Combo (FIV/FeLV)", "UQA + Biokimya"], reason: "FIV/FeLV statusu = proqnoz ve taktika → UQA/biokimya xronik iltihabi qiymetlendirir"}, {type: "sequential", nodes: ["Dis rentgeni", "Biopsiya + histologiya"], reason: "Rentgen rezorbtiv zedelenmeleri axtarir → biopsiya atipik zedelenmelerde neoplaziyanl istisna edir"}],
+    "flea_allergy": [{type: "sequential", nodes: ["Mueayine (bireler/necis)", "Deri qasimasi"], reason: "Birelerin vizualizasiyasi → qasima museayid parazitleri istisna edir (Demodex, Sarcoptes)"}],
+    "otitis": [{type: "paired", nodes: ["Otoskopiya", "Qulaq mezmununun sitologiyasi"], reason: "Otoskopiya = vizual qiymetlendirme, sitologiya = floranin mueyyen edilmesi. Birlikde mualice taktikasini mueyyen edir"}, {type: "sequential", nodes: ["Sitologiya (coplar)", "Bak. ekin + antibioqramma"], reason: "Cop florasi (Pseudomonas) → ekin mecburidir, cunki cox vaxt multirezistentdir"}],
+    "otodectosis": [{type: "sequential", nodes: ["Otoskopiya/mikroskopiya", "Sitologiya"], reason: "Geneleri tesdiq etmek → ikincili infeksiyanl (bakteriyalar, mayalar) qiymetlendirmek"}],
+    "conjunctivitis": [{type: "paired", nodes: ["Fluoresein testi", "Sirmer testi"], reason: "Fluoresein = xora, Sirmer = quruluq. Her ikisi her hansı konyunktivitde lazimdir — ciddi patologiyalari istisna edir"}],
+    "gastritis": [{type: "paired", nodes: ["UQA", "Biokimya"], reason: "Esas cut: iltihab + metabolik profil (qusmada elektrolitler, boyrekler, qaraciyer)"}, {type: "sequential", nodes: ["Rentgen (yad cisim yoxdur)", "USM + SNAP cPL/fPL"], reason: "Yad cisim istisna olunub → USM ve pankreatik lipaza diger sebebleri axtarir"}],
+    "dental_calculus": [{type: "paired", nodes: ["UQA", "Biokimya"], reason: "Agiz boslugu sanasiyasi ucun narkozdan evvel emeliyyatonussu minimum"}],
+    "constipation": [{type: "sequential", nodes: ["Rentgen (meqakolon?)", "Biokimya (K+, Ca2+)"], reason: "Rentgen dereceni qiymetlendirir → biokimya metabolik sebebleri axtarir (hipokaliemiya, hiperkalsemiya)"}],
+    "abscess": [{type: "sequential", nodes: ["Punktat sitologiyasi", "Bak. ekin"], reason: "Sitologiya irinli xarakteri tesdiq edir → ekin torediciini ve hessasligi mueyyen edir"}],
+    "cystitis": [{type: "paired", nodes: ["Sidik analizi", "Sidik kisesi USM"], reason: "Sidik analizi = sidiyin terkibi, USM = struktur deyisiklikler. Birlikde SYI, daslar, IPK-ni diferensiasiya edir"}, {type: "sequential", nodes: ["Sidik analizi (bakteriuriya)", "Sidik bak. ekini (sistosentez)"], reason: "Sidikde bakteriyalar → ekin torediciini mueyyen edir. Dequqluq ucun yalniz sistosentezle goturmek"}],
+    "atopic_dermatitis": [{type: "paired", nodes: ["Qasima", "Sitologiya", "Vud lampasi/ekin"], reason: "Uc istisna: parazitler + infeksiyalar + dermatofitoz. Atopiya — istisna diaqnozudur"}]
+};
+
+// Type labels
+const CHAIN_TYPE_LABELS = {
+    "sequential": "ARDICI",
+    "paired": "CÜTLÜK / BİRLİKDƏ",
+    "confirmatory": "SKRİNİNQ → TƏSDİQ"
+};
+
 // ===== STATE =====
 let selectedDiagId = null;
 let activeCategory = "all";
@@ -2840,6 +2941,9 @@ function renderDetail(id) {
         html += renderSection("additional", "&#128300;", "ƏLAVƏ MÜAYİNƏLƏR",
             "Gosterislere gore — atipik gedisatda, residivlerde", d.additional);
     }
+
+    // Chains
+    html += renderChains(d);
 
     if (d.differential.length > 0) {
         html += `
@@ -3117,6 +3221,49 @@ function bypassSave() {
 
 function closeModal() {
     document.getElementById("modalOverlay").classList.remove("visible");
+}
+
+
+function renderChains(d) {
+    const chains = CHAINS_DATA[d.id];
+    if (!chains || chains.length === 0) return "";
+
+    let html = `
+        <div class="section section-chains">
+            <div class="section-header">
+                <div class="section-icon">&#128279;</div>
+                <div>
+                    <div class="section-title">MÜAYİNƏ ƏLAQƏLƏRI</div>
+                    <div class="section-subtitle">Hansı testlər birlikdə və hansı ardıcıllıqla işləyir</div>
+                </div>
+            </div>`;
+
+    chains.forEach(ch => {
+        const typeClass = ch.type;
+        const typeLabel = CHAIN_TYPE_LABELS[ch.type] || ch.type;
+
+        html += `<div class="chain-card">`;
+        html += `<div class="chain-type-badge ${typeClass}">${typeLabel}</div>`;
+        html += `<div class="chain-flow">`;
+
+        ch.nodes.forEach((node, i) => {
+            html += `<div class="chain-node">${node}</div>`;
+            if (i < ch.nodes.length - 1) {
+                if (ch.type === "paired") {
+                    html += `<span class="chain-plus">+</span>`;
+                } else {
+                    html += `<span class="chain-arrow">&#8594;</span>`;
+                }
+            }
+        });
+
+        html += `</div>`;
+        html += `<div class="chain-reason">${ch.reason}</div>`;
+        html += `</div>`;
+    });
+
+    html += `</div>`;
+    return html;
 }
 
 function renderSection(type, icon, title, subtitle, tests) {
