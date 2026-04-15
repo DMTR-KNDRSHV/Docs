@@ -4070,6 +4070,857 @@ const CDSS_DB = [
             "İnfeksion limfadenit — sitologiya (neytrofillər, makrofaqlar)",
             "Leykemiya — ÜQA, qan yaxması"
         ]
+    },
+
+    // ==================== OPHTHALMOLOGY — oftalmologiya (əlavə) ====================
+    {
+        id: "uveitis",
+        name: "Uveit",
+        category: "ophth",
+        count: 10,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Uveit sistemli xəstəliyin təzahürü ola bilər (infeksiya, autoimmun proses, neoplaziya). Səbəbin diaqnostikası olmadan — residiv və görmənin itirilməsi riski yüksəkdir.",
+        mandatory: [
+            { name: "Tonometriya", desc: "Gözdaxili təzyiq: uveit GDT-ni azaldır, lakin ikincili qlaukoma artırır. Taktikanı müəyyən edir.", available: true },
+            { name: "Biomikroskopiya / göz müayinəsi", desc: "Ön kameranın qiymətləndirilməsi: presipitatlar, hipopion, fibrin, sinexiyalar.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Sistemli iltihabın, leykositozun aşkarlanması (infeksion mənşə).", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Böyrək/qaraciyər funksiyasının qiymətləndirilməsi, metabolik səbəblərin istisna edilməsi.", available: true },
+            { name: "SNAP Combo FeLV/FIV", desc: "Pişiklərdə — retroviruslar uveitin tez-tez rast gəlinən səbəbidir.", available: true },
+            { name: "SNAP 4Dx", desc: "İtlərdə — erlixioz, anaplazmoz, Laym xəstəliyi uveitə səbəb ola bilər.", available: true },
+            { name: "Şirmer testi", desc: "Quru keratokonyunktivit uveiti müşayiət edə bilər.", available: true }
+        ],
+        additional: [
+            { name: "Göz USM", desc: "Qeyri-şəffaf mühitlərdə — arxa strukturların qiymətləndirilməsi, torlu qişanın ayrılması, gözdaxili kütlələr.", available: true },
+            { name: "PZR (gözdaxili maye)", desc: "İnfeksion agentin identifikasiyası (toksoplazmoz, herpes, FCoV).", available: false }
+        ],
+        differential: [
+            "Qlaukoma — tonometriya (GDT qlaukomada yüksəlir, uveitdə azalır)",
+            "Gözdaxili neoplaziya — göz USM",
+            "İkincili uveitli buynuz qişa xorası — flüoresein testi",
+            "Sistemli infeksiya — ÜQA, serologiya"
+        ]
+    },
+    {
+        id: "globe_atrophy",
+        name: "Göz almasının subatrofiyası",
+        category: "ophth",
+        count: 22,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Göz almasının geri dönməz kiçilməsi. Diaqnostika qalıq görmənin qiymətləndirilməsinə və gözdaxili ağırlaşmaların istisna edilməsinə yönəlib.",
+        mandatory: [
+            { name: "Göz müayinəsi (oftalmoskopiya)", desc: "Atrofiyanın dərəcəsinin, ön və arxa strukturların vəziyyətinin qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Tonometriya", desc: "GDT adətən azalır. Artım ikincili qlaukomaya işarə edə bilər.", available: true },
+            { name: "Göz USM", desc: "Qeyri-şəffaf mühitlərdə gözdaxili strukturların qiymətləndirilməsi, neoplaziyanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Histologiya", desc: "Enuklerasiyada — gözdaxili şişin istisna edilməsi.", available: false }
+        ],
+        differential: [
+            "Mikroftalm (anadangəlmə) — anamnez, ikitərəfli zədələnmə",
+            "Endoftalmit → subatrofiya — travma/infeksiya anamnezi",
+            "Gözdaxili neoplaziya — göz USM"
+        ]
+    },
+    {
+        id: "proptosis",
+        name: "Proptoz (göz almasının düşməsi)",
+        category: "ophth",
+        count: 5,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Təcili vəziyyət. Repozisiya ilə gecikdirmə gözün itirilməsi riskini artırır. Gözün həyat qabiliyyətini tez qiymətləndirmək və müşayiətedici travmaları istisna etmək lazımdır.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Göz almasının bütövlüyü, bəbək refleksi, gözdənkənar əzələlər (>2 əzələnin cırılması — pis proqnoz).", available: true },
+            { name: "Kəllə rentgeni", desc: "Travmatik mənşədə orbital və kəllə sınıqlarının istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Repozisiya/enuklerasiyadan əvvəl əməliyyatönüsü qiymətləndirmə.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönüsü profil, politravmada ümumi vəziyyətin qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Göz USM", desc: "Arxa strukturların qiymətləndirilməsi, hemoftalm, torlu qişanın ayrılması.", available: true },
+            { name: "Orbit KT", desc: "Mürəkkəb sınıqlarda orbital sümük strukturlarının ətraflı qiymətləndirilməsi.", available: false }
+        ],
+        differential: [
+            "Retrobulbar abses/şiş — ekzoftalm (proptoz deyil, tədricən inkişaf edir)",
+            "Buftalm (qlaukoma) — gözün yerində böyüməsi, GDT yüksəlir"
+        ]
+    },
+    {
+        id: "panophthalmitis",
+        name: "Panoftalmit",
+        category: "ophth",
+        count: 5,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Gözün bütün qişalarının total irinli iltihabı. Orbital selülit və sepsis təhlükəsi. Adətən enuklerasiya tələb edir.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Diffuz ödem, irinli ifrazat, xemoz, ağrı. Enuklerasiya göstərişlərinin qiymətləndirilməsi.", available: true },
+            { name: "ÜQA", desc: "Sistemli iltihabi cavabın qiymətləndirilməsi, leykositoz, sola meyl — sepsis əlamətləri.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Sistemli iltihab zamanı orqanların funksiyasının qiymətləndirilməsi.", available: true },
+            { name: "Göz USM", desc: "Göz alması və retrobulbar sahənin qiymətləndirilməsi.", available: true },
+            { name: "Qanda qlükoza", desc: "Hipoqlikemiya sepsis markeri kimi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Törədicinin müəyyən edilməsi və antibiotiklərə həssaslığın təyini (enuklerasiyada material).", available: false },
+            { name: "Histologiya", desc: "Enuklerasiyadan sonra — səbəb kimi neoplaziyanın istisna edilməsi.", available: false }
+        ],
+        differential: [
+            "Endoftalmit — iltihab daxili strukturlarla məhdudlaşır",
+            "Retrobulbar abses — ekzoftalm, ağız açarkən ağrı",
+            "İkincili iltihablı gözdaxili neoplaziya — göz USM"
+        ]
+    },
+    {
+        id: "cherry_eye",
+        name: "Gözyaşı vəzisinin prolapsı (Cherry Eye)",
+        category: "ophth",
+        count: 8,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Üçüncü göz qapağı vəzisinin düşməsi. Təcili deyil, lakin quru keratokonyunktivitin qarşısını almaq üçün cərrahi korreksiya tələb edir.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Vəzinin prolapsının vizualizasiyası. Üçüncü göz qapağı və konyunktivanın vəziyyətinin qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Şirmer testi", desc: "Əməliyyatdan əvvəl baza gözyaşı istehsalı — əməliyyatdan sonra nəzarət.", available: true },
+            { name: "Flüoresein testi", desc: "Xroniki prolapda buynuz qişa zədələnməsinin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Konyunktiva sitologiyası", desc: "İfadəli iltihab zamanı — bakterial/allergik konyunktivitin istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Üçüncü göz qapağının neoplazmı — sitologiya, biopsiya",
+            "Follikulyar konyunktivit — vizual olaraq fərqlənir (follikullar, kütlə deyil)",
+            "Üçüncü göz qapağı qığırdağının eversiyası — qığırdaq vəzisiz çevrilir"
+        ]
+    },
+    {
+        id: "pannus",
+        name: "Pannus (xroniki səthi keratit)",
+        category: "ophth",
+        count: 8,
+        species: "İtlər (alman ovçarka)",
+        alertLevel: "soft",
+        alertReason: "Xroniki immunaracılıqlı xəstəlik. Müalicəsiz korluğa aparır. Ömür boyu terapiya, nəzarət tələb edir.",
+        mandatory: [
+            { name: "Göz müayinəsi (yarıqlı lampa)", desc: "Buynuz qişanın damarlanması, piqmentasiyası və bulanıqlaşması. Zədələnmə dərəcəsinin qiymətləndirilməsi.", available: true },
+            { name: "Flüoresein testi", desc: "Steroidlərin təyinindən əvvəl buynuz qişa xorasının istisna edilməsi (epitel defekti).", available: true }
+        ],
+        recommended: [
+            { name: "Şirmer testi", desc: "Müşayiətedici quru keratokonyunktivitin istisna edilməsi (gözyaşı vəzisinin plazmoması).", available: true }
+        ],
+        additional: [
+            { name: "Buynuz qişa sitologiyası", desc: "Limfoplazmositar infiltrat immunaracılıqlı mənşəni təsdiq edir.", available: true },
+            { name: "Histologiya", desc: "Nadir hallarda lazımdır, atipik gedişdə.", available: false }
+        ],
+        differential: [
+            "Xoralı keratit — flüoresein-pozitiv defekt",
+            "Degenerativ pannus (endotelial distrofiya) — fərqli lokalizasiya",
+            "Piqmentoz keratit (braxisefallar) — fərqli patogenez, damarlanma yoxdur"
+        ]
+    },
+
+    // ==================== ORTHOPEDICS / SURGERY — ortopediya/cərrahiyyə (əlavə) ====================
+    {
+        id: "perineal_hernia",
+        name: "Perineal yırtıq",
+        category: "ortho",
+        count: 9,
+        species: "İtlər (erkəklər)",
+        alertLevel: "soft",
+        alertReason: "Daha çox kastratsiya olunmamış erkək itlərdə rast gəlinir. Sidik kisəsini (təcili!) və ya bağırsağı ehtiva edə bilər. Cərrahi korreksiya tələb edir.",
+        mandatory: [
+            { name: "Rektal müayinə + palpasiya", desc: "Yırtıq tərkibinin müəyyən edilməsi, çanaq diafragmasının qiymətləndirilməsi.", available: true },
+            { name: "Rentgen", desc: "Yırtıq kisəsinin tərkibinin müəyyən edilməsi üçün icmal rentgenoqrafiya (sidik kisəsi, bağırsaq).", available: true }
+        ],
+        recommended: [
+            { name: "USM", desc: "Yırtıq kisəsindəki orqanların müəyyən edilməsi, prostat vəzisinin qiymətləndirilməsi.", available: true },
+            { name: "ÜQA", desc: "Əməliyyatönüsü profil.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Böyrək funksiyasının qiymətləndirilməsi (sidik kisəsinin retrofleksiyasında — postrenal azotemiya).", available: true }
+        ],
+        additional: [
+            { name: "ÜSA", desc: "Sidik kisəsinin cəlb olunması zamanı — sidiyin qiymətləndirilməsi, infeksiyanın istisna edilməsi.", available: true }
+        ],
+        differential: [
+            "Perineal nahiyənin şişi — sitologiya, USM",
+            "Qasıq yırtığı — fərqli lokalizasiya",
+            "Prostat vəzisinin hiperplaziyası — prostat USM"
+        ]
+    },
+    {
+        id: "inguinal_hernia",
+        name: "Qasıq yırtığı",
+        category: "ortho",
+        count: 16,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Bağırsaq, uşaqlıq, sidik kisəsi ehtiva edə bilər. Boğulma — təcili vəziyyət. Planlı cərrahi korreksiya tövsiyə olunur.",
+        mandatory: [
+            { name: "Palpasiya", desc: "Tərkibin, düzəldilmə qabiliyyətinin, ağrılılığın qiymətləndirilməsi (boğulma əlamətləri).", available: true },
+            { name: "USM", desc: "Yırtıq kisəsinin tərkibinin vizualizasiyası və peristaltikanın qiymətləndirilməsi (bağırsağın həyat qabiliyyəti).", available: true }
+        ],
+        recommended: [
+            { name: "Rentgen", desc: "Bağırsağın cəlb olunmasına şübhə zamanı icmal rentgenoqrafiya (qaz, səviyyələr).", available: true },
+            { name: "ÜQA", desc: "Əməliyyatönüsü minimum. Boğulmada leykositoz.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönüsü profil, qusmada elektrolitlər.", available: true }
+        ],
+        additional: [
+            { name: "Koaquloqramma", desc: "Boğulmada DYL sindromuna şübhə zamanı.", available: false }
+        ],
+        differential: [
+            "Qasıq limfadenit — sitologiya, USM (limfa düyünü, yırtıq deyil)",
+            "Qasıq nahiyəsinin lipoması — sitologiya (yağ hüceyrələri)",
+            "Abses — sitologiya, USM (hiperekogen tərkib)"
+        ]
+    },
+    {
+        id: "umbilical_hernia",
+        name: "Göbək yırtığı",
+        category: "ortho",
+        count: 7,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Adətən təcili deyil, tez-tez anadangəlmə. Kiçik yırtıqlar (<1 sm) müşahidə oluna bilər. Böyüklərdə — boğulma riski, planlı cərrahiyyə.",
+        mandatory: [
+            { name: "Palpasiya", desc: "Yırtıq halqasının ölçüsü, tərkibin düzəldilmə qabiliyyəti, ağrılılığın qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "USM", desc: "Böyük yırtıqlarda — tərkibin müəyyən edilməsi (piy vs bağırsaq).", available: true }
+        ],
+        additional: [
+            { name: "Rentgen", desc: "Bağırsağın boğulmasına şübhə zamanı.", available: true }
+        ],
+        differential: [
+            "Göbək nahiyəsinin absesi — ağrılılıq, hipertermiya",
+            "Kriptorxizm (dərialtı) — palpasiya, USM"
+        ]
+    },
+    {
+        id: "osteochondrodystrophy",
+        name: "Osteoxondrodistrofiya",
+        category: "ortho",
+        count: 10,
+        species: "Pişiklər (skottiş-fold)",
+        alertLevel: "soft",
+        alertReason: "Skottiş-foldlarda genetik xəstəlik. Oynaqların proqressiv deformasiyası, ağrı sindromu. Müalicə palliativdir.",
+        mandatory: [
+            { name: "Ətrafların və quyruğun rentgeni", desc: "Ekzostozlar, oynaqların deformasiyası, oynaq aralıqlarının daralması. Quyruq — erkən lokalizasiya.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Ağrı sindromunun kəskinləşməsində sistemli iltihabın istisna edilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "QSİƏP təyin etməzdən əvvəl baza profil (böyrək, qaraciyər funksiyası).", available: true }
+        ],
+        additional: [
+            { name: "KT", desc: "Cərrahi müdaxilənin planlaşdırılmasında sümük dəyişikliklərinin ətraflı qiymətləndirilməsi.", available: false }
+        ],
+        differential: [
+            "Osteoartrit — rentgen (ekzostozsuz degenerativ dəyişikliklər)",
+            "Osteoxondromatoz — rentgen (çoxsaylı ekzostozlar, başqa cinslər)",
+            "Mukopolisaxaridoz — rentgen, sidikdə QAQ analizi"
+        ]
+    },
+    {
+        id: "osteomyelitis",
+        name: "Osteomielit",
+        category: "ortho",
+        count: 5,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Sümük toxumasının infeksiyası. Tez-tez açıq sınıqlardan, implantlı cərrahiyyədən sonra. Uzunmüddətli antibiotikoterapiya tələb edir.",
+        mandatory: [
+            { name: "Rentgen", desc: "Sümüyün lizisi, periostal reaksiya, sekvestrlər. Dinamikada nəzarət.", available: true },
+            { name: "ÜQA", desc: "Leykositoz, sola meyllə neytrofiliya — aktiv infeksiyanın markerləri.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Ümumi zülal, albumin, SRZ — sistemli iltihabın qiymətləndirilməsi.", available: true },
+            { name: "Sitologiya", desc: "Zədələnmiş sahədən aspirat — irinli iltihab, mikrofloranın tipi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Törədicinin identifikasiyası və antibiotiklərə həssaslığın təyini.", available: false },
+            { name: "KT", desc: "Sümük destruksiyasının və sekvestirlərin ətraflı qiymətləndirilməsi.", available: false },
+            { name: "Histologiya", desc: "Atipik mənzərədə osteosarkomadan differensiasiya.", available: false }
+        ],
+        differential: [
+            "Osteosarkoma — rentgen (lizis + produktiv reaksiya, fərqli model), sitologiya",
+            "Göbələk osteomieliti — sitologiya, bak. əkin",
+            "Hipertrofik osteodistrofiya (HOD) — rentgen (metafizlər, cavan itlər)"
+        ]
+    },
+    {
+        id: "arthritis",
+        name: "Artrit",
+        category: "ortho",
+        count: 15,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Oynaqların iltihabı. İnfeksion, immunaracılıqlı və ya degenerativ ola bilər. Tipin müəyyən edilməsi terapiyanın seçimi üçün vacibdir.",
+        mandatory: [
+            { name: "Zədələnmiş oynaqların rentgeni", desc: "Oynaq aralığının daralması, osteofitlər, eroziyalar, efuzyon. Mərhələləmə.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Septik artritdə leykositoz. İmmunaracılıqlı poliartritdə anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "QSİƏP terapiyasından əvvəl baza profil. Sistemli xəstəliklərin istisna edilməsi.", available: true },
+            { name: "SNAP 4Dx", desc: "İtlərdə — poliartritin səbəbi kimi borrelioz.", available: true }
+        ],
+        additional: [
+            { name: "Sinovial maye analizi", desc: "Sitologiya: neytrofillər (septik), mononuklearlar (immunaracılıqlı).", available: true },
+            { name: "Sinovianın bak. əkini", desc: "Septik artritdə — törədicinin identifikasiyası.", available: false }
+        ],
+        differential: [
+            "Osteoartrit (degenerativ) — rentgen (osteofitlər, skleroz)",
+            "İmmunaracılıqlı poliartrit — bir neçə oynaqdan sinovi analizi",
+            "Septik artrit — sinovial maye (neytrofillər, bakteriyalar)",
+            "Laym xəstəliyi — SNAP 4Dx, anamnez"
+        ]
+    },
+
+    // ==================== GASTROENTEROLOGY — qastroenterologiya (əlavə) ====================
+    {
+        id: "gi_atony",
+        name: "Mədə və bağırsağın atoniyası",
+        category: "gastro",
+        count: 16,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "MBT-nin motorikasının pozulması. İkincili ola bilər (elektrolit pozuntuları, əməliyyatsonrası, dərman). Səbəbi aşkar etmək vacibdir.",
+        mandatory: [
+            { name: "Qarın boşluğu rentgeni", desc: "Bağırsaq ilgəklərinin şişməsi, qaz və maye toplanması. Obstruksiyanın istisna edilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Elektrolitlər (K+, Ca2+) — hipokaliemiya atoniyanın tez-tez rast gəlinən səbəbidir.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "İltihabi prosesin, peritonitin istisna edilməsi.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Real vaxt rejimində peristaltikanın qiymətləndirilməsi, mexaniki obstruksiyanın istisna edilməsi.", available: true },
+            { name: "Qanda qlükoza", desc: "Hipoqlikemiya motorikanı poza bilər.", available: true }
+        ],
+        additional: [
+            { name: "Kontrastlı rentgen", desc: "Qismən obstruksiyaya şübhə zamanı barium tranzitinin qiymətləndirilməsi.", available: true }
+        ],
+        differential: [
+            "Mexaniki bağırsaq keçməzliyi — rentgen (maye səviyyələri), USM",
+            "Peritonit — ÜQA (leykositoz), USM (sərbəst maye)",
+            "Parvoviruslu enterit — SNAP Parvo",
+            "Hipokaliemiya — biokimya (K+)"
+        ]
+    },
+    {
+        id: "gastric_ulcer",
+        name: "Mədə / 12-barmaq bağırsaq xorası",
+        category: "gastro",
+        count: 4,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Perforasiya və peritonitə gətirib çıxara bilər. Tez-tez QSİƏP, şişlər, qaraciyər/böyrək xəstəlikləri ilə əlaqəlidir. Səbəbi aşkar etmək lazımdır.",
+        mandatory: [
+            { name: "ÜQA", desc: "Anemiya (kəskin/xroniki qan itkisi), trombositoz. Anemiyanın ağırlığı taktikanı müəyyən edir.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "MBT-də qanaxma zamanı sidik cövhəri yüksəlir, qaraciyər/böyrək funksiyası — xoraların tez-tez rast gəlinən səbəbidir.", available: true }
+        ],
+        recommended: [
+            { name: "Qarın boşluğu rentgeni", desc: "Perforasiyada sərbəst qaz. Yad cisimlər.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Mədə divarının qalınlaşması, sərbəst maye, qaraciyər və böyrəküstü vəzilərin qiymətləndirilməsi.", available: true },
+            { name: "Qan yaxması", desc: "Eritrositlərin morfologiyası: regenerativ vs qeyri-regenerativ anemiya.", available: true }
+        ],
+        additional: [
+            { name: "Endoskopiya", desc: "Xoranın vizualizasiyası, biopsiya. Diaqnostikanın qızıl standartı.", available: false },
+            { name: "Koaquloqramma", desc: "İfadəli qanaxmada — hemostazın qiymətləndirilməsi.", available: false }
+        ],
+        differential: [
+            "Mədə şişi — USM, endoskopiya + biopsiya",
+            "Yad cisim — rentgen, USM",
+            "Hemorragik qastroenterit (AHDS) — anamnez, sürətli başlanğıc",
+            "Koaqulopatiya — koaquloqramma"
+        ]
+    },
+    {
+        id: "ibd",
+        name: "IBD (bağırsağın iltihabi xəstəliyi)",
+        category: "gastro",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Bağırsağın xroniki iltihabı. İstisna diaqnozu — infeksion, parazitar və metabolik səbəbləri istisna etmək lazımdır.",
+        mandatory: [
+            { name: "ÜQA", desc: "Eozinofil tipində eozinofiliya, xroniki gedişdə anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Ağır IBD-də hipoalbuminemiya (bağırsaqdan zülal itkisi), folat, B12.", available: true }
+        ],
+        recommended: [
+            { name: "ÜSA", desc: "Hipoalbuminemiyanın səbəbi kimi böyrək proteinuriyasının istisna edilməsi.", available: true },
+            { name: "Qarın boşluğu USM", desc: "Bağırsaq divarının qalınlaşması (>3mm), laylılığın itirilməsi, limfadenopatiya.", available: true },
+            { name: "SNAP fPL", desc: "Pişiklərdə — müşayiətedici pankreatitin istisna edilməsi (triadit).", available: true },
+            { name: "SNAP cPL", desc: "İtlərdə — pankreatitin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Endoskopiya + biopsiya", desc: "Qızıl standart: iltihabın tipinin histoloji təsdiqi.", available: false },
+            { name: "Histologiya", desc: "İltihabi infiltratın tipinin müəyyən edilməsi (limfoplazmositar, eozinofil).", available: false },
+            { name: "PZR (patoqen paneli)", desc: "Xroniki diareyanın infeksion səbəblərinin istisna edilməsi.", available: false }
+        ],
+        differential: [
+            "Bağırsaq limfoması (pişiklər) — histologiya (IBD ilə mürəkkəb differensiasiya)",
+            "Qida intolerantlığı — eliminasion pəhriz (8 həftə)",
+            "Xroniki infeksiyalar (Giardia, Tritrichomonas) — PZR, koproskopiya",
+            "MV-nin ekzokrin çatışmazlığı — tripsinəbənzər immunoreaktivlik (TLI)"
+        ]
+    },
+    {
+        id: "helminthiasis",
+        name: "Helmint invaziyası / Helmintioz",
+        category: "gastro",
+        count: 10,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Geniş yayılmış xəstəlik. Bala it/pişiklərdə ağır anemiya və intoksikasiyaya səbəb ola bilər. Zoonoz potensialı.",
+        mandatory: [
+            { name: "Koproskopiya (flotasiya)", desc: "Helmint yumurtalarının aşkarlanması. Flotasiya metodu — standart.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Eozinofiliya (miqrasion faza), anemiya (ankilostomalar, trixosefallar).", available: true },
+            { name: "Qan yaxması", desc: "Bala itlərdə kütləvi invaziyada regenerativ anemiya.", available: true }
+        ],
+        additional: [
+            { name: "Qanın biokimyəvi analizi", desc: "Ağır invaziyada hipoalbuminemiya (zülal itkisi).", available: true },
+            { name: "PZR (parazitar panel)", desc: "Mənfi koproskopiyada, lakin yüksək şübhədə.", available: false }
+        ],
+        differential: [
+            "Lyamblioz — koproskopiya (kistlər), PZR",
+            "Koksidioz — koproskopiya (oosistlər)",
+            "Qida intolerantlığı — eliminasion pəhriz",
+            "IBD — endoskopiya, biopsiya"
+        ]
+    },
+
+    // ==================== RESPIRATORY — respirator (əlavə) ====================
+    {
+        id: "pharyngitis",
+        name: "Faringit",
+        category: "resp",
+        count: 17,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Udlağın iltihabı. Adətən infeksiya, yad cisim, qıcıqlanmaya ikincili. Müalicə simptomatikdir, lakin ciddi səbəbləri istisna etmək vacibdir.",
+        mandatory: [
+            { name: "Ağız boşluğu və udlağın müayinəsi", desc: "Hiperemiya, ödem, yad cisimlər, abseslər, neoplaziyalar.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Bakterial infeksiyada leykositoz.", available: true },
+            { name: "Boyun rentgeni (yan proyeksiya)", desc: "Yad cismin, retrofaringeal absesin, törəmələrin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Endoskopiya", desc: "Tam müayinə mümkün olmadıqda udlaq və qırtlağın vizualizasiyası.", available: false },
+            { name: "Bak. əkin", desc: "İrinli faringitdə — törədicinin müəyyən edilməsi.", available: false }
+        ],
+        differential: [
+            "Udlağın yad cismi — müayinə, rentgen",
+            "Tonzillit — müayinə (böyümüş badamcıqlar)",
+            "Retrofaringeal abses — rentgen, USM",
+            "Neoplaziya — müayinə, sitologiya"
+        ]
+    },
+    {
+        id: "pleuritis",
+        name: "Plevrit",
+        category: "resp",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Plevranın iltihabı, efuzyon ola bilər. İnfeksion (piotorakс), neoplastik və ya kardiogen ola bilər. Səbəbin müəyyən edilməsi kritikdir.",
+        mandatory: [
+            { name: "Sinə qəfəsi rentgeni", desc: "Plevral efuzyon, ürək kölgəsinin yerdəyişməsi, pay atelektazı.", available: true },
+            { name: "ÜQA", desc: "Leykositoz (infeksiya), anemiya (xroniki gediş, neoplaziya).", available: true }
+        ],
+        recommended: [
+            { name: "Sinə qəfəsi USM", desc: "Efuzyon həcminin qiymətləndirilməsi, torakosentez üçün istiqamət, kütlələrin istisna edilməsi.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Ümumi zülal, albumin, orqanların funksiyasının qiymətləndirilməsi.", available: true },
+            { name: "Plevral efuzyon sitologiyası", desc: "Efuzyon tipinin müəyyən edilməsi: transudat, eksudat, xilotoraks, neoplastik.", available: true }
+        ],
+        additional: [
+            { name: "Efuzyon bak. əkini", desc: "İrinli efuzyonda — törədicinin identifikasiyası.", available: false },
+            { name: "SNAP Combo FeLV/FIV", desc: "Pişiklərdə — retroviruslar limfoma (mediastinal) ilə əlaqəlidir.", available: true },
+            { name: "Exokardioqrafiya", desc: "Kardiogen efuzyonun istisna edilməsi (DKMP, perikardit).", available: true }
+        ],
+        differential: [
+            "Piotorakс — efuzyon sitologiyası (degenerativ neytrofillər, bakteriyalar)",
+            "Mediastinal limfoma — efuzyon sitologiyası, rentgen",
+            "Xilotoraks — efuzyon analizi (triqliseridlər > serumdan)",
+            "Durğunluqlu ürək çatışmazlığı — exokardioqrafiya"
+        ]
+    },
+
+    // ==================== ONCOLOGY — onkologiya (əlavə) ====================
+    {
+        id: "oral_carcinoma",
+        name: "Ağız boşluğu karsinoması",
+        category: "onco",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Aqressiv şiş. Pişiklərdə — yastı hüceyrəli karsinoma ən tez-tez rast gəlinən. Erkən diaqnostika cərrahi müalicənin mümkünlüyünü müəyyən edir.",
+        mandatory: [
+            { name: "Ağız boşluğunun müayinəsi", desc: "Törəmənin vizualizasiyası, lokalizasiya, ölçü, sümüyə invaziya.", available: true },
+            { name: "Sitologiya (TİB / imprint)", desc: "Şişin tipinin müəyyən edilməsi: karsinoma, melanoma, fibrosarkoma.", available: true }
+        ],
+        recommended: [
+            { name: "Kəllə rentgeni", desc: "Çənə sümük strukturlarına invaziyanın qiymətləndirilməsi.", available: true },
+            { name: "Sinə qəfəsi rentgeni (3 proyeksiya)", desc: "Mərhələləmə: ağciyər metastazlarının istisna edilməsi.", available: true },
+            { name: "ÜQA", desc: "Əməliyyatönüsü qiymətləndirmə, xroniki qanaxmada anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Əməliyyatönüsü profil, orqanların funksiyası.", available: true }
+        ],
+        additional: [
+            { name: "Kəllə KT", desc: "Cərrahiyyənin planlaşdırılması üçün şişin yayılmasının ətraflı qiymətləndirilməsi.", available: false },
+            { name: "Histologiya", desc: "İnsizion biopsiyadan sonra son diaqnoz və qreyd.", available: false }
+        ],
+        differential: [
+            "Ağız boşluğunun melanoması — sitologiya (piqmentli hüceyrələr, lakin amelanotik olur)",
+            "Fibrosarkoma — sitologiya, histologiya",
+            "Epulis (akantomatoz ameloblastoma) — sitologiya, rentgen",
+            "Gingivit/stomatit — müayinə, həcmli törəmə yoxdur"
+        ]
+    },
+    {
+        id: "osteosarcoma",
+        name: "Osteosarkoma",
+        category: "onco",
+        count: 3,
+        species: "İtlər (iri cinslər)",
+        alertLevel: "soft",
+        alertReason: "İtlərdə ən tez-tez rast gəlinən bədxassəli sümük şişi. Yüksək metastatik potensial (ağciyərlər). Erkən amputasiya + kimyəvi terapiya proqnozu yaxşılaşdırır.",
+        mandatory: [
+            { name: "Zədələnmiş sümüyün rentgeni", desc: "Lizis və produktiv sümük reaksiyası, 'şam alovı', Kodman üçbucağı. Patoloji sınıq.", available: true },
+            { name: "Sinə qəfəsi rentgeni (3 proyeksiya)", desc: "Mərhələləmə: ağciyər metastazları (diaqnoz zamanı ~15%-də görünən metastazlar).", available: true }
+        ],
+        recommended: [
+            { name: "Sitologiya (sümüyün TİB-i)", desc: "Bədxassəlilik əlamətləri olan osteoblastlar. Amputasiyadan əvvəl təsdiq.", available: true },
+            { name: "ÜQA", desc: "Əməliyyatönüsü qiymətləndirmə, anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Qələvi fosfataza (proqnostik marker — yüksəlmə = pis proqnoz).", available: true }
+        ],
+        additional: [
+            { name: "Histologiya", desc: "Son diaqnoz və tip (osteoblastik, xondroblastik və s.).", available: false },
+            { name: "KT", desc: "Yayılmanın ətraflı qiymətləndirilməsi, ətraf saxlayan cərrahiyyənin planlaşdırılması.", available: false }
+        ],
+        differential: [
+            "Osteomielit — rentgen (oxşar mənzərə), sitologiya, bak. əkin",
+            "Xondrosarkoma — rentgen, histologiya (fərqli hüceyrə tipi)",
+            "Sümüyə metastazlar — rentgen (çoxsaylı ocaqlar), ilkin şişin axtarılması",
+            "Göbələk osteomieliti — sitologiya, bak. əkin"
+        ]
+    },
+
+    // ==================== UROLOGY — urologiya (əlavə) ====================
+    {
+        id: "aki",
+        name: "Kəskin böyrək çatışmazlığı (KBÇ)",
+        category: "uro",
+        count: 9,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Həyat üçün təhlükəli vəziyyət. Azotemiyanın sürətli artması, hiperkaliemiya. Dializ/aqressiv terapiya olmadan — letallıq yüksəkdir. Səbəbin müəyyən edilməsi proqnoza təsir edir.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Kreatinin, sidik cövhəri (sürətli artım), kalium (>7 kardiotoksiklik), fosfor.", available: true },
+            { name: "ÜSA", desc: "Xüsusi çəki (izostenuriya), çöküntü (silindirlər — kanalcıq zədələnməsi), qlükozuriya.", available: true },
+            { name: "ÜQA", desc: "Qeyri-regenerativ anemiya (XBX) vs normal hematokrit (KBÇ). Leykositoz (pielonefrit).", available: true }
+        ],
+        recommended: [
+            { name: "Böyrək USM", desc: "Böyrəklərin ölçüsü (KBÇ-də böyümüş vs XBX-də kiçilmiş), piyeloektaziya, nefrolitlər.", available: true },
+            { name: "Qanda qlükoza", desc: "Etilen qlikol hipoqlikemiyaya səbəb olur. Diabet müşayiətedici kimi.", available: true },
+            { name: "Qarın boşluğu rentgeni", desc: "Böyrəklərin ölçüsü, nefrolitlər, ureterolitlər.", available: true }
+        ],
+        additional: [
+            { name: "Qan qazları analizi", desc: "Metabolik asidoz — ağırlığı korreksiya ehtiyacını müəyyən edir.", available: false },
+            { name: "Koaquloqramma", desc: "Ağır KBÇ-də uremik koaqulopatiya.", available: false },
+            { name: "PZR (leptospiroz)", desc: "İtlərdə — leptospiroz KBÇ-nin tez-tez rast gəlinən səbəbi.", available: false }
+        ],
+        differential: [
+            "XBX-nin kəskinləşməsi — anamnez, USM-də böyrəklərin ölçüsü (XBX-də kiçik)",
+            "Postrenal obstruksiya — USM (hidronefoz, dolu sidik kisəsi)",
+            "Zəhərlənmə (etilen qlikol, zanbaqlar) — anamnez, sidikdə oksalatlar",
+            "Leptospiroz — serologiya, PZR"
+        ]
+    },
+    {
+        id: "fic",
+        name: "Pişiklərin idiopatik sistiti (İS / FIC)",
+        category: "uro",
+        count: 6,
+        species: "Pişiklər",
+        alertLevel: "soft",
+        alertReason: "<10 yaşlı pişiklərdə FLUTD-un ən tez-tez rast gəlinən səbəbi. Stress ilə əlaqəli. Residivləyən gediş. Erkək pişiklərdə obstruksiyanı istisna edin!",
+        mandatory: [
+            { name: "ÜSA", desc: "Hematuriya, proteinuriya. Bakteriuriyanın olmaması (steril iltihab). Kristalluriya.", available: true },
+            { name: "Sidik kisəsinin palpasiyası", desc: "Obstruksiyanın istisna edilməsi (erkək pişiklərdə dolmuş, ağrılı sidik kisəsi).", available: true }
+        ],
+        recommended: [
+            { name: "Sidik kisəsi USM", desc: "Divarın qalınlaşması, çöküntü, urolitlərin və törəmələrin istisna edilməsi.", available: true },
+            { name: "Rentgen", desc: "Rentgenokontrast urolitlər (oksalatlar, struvitlər).", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Böyrək funksiyası, xüsusilə residivləyən gedişdə.", available: true }
+        ],
+        additional: [
+            { name: "Sidik bak. əkini", desc: "Bakterial sistitin istisna edilməsi (>10 yaşlı pişiklərdə — tez-tez rast gəlinən səbəb).", available: false }
+        ],
+        differential: [
+            "Bakterial sistit — sidik bak. əkini (<10 yaşlı pişiklərdə — nadir ilkin)",
+            "Urolitiaz — rentgen, USM (daşlar)",
+            "Uretra obstruksiyası — palpasiya (dolmuş kisə), sidik ifrazının mümkünsüzlüyü",
+            "Sidik kisəsinin neoplaziyası — USM (törəmə), sitologiya"
+        ]
+    },
+
+    // ==================== DERMATOLOGY — dermatologiya (əlavə) ====================
+    {
+        id: "fungal_infection",
+        name: "Dərinin göbələk zədələnməsi",
+        category: "derm",
+        count: 11,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Dermatofitoz (dəmrov) — zoonoz xəstəlik. Müalicədən əvvəl diaqnozu təsdiq etmək vacibdir, çünki klinik olaraq digər dermatozlara bənzəyir.",
+        mandatory: [
+            { name: "Vud lampası", desc: "Skrininq: ~50% M. canis alma-yaşıl flüoresensiya verir. Mənfi nəticə istisna etmir.", available: true },
+            { name: "Dəri qaşıntısı / trixoskopiya", desc: "Zədələnmiş tüklər: tük gövdəsi ətrafında artrokonidilər.", available: true }
+        ],
+        recommended: [
+            { name: "Sitologiya", desc: "Zədələnmiş sahədən imprint-yaxma — maya göbələkləri (Malassezia).", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin (dermatofit kulturası)", desc: "Qızıl standart: dermatofit növünün identifikasiyası (DTM mühit).", available: false },
+            { name: "PZR (dermatofitlər)", desc: "Növün sürətli müəyyən edilməsi. Kulturanı tam əvəz etmir.", available: false },
+            { name: "Histologiya", desc: "Atipik gedişdə — bioptatda göbələk elementləri (PAS boyama).", available: false }
+        ],
+        differential: [
+            "Demodekoz — dəri qaşıntısı (Demodex gənələri)",
+            "Bakterial piodermiya — sitologiya (bakteriyalar, neytrofillər)",
+            "Allergik dermatit — anamnez, zədələnmələrin paylanması",
+            "Pemfiqus — sitologiya (akantolitik hüceyrələr)"
+        ]
+    },
+    {
+        id: "pododermatitis",
+        name: "Pododermatit",
+        category: "derm",
+        count: 4,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Pəncələrin dərisinin iltihabı. Çox səbəbli: allergiya, infeksiya (bakterial, göbələk), demodekoz, autoimmun, yad cisimlər.",
+        mandatory: [
+            { name: "Pəncələrin müayinəsi (barmaqarası sahələr)", desc: "Eritema, ödem, fistulalar, düyünlər. Paylanma (bir vs bir neçə pəncə).", available: true },
+            { name: "Sitologiya (imprint / yaxma)", desc: "Bakteriyalar (kokklar, çöplər), Malassezia, iltihabi hüceyrələr.", available: true }
+        ],
+        recommended: [
+            { name: "Dəri qaşıntısı", desc: "Demodekozun istisna edilməsi (D. canis — dərin qaşıntı).", available: true },
+            { name: "Pəncə rentgeni", desc: "Xroniki gedişdə — osteomielitin, yad cismin, neoplaziyanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Rezistent piodermiyada — həssaslığın müəyyən edilməsi.", available: false },
+            { name: "Histologiya", desc: "Düyünlü zədələnmədə — neoplaziyanın, autoimmun prosesin istisna edilməsi.", available: false }
+        ],
+        differential: [
+            "Demodekoz — dəri qaşıntısı (gənələr)",
+            "Allergik dermatit (atopiya) — anamnez, digər zonaların zədələnməsi",
+            "Yad cisim (ot qılçığı) — müayinə, rentgen, cərrahi reviziya",
+            "Barmağın yastı hüceyrəli karsinoması — rentgen (falangın lizisi)"
+        ]
+    },
+    {
+        id: "acral_dermatitis",
+        name: "Akral dermatit (yalama)",
+        category: "derm",
+        count: 3,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Yalama qranuloması. Davranış və/və ya tibbi komponent. Xroniki, müalicəyə rezistent. Orqanik səbəbi istisna etmək lazımdır.",
+        mandatory: [
+            { name: "Zədələnmənin müayinəsi", desc: "Sıx, alopesik, lixenifikasiya olmuş düyün distal ətraflarda.", available: true },
+            { name: "Sitologiya", desc: "İkincili bakterial infeksiyanın istisna edilməsi (dərin piodermiya).", available: true }
+        ],
+        recommended: [
+            { name: "Dəri qaşıntısı", desc: "Qaşınma səbəbi kimi demodekozun istisna edilməsi.", available: true },
+            { name: "Ətraf rentgeni", desc: "Periostal reaksiyanın, osteomielitin, yad cismin istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Dərin piodermiya tez-tez müşayiət edir — həssaslığın müəyyən edilməsi.", available: false },
+            { name: "Histologiya", desc: "Neoplaziyadan differensiasiya. Fibrozun dərinliyinin qiymətləndirilməsi.", available: false }
+        ],
+        differential: [
+            "Dəri şişi (histiositoma, mastositoma) — sitologiya, histologiya",
+            "Dərin piodermiya — sitologiya, bak. əkin",
+            "Demodekoz — dəri qaşıntısı",
+            "Göbələk infeksiyası — əkin"
+        ]
+    },
+
+    // ==================== REPRODUCTIVE — reproduktiv (əlavə) ====================
+    {
+        id: "pseudopregnancy",
+        name: "Yalançı hamiləlik (psevdoboğazlıq)",
+        category: "repro",
+        count: 3,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "İntakt dişi itlərdə fizioloji vəziyyət. Adətən öz-özünə keçir. İfadəli simptomlarda müalicə. Həqiqi hamiləliyi və piometranı istisna edin.",
+        mandatory: [
+            { name: "Uşaqlıq və yumurtalıqların USM", desc: "Həqiqi hamiləliyin və piometranın istisna edilməsi. Yumurtalıqların qiymətləndirilməsi (kistlər).", available: true }
+        ],
+        recommended: [
+            { name: "Süd vəzilərinin müayinəsi", desc: "Laktasiya, gərilmə, mastitin istisna edilməsi.", available: true },
+            { name: "ÜQA", desc: "İltihabi prosesin istisna edilməsi (mastit, endometrit).", available: true }
+        ],
+        additional: [
+            { name: "Qanın biokimyəvi analizi", desc: "İfadəli sistemli simptomlarda baza profil.", available: true }
+        ],
+        differential: [
+            "Həqiqi hamiləlik — USM (ürək döyüntülü döllər)",
+            "Piometra — USM (uşaqlıqda maye), ÜQA (leykositoz)",
+            "Mastit — müayinə (isti, ağrılı vəzilər), sekret sitologiyası",
+            "Hipotiroidizm — qalaktoreya əlamət ola bilər, T4"
+        ]
+    },
+    {
+        id: "vaginitis",
+        name: "Vaginit",
+        category: "repro",
+        count: 5,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Vagilanın iltihabı. Yeniyetmə dişi itlərdə tez-tez birinci tənasüldən sonra keçir. Yetkin heyvanlarda — anatomik anomaliyaları və piometranı istisna edin.",
+        mandatory: [
+            { name: "Vulva müayinəsi", desc: "İfrazat (xarakteri, rəngi), ödem, selikli qişanın hiperemiyası.", available: true },
+            { name: "Vaginal yaxmanın sitologiyası", desc: "Hüceyrə tipi (sikl fazasının müəyyən edilməsi), bakteriyalar, neytrofillər.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Sistemli iltihabın istisna edilməsi.", available: true },
+            { name: "USM", desc: "Piometranın, yumurtalıq kistlərinin, strikturanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Residivləyən gedişdə törədicinin identifikasiyası.", available: false },
+            { name: "Endoskopiya (vaginoskopiya)", desc: "Strikturanın, törəmələrin, anatomik anomaliyaların vizualizasiyası.", available: false }
+        ],
+        differential: [
+            "Piometra (açıq) — USM (uşaqlıqda maye), ÜQA (leykositoz)",
+            "Tənasül — vaginal yaxma sitologiyası (buynuzlaşmış hüceyrələr)",
+            "Vagina şişi — müayinə, sitologiya",
+            "Sidik yolları infeksiyası — ÜSA"
+        ]
+    },
+    {
+        id: "balanoposthitis",
+        name: "Balanopostit",
+        category: "repro",
+        count: 6,
+        species: "İtlər",
+        alertLevel: "info",
+        alertReason: "Cinsiyyət üzvünün başcığının və sünnət dərisinin iltihabı. Cüzi ifrazat tez-tez normaldır. Bol irinli ifrazat müayinə tələb edir.",
+        mandatory: [
+            { name: "Sünnət dərisi və cinsiyyət üzvünün müayinəsi", desc: "İfrazatın xarakteri, hiperemiya, eroziyalar, törəmələr, yad cisimlər.", available: true },
+            { name: "İfrazatın sitologiyası", desc: "Bakteriyalar, neytrofillər, epitel tipi. TVT-nin istisna edilməsi (transmissiv venerik şiş).", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "İfadəli sistemli simptomlarda və ya absesə şübhə zamanı.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin", desc: "Residivləyən və ya terapiyaya rezistent gedişdə.", available: false },
+            { name: "Histologiya", desc: "Törəmə aşkarlanan zaman — TVT, papillomanın istisna edilməsi.", available: false }
+        ],
+        differential: [
+            "TVT (transmissiv venerik şiş) — sitologiya (dairəvi hüceyrələr)",
+            "Sünnət dərisinin yad cismi — müayinə",
+            "Fimoz — müayinə (başcığın açılmasının mümkünsüzlüyü)",
+            "Cinsiyyət üzvünün şişi — müayinə, sitologiya"
+        ]
+    },
+
+    // ==================== INFECTIOUS — infeksion (əlavə) ====================
+    {
+        id: "dirofilariasis",
+        name: "Dirofilyarioz",
+        category: "infect",
+        count: 3,
+        species: "İtlər",
+        alertLevel: "soft",
+        alertReason: "Ürək helmintozu (Dirofilaria immitis). Sağ mədəcik çatışmazlığına və boş vena sindromuna gətirib çıxara bilər. Müalicə uzunmüddətli və risklidir.",
+        mandatory: [
+            { name: "SNAP 4Dx", desc: "D. immitis yetkin dişi qurdların antigeninin aşkarlanması. Standart skrininq testi.", available: true },
+            { name: "Qan yaxması", desc: "Mikrofilyariyaların aşkarlanması (bütün yoluxmuşlarda olmur). Modifikasiya olunmuş Knott testi.", available: true }
+        ],
+        recommended: [
+            { name: "Sinə qəfəsi rentgeni", desc: "Ağciyər arteriyalarının genişlənməsi, ürəyin sağ şöbələri. Ağırlığın mərhələlənməsi.", available: true },
+            { name: "Exokardioqrafiya", desc: "Ürəyin sağ şöbələrində və ağciyər arteriyalarında helmintlərin vizualizasiyası. Funksiyanın qiymətləndirilməsi.", available: true },
+            { name: "ÜQA", desc: "Eozinofiliya, xroniki gedişdə anemiya.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "Müalicə protokolundan əvvəl qaraciyər və böyrək funksiyası.", available: true }
+        ],
+        additional: [
+            { name: "ÜSA", desc: "İmmunkompleks qlomerulonefritdə proteinuriya.", available: true },
+            { name: "PZR", desc: "Növ differensiasiyası (D. immitis vs D. repens).", available: false }
+        ],
+        differential: [
+            "Angistrongilyoz — SNAP-test mənfi, fekallarda larva müayinəsi",
+            "DKMP — exokardioqrafiya (ürəkdə helmintlər yoxdur)",
+            "Digər etiologiyalı ağciyər hipertenziyası — exokardioqrafiya",
+            "Ağciyər arteriyalarının tromboemboliyası — rentgen, angioqrafiya"
+        ]
+    },
+    {
+        id: "tetanus",
+        name: "Tetanus",
+        category: "infect",
+        count: 3,
+        species: "İtlər / Pişiklər",
+        alertLevel: "hard",
+        alertReason: "Həyat üçün təhlükəli xəstəlik. Clostridium tetani — neyrotoksin. Əzələ rigidliyi, opistotonuz, qıcolmalar. İntensiv terapiya tələb edir. Pişiklər daha davamlıdır.",
+        mandatory: [
+            { name: "Klinik müayinə (nevrologiya)", desc: "Rigidlik, trismus, 'sardonik təbəssüm', üçüncü göz qapağının prolapsı, opistotonuz. Klinik diaqnoz.", available: true },
+            { name: "Yaranın müayinəsi", desc: "Giriş qapısının axtarılması (yara, abses). Yaranın müalicəsi — müalicənin bir hissəsi.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "İnfeksiyalaşmış yarada leykositoz. Stress-leykoqramma.", available: true },
+            { name: "Qanın biokimyəvi analizi", desc: "KFK (ağır qıcolmalarda rabdomioliz), böyrək funksiyası.", available: true },
+            { name: "Qanda qlükoza", desc: "Ağır qıcolmalar və anoreksiyada hipoqlikemiya.", available: true }
+        ],
+        additional: [
+            { name: "Bak. əkin (yaradan)", desc: "Cl. tetani — anaerob kultura (diaqnostika üçün nadir istifadə olunur).", available: false }
+        ],
+        differential: [
+            "Strixin zəhərlənməsi — anamnez, trismus yoxdur, fasiləli qıcolmalar",
+            "Meninqoensefalit — likvor analizi, MRT",
+            "Epileptik status — anamnez, tutmalar arasında rigidlik yoxdur",
+            "Hipokalsemiya (eklampsiya) — biokimya (Ca2+)"
+        ]
+    },
+
+    // ==================== NEUROLOGY — nevrologiya (əlavə) ====================
+    {
+        id: "discospondylitis",
+        name: "Diskospondilit",
+        category: "neuro",
+        count: 6,
+        species: "İtlər",
+        alertLevel: "soft",
+        alertReason: "Fəqərəarası diskin və qonşu fəqərələrin infeksion iltihabı. Bakterial və ya göbələk. Uzunmüddətli antibiotikoterapiya, rentgenoqrafiya ilə nəzarət.",
+        mandatory: [
+            { name: "Onurğa rentgeni", desc: "Bağlayıcı lövhələrin lizisi, fəqərəarası aralığın daralması, skleroz. Erkən mərhələlərdə — normal rentgen!", available: true },
+            { name: "ÜQA", desc: "Leykositoz, aktiv infeksiyada neytrofiliya. Normal ola bilər.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Ümumi vəziyyətin qiymətləndirilməsi, iltihab markeri kimi SRZ.", available: true },
+            { name: "ÜSA", desc: "Hematogen səpilmə mənbəyi kimi sidik yolları infeksiyasının istisna edilməsi.", available: true },
+            { name: "MRT", desc: "Qızıl standart: rentgenoloji dəyişikliklərdən əvvəl erkən diaqnostika, onurğa beyninin kompressiyasının qiymətləndirilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Qan bak. əkini", desc: "Törədicinin identifikasiyası (Staphylococcus, Streptococcus, Brucella).", available: false },
+            { name: "Sidik bak. əkini", desc: "İnfeksiya mənbəyi — urogenital trakt.", available: false },
+            { name: "KT", desc: "MRT əlçatan olmadıqda sümük dəyişikliklərinin qiymətləndirilməsi.", available: false }
+        ],
+        differential: [
+            "Deformativ spondilyoz — rentgen (bağlayıcı lövhələrin lizisi olmadan osteofitlər)",
+            "Fəqərə şişi — rentgen, MRT (diskin zədələnməsi olmadan lizis)",
+            "Diskopatiya (IVDD) — MRT (infeksion dəyişikliklər olmadan kompressiya)",
+            "Bruselyoz — serologiya, bak. əkin (zoonoz!)"
+        ]
     }
 ];
 
@@ -4172,7 +5023,38 @@ const CHAINS_DATA = {
     "peritonitis": [{type: "sequential", nodes: ["USM (sərbəst maye)", "Abdominosentez + sitologiya"], reason: "Efuzyon aşkarlanıb → septik xarakterin təsdiqi üçün dərhal mayenin götürülməsi və analizi"}, {type: "paired", nodes: ["ÜQA", "Biokimya + Qlükoza"], reason: "Sistemli qiymətləndirmə: leykoqramma + qan qlükozası vs efuzyon qlükozası — proqnozu müəyyən edir"}],
     "pkd": [{type: "sequential", nodes: ["Böyrək USM (kistlər)", "Biokimya + ÜSA"], reason: "Kistlər aşkarlanıb → XBX-nin cari mərhələsinin qiymətləndirilməsi"}],
     "nephritis": [{type: "paired", nodes: ["Biokimya", "ÜSA"], reason: "Azotemiya + sidiyin aktiv çöküntüsü — birlikdə nefritin tipini və ağırlığını müəyyən edir"}, {type: "sequential", nodes: ["Biokimya + ÜSA", "Böyrək USM"], reason: "Laborator təsdiq → ölçünün, strukturun, piyeloektaziyanın qiymətləndirilməsi üçün vizualizasiya"}],
-    "lymphoma": [{type: "sequential", nodes: ["Sitologiya (TİB)", "ÜQA + Biokimya"], reason: "Limfomanın təsdiqi → mərhələləmə və paraneoplastik sindromların qiymətləndirilməsi (hiperkalsemiya)"}, {type: "paired", nodes: ["Sinə rentgeni", "Qarın boşluğu USM"], reason: "Tam mərhələləmə: mediastinum + abdominal orqanlar — eyni vaxtda"}]
+    "lymphoma": [{type: "sequential", nodes: ["Sitologiya (TİB)", "ÜQA + Biokimya"], reason: "Limfomanın təsdiqi → mərhələləmə və paraneoplastik sindromların qiymətləndirilməsi (hiperkalsemiya)"}, {type: "paired", nodes: ["Sinə rentgeni", "Qarın boşluğu USM"], reason: "Tam mərhələləmə: mediastinum + abdominal orqanlar — eyni vaxtda"}],
+    "uveitis": [{type: "sequential", nodes: ["Tonometriya", "SNAP Combo FeLV/FIV (pişiklər) / 4Dx (itlər)"], reason: "GDT-nin qiymətləndirilməsi → uveitin sistemli səbəbinin axtarılması (infeksiyalar)"}, {type: "sequential", nodes: ["Sistemli infeksiya istisna olunub", "Göz USM"], reason: "İnfeksiya yoxdur → gözdaxili neoplaziyanın və ya torlu qişanın ayrılmasının istisna edilməsi"}],
+    "globe_atrophy": [{type: "sequential", nodes: ["Göz müayinəsi", "Göz USM"], reason: "Vizual qiymətləndirmə → qeyri-şəffaf mühitlərdə gözdaxili kütlələrin istisna edilməsi üçün USM"}],
+    "proptosis": [{type: "sequential", nodes: ["Göz müayinəsi (bəbək refleksi)", "Kəllə rentgeni"], reason: "Gözün həyat qabiliyyətinin qiymətləndirilməsi → orbital sınıqların istisna edilməsi"}, {type: "sequential", nodes: ["Repozisiya qərarı", "ÜQA + Biokimya"], reason: "Taktika müəyyən olunub → əməliyyatönüsü profil"}],
+    "panophthalmitis": [{type: "sequential", nodes: ["Müayinə + ÜQA", "Göz USM"], reason: "Total iltihabın təsdiqi və sepsisin qiymətləndirilməsi → enuklerasiya qərarı üçün vizualizasiya"}, {type: "sequential", nodes: ["ÜQA (leykositoz)", "Biokimya + Qlükoza"], reason: "Sistemli iltihab → hədəf orqanların və sepsis markerlərinin qiymətləndirilməsi"}],
+    "cherry_eye": [{type: "sequential", nodes: ["Göz müayinəsi", "Şirmer testi"], reason: "Prolapsın təsdiqi → cərrahiyyədən əvvəl baza gözyaşı istehsalı (sonra nəzarət)"}, {type: "sequential", nodes: ["Şirmer testi", "Flüoresein testi"], reason: "Gözyaşı qiymətləndirilməsi → xroniki prolapda buynuz qişa zədələnməsinin istisna edilməsi"}],
+    "pannus": [{type: "sequential", nodes: ["Müayinə (yarıqlı lampa)", "Flüoresein testi"], reason: "Pannusun dərəcəsinin qiymətləndirilməsi → steroidlərin təyinindən əvvəl buynuz qişa xorasının istisna edilməsi"}, {type: "sequential", nodes: ["Flüoresein (-)", "Şirmer testi"], reason: "Xora istisna olunub → müşayiətedici QKK-nın yoxlanması (gözyaşı vəzisinin plazmoması)"}],
+    "perineal_hernia": [{type: "sequential", nodes: ["Rektal müayinə", "Rentgen + USM"], reason: "Yırtıq darvazasının qiymətləndirilməsi → kisə tərkibinin müəyyən edilməsi (sidik kisəsi, bağırsaq)"}, {type: "sequential", nodes: ["Sidik kisəsi yırtıqda", "Biokimya (CREA, K+)"], reason: "Sidik kisəsinin retrofleksiyası → postrenal azotemiya və kaliumun qiymətləndirilməsi"}],
+    "inguinal_hernia": [{type: "sequential", nodes: ["Palpasiya", "USM"], reason: "Düzəldilmə qabiliyyətinin qiymətləndirilməsi → tərkibin və peristaltikanın vizualizasiyası (boğulma?)"}, {type: "sequential", nodes: ["Boğulma əlamətləri", "ÜQA + Biokimya"], reason: "Boğulma → təcili əməliyyatönüsü qiymətləndirmə"}],
+    "umbilical_hernia": [{type: "sequential", nodes: ["Palpasiya", "USM (böyüklərdə)"], reason: "Ölçü və düzəldilmə qabiliyyətinin qiymətləndirilməsi → >2 sm yırtıqlarda tərkibin müəyyən edilməsi"}],
+    "osteochondrodystrophy": [{type: "sequential", nodes: ["Ətrafların + quyruğun rentgeni", "Biokimya"], reason: "Ekzostozların təsdiqi → QSİƏP təyin etməzdən əvvəl baza profil"}],
+    "osteomyelitis": [{type: "sequential", nodes: ["Rentgen", "ÜQA + Sitologiya"], reason: "Osteomielitin rentgenoloji əlamətləri → infeksiyanın təsdiqi və flora tipi"}, {type: "sequential", nodes: ["Sitologiya (bakteriyalar)", "Bak. əkin"], reason: "Bakteriyalar aşkarlanıb → antibiotiklərə həssaslığın müəyyən edilməsi"}],
+    "arthritis": [{type: "sequential", nodes: ["Oynaq rentgeni", "ÜQA + Biokimya"], reason: "Artritin təsdiqi → sistemli prosesin qiymətləndirilməsi və QSİƏP-dən əvvəl profil"}, {type: "sequential", nodes: ["Poliartrit", "SNAP 4Dx"], reason: "Çoxsaylı oynaqlar zədələnib → borreliozun istisna edilməsi"}],
+    "gi_atony": [{type: "paired", nodes: ["Qarın boşluğu rentgeni", "Biokimya (K+, Ca2+)"], reason: "Obstruksiyanın istisna edilməsi + elektrolitlər — atoniyanın səbəbinin müəyyən edilməsi üçün eyni vaxtda"}, {type: "sequential", nodes: ["Rentgen (obstruksiya yoxdur)", "USM"], reason: "Obstruksiya istisna olunub → real vaxt rejimində peristaltikanın qiymətləndirilməsi"}],
+    "gastric_ulcer": [{type: "sequential", nodes: ["ÜQA (anemiya?)", "Biokimya (sidik cövhəri, qaraciyər, böyrəklər)"], reason: "Qan itkisinin qiymətləndirilməsi → xoranın səbəbinin müəyyən edilməsi (uremiya, hepatopatiya)"}, {type: "sequential", nodes: ["Biokimya", "Qarın boşluğu USM"], reason: "Metabolik səbəbin istisna edilməsi → mədə divarı və böyrəküstü vəzilərin vizualizasiyası"}],
+    "ibd": [{type: "sequential", nodes: ["ÜQA + Biokimya", "Qarın boşluğu USM"], reason: "Baza profil (albumin, B12, folat) → bağırsaq divarı və limfa düyünlərinin vizualizasiyası"}, {type: "sequential", nodes: ["USM (divar qalınlaşması)", "Endoskopiya + biopsiya"], reason: "Vizual təsdiq → iltihabın tipinin histoloji verifikasiyası"}],
+    "helminthiasis": [{type: "sequential", nodes: ["Koproskopiya (flotasiya)", "ÜQA"], reason: "Yumurtaların aşkarlanması → invaziyanın dərəcəsinin qiymətləndirilməsi (eozinofiliya, anemiya)"}],
+    "pharyngitis": [{type: "sequential", nodes: ["Ağız boşluğunun müayinəsi", "Boyun rentgeni"], reason: "Vizual qiymətləndirmə → yad cismin və retrofaringeal absesin istisna edilməsi"}],
+    "pleuritis": [{type: "sequential", nodes: ["Sinə rentgeni", "USM + torakosentez"], reason: "Efuzyonun təsdiqi → həcmin qiymətləndirilməsi və sitologiya üçün mayenin götürülməsi"}, {type: "sequential", nodes: ["Efuzyon sitologiyası", "Exokardioqrafiya"], reason: "Efuzyon tipi müəyyən olunub → kardiogen səbəbin istisna edilməsi"}],
+    "oral_carcinoma": [{type: "sequential", nodes: ["Sitologiya (TİB)", "Kəllə rentgeni + Sinə rentgeni"], reason: "Şiş tipinin təsdiqi → mərhələləmə (sümüyə invaziya + ağciyər metastazları)"}, {type: "sequential", nodes: ["Mərhələləmə tamamlanıb", "ÜQA + Biokimya"], reason: "Taktika müəyyən olunub → əməliyyatönüsü profil"}],
+    "osteosarcoma": [{type: "sequential", nodes: ["Sümük rentgeni", "Sinə rentgeni (3 proyeksiya)"], reason: "Şişin təsdiqi → dərhal ağciyər metastazlarının skrininqi"}, {type: "sequential", nodes: ["Sitologiya (TİB)", "ÜQA + Biokimya (QF)"], reason: "Osteosarkomanın təsdiqi → əməliyyatönüsü profil, QF proqnostik marker kimi"}],
+    "aki": [{type: "paired", nodes: ["Biokimya (CREA, K+)", "ÜSA"], reason: "Azotemiya + sidik analizi — KBÇ və XBX differensiasiyası, kanalcıq zədələnməsinin qiymətləndirilməsi üçün eyni vaxtda"}, {type: "sequential", nodes: ["Biokimya (K+ >7)", "EKQ"], reason: "Hiperkaliemiya → dərhal kardiotoksikliyin qiymətləndirilməsi"}, {type: "sequential", nodes: ["ÜSA + Biokimya", "Böyrək USM"], reason: "Laborator təsdiq → böyrəklərin ölçüsünün vizualizasiyası (böyümüş = KBÇ, kiçilmiş = XBX)"}],
+    "fic": [{type: "sequential", nodes: ["Sidik kisəsinin palpasiyası", "ÜSA"], reason: "Obstruksiyanın istisna edilməsi → sidik analizi (hematuriya, kristalluriya, bakteriyanın olmaması)"}, {type: "sequential", nodes: ["ÜSA (steril hematuriya)", "Sidik kisəsi USM"], reason: "FIC-ə uyğun laborator nəticələr → urolitlərin və törəmələrin istisna edilməsi"}],
+    "fungal_infection": [{type: "sequential", nodes: ["Vud lampası", "Dəri qaşıntısı / trixoskopiya"], reason: "Skrininq → tük gövdəsində artrokonidilərin təsdiqi"}, {type: "sequential", nodes: ["Vud lampası (-) + qaşıntı (-)", "Bak. əkin (DTM)"], reason: "Skrininq mənfi → kultural müayinə (qızıl standart)"}],
+    "pododermatitis": [{type: "sequential", nodes: ["Sitologiya (imprint)", "Dəri qaşıntısı"], reason: "İnfeksiyanın tipinin müəyyən edilməsi → demodekozun istisna edilməsi"}, {type: "sequential", nodes: ["Xroniki gediş", "Pəncə rentgeni"], reason: "Residivləyən pododermatit → yad cismin, osteomielitin istisna edilməsi"}],
+    "acral_dermatitis": [{type: "sequential", nodes: ["Sitologiya", "Dəri qaşıntısı"], reason: "İkincili infeksiyanın qiymətləndirilməsi → səbəb kimi demodekozun istisna edilməsi"}, {type: "sequential", nodes: ["Qaşıntı (-), residiv", "Rentgen + histologiya"], reason: "Demodekoz istisna olunub → dərin patologiyanın istisna edilməsi (periostit, neoplaziya)"}],
+    "pseudopregnancy": [{type: "sequential", nodes: ["Uşaqlıq USM", "Süd vəzilərinin müayinəsi"], reason: "Hamiləliyin və piometranın istisna edilməsi → laktasiya və mastitin qiymətləndirilməsi"}],
+    "vaginitis": [{type: "sequential", nodes: ["Vaginal yaxma sitologiyası", "ÜQA"], reason: "İltihabın xarakterinin və sikl fazasının müəyyən edilməsi → sistemli cavabın qiymətləndirilməsi"}, {type: "sequential", nodes: ["Residivləyən vaginit", "USM"], reason: "Təkrarlanan epizodlar → piometranın və anatomik anomaliyaların istisna edilməsi"}],
+    "balanoposthitis": [{type: "sequential", nodes: ["Müayinə", "İfrazat sitologiyası"], reason: "Vizual qiymətləndirmə → TVT-nin istisna edilməsi və flora tipinin müəyyən edilməsi"}],
+    "dirofilariasis": [{type: "sequential", nodes: ["SNAP 4Dx (antigen)", "Qan yaxması (mikrofilyariyalar)"], reason: "Antigen skrininqi → mikrofilyariyaların mövcudluğunun təsdiqi (müalicə protokolunu müəyyən edir)"}, {type: "sequential", nodes: ["SNAP 4Dx (+)", "Sinə rentgeni + Exokardioqrafiya"], reason: "Müsbət antigen → mərhələləmə: ağciyər arteriyaları və ürəyin qiymətləndirilməsi"}],
+    "tetanus": [{type: "sequential", nodes: ["Klinik müayinə (rigidlik, trismus)", "Yaranın müayinəsi"], reason: "Klinik diaqnoz → infeksiyanın giriş qapısının axtarılması"}, {type: "sequential", nodes: ["Ağır qıcolmalar", "Biokimya (KFK, böyrəklər) + Qlükoza"], reason: "Qıcolmalarda rabdomioliz → böyrək zədələnməsinin və hipoqlikemiyanın qiymətləndirilməsi"}],
+    "discospondylitis": [{type: "sequential", nodes: ["Onurğa rentgeni", "ÜQA + ÜSA"], reason: "Rentgenoloji qiymətləndirmə → infeksiyanın təsdiqi və ilkin ocağın axtarılması (sidik yolları)"}, {type: "sequential", nodes: ["Rentgen (erkən mərhələ, dəyişiklik yoxdur)", "MRT"], reason: "Normal rentgendə şübhə → MRT erkən dəyişiklikləri aşkar edir"}]
 };
 
 // Type labels
