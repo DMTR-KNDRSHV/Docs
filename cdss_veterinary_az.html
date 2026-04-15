@@ -4921,6 +4921,324 @@ const CDSS_DB = [
             "Diskopatiya (IVDD) — MRT (infeksion dəyişikliklər olmadan kompressiya)",
             "Bruselyoz — serologiya, bak. əkin (zoonoz!)"
         ]
+    },
+    // ==================== YENİ PARTİYA — 12 yeni diaqnoz (aprel 2026) ====================
+    {
+        id: "cholestasis",
+        name: "Xolestaz / Öd yollarının obstruksiyası",
+        category: "hepato",
+        count: 24,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Öd durğunluğu pankreatit, öd daşı xəstəliyi, şiş və ya iltihabın nəticəsi ola bilər. Vizualizasiya və biokimya olmadan qaraciyərdaxili xolestazı obstruktivdən ayırmaq mümkün deyil, müalicə taktikası isə kökündən fərqlənir.",
+        mandatory: [
+            { name: "Qanın biokimyəvi analizi", desc: "Bilirubin (ümumi/birbaşa), QF, QQT, ALT — xolestaz profili. Birbaşa bilirubin ↑ obstruksiyada.", available: true },
+            { name: "Qarın boşluğunun USM-i", desc: "Öd axacaqlarının genişlənməsi, daşlar, qaraciyər qapısında törəmələr, öd kisəsinin vəziyyəti.", available: true }
+        ],
+        recommended: [
+            { name: "ÜQA", desc: "Xolangit/sepsisdə leykositoz. Xroniki prosesdə anemiya.", available: true },
+            { name: "SNAP fPL (pişiklər) / SNAP cPL (itlər)", desc: "Pankreatit — pişiklərdə qaraciyərxarici obstruksiyanın tez-tez rast gələn səbəbi.", available: true },
+            { name: "ÜSA", desc: "Bilirubinuriya hiperbilirubinemiyani təsdiq edir.", available: true }
+        ],
+        additional: [
+            { name: "Koaquloqramma", desc: "Xolestaz K vitaminin sovrulmasını pozur → koaqulopatiya.", available: false },
+            { name: "KT/MRT", desc: "Şişə şübhə olduqda ətraflı vizualizasiya.", available: false },
+            { name: "Qaraciyər sitologiyası / biopsiyası (USM altında TAB)", desc: "Xolangit, neoplaziya, lipidozun diferensiasiyası.", available: false }
+        ],
+        differential: [
+            "Xolangiohepatit — biokimya + USM (axacaq divarının iltihabı)",
+            "Obstruksiya ilə pankreatit — SNAP fPL/cPL, mədəaltı vəzin USM-i",
+            "Qaraciyər/öd yollarının yeni törəməsi — USM, sitologiya",
+            "Hemolitik sarılıq — ÜQA, yaxma (anemiya, dolayı bilirubin ↑)",
+            "Qaraciyər lipidozu (pişiklər) — anoreksiya anamnezi, USM (hiperekogen qaraciyər)"
+        ]
+    },
+    {
+        id: "leishmaniasis",
+        name: "Leyşmanioz",
+        category: "infect",
+        count: 2,
+        species: "İtlər",
+        alertLevel: "soft",
+        alertReason: "Region üçün endemik xroniki sistemik infeksiya. Dəri, böyrəklər, qaraciyər, dalaq, sümük iliyini zədələyir. Proqnoz mərhələdən asılıdır (Leishvet I–IV). Laborator mərhələləmə olmadan müalicə protokolunu seçmək mümkün deyil. Zoonoz!",
+        mandatory: [
+            { name: "Serologiya (İFA/İXLA Leishmania üçün)", desc: "Kəmiyyət antikor titri. Serostatusun müəyyənləşdirilməsi və mərhələləmədə kömək edir.", available: false },
+            { name: "Qanın biokimyəvi analizi", desc: "Hiperqlobulinemiya, hipoalbuminemiya (A/Q <0.6), kreatinin (nefropatiya), qaraciyər fermentləri.", available: true },
+            { name: "ÜQA", desc: "Regenerativ olmayan anemiya, trombositopeniya, leykopeniya/leykositoz.", available: true }
+        ],
+        recommended: [
+            { name: "ÜSA (zülal/kreatinin nisbəti)", desc: "Proteinuriya — qlomerulonefritin markeri, mərhələni müəyyən edir.", available: true },
+            { name: "Zərdab zülallarının elektroforezi", desc: "Poliklonal qammapatiya — xarakterik əlamət.", available: false },
+            { name: "Sitologiya (limfa düyünü, sümük iliyi, dəri)", desc: "Makrofaqlarda amastiqlarin birbaşa vizualizasiyası — təsdiq.", available: false }
+        ],
+        additional: [
+            { name: "PZR (qan, sümük iliyi, dəri)", desc: "Yüksək həssaslıq, şübhəli serologiyada təsdiq.", available: false },
+            { name: "Qarın boşluğunun USM-i", desc: "Splenomeqaliya, hepatomeqaliya, limfadenopatiya.", available: true }
+        ],
+        differential: [
+            "Erlixyoz — SNAP 4Dx, oxşar klinika (anemiya, trombositopeniya)",
+            "Limfoma — limfa düyünlərinin sitologiyası",
+            "Sistemik qırmızı qurdeşənə — ANA-test",
+            "Çoxsaylı miyeloma — elektroforez (monoklonal vs poliklonal qammapatiya)",
+            "Demodekoz (dəri forması) — dəri qaşıntısı"
+        ]
+    },
+    {
+        id: "alopecia_x",
+        name: "X-Alopesiya (Alopesiya X)",
+        category: "derm",
+        count: 11,
+        species: "İtlər (şpits, çau-çau, samoyed, haski)",
+        alertLevel: "info",
+        alertReason: "Naməlum etiologiyalı iltihabsız alopesiya (ehtimal ki, tük artımı dövrünün pozulması). İstisna diaqnozu! Endokrin xəstəlikləri (hipotireoz, Kuşinq, hiperestroqenizm) istisna etmək lazımdır.",
+        mandatory: [
+            { name: "T4/FT4", desc: "Hipotireozun istisna edilməsi — simmetrik alopesiyada əsas diferensial diaqnoz.", available: true },
+            { name: "SNAP Cortisol / AKTH-stimulyasiya", desc: "Hiperadrenokortisizmin (Kuşinq sindromu) istisna edilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Qanın biokimyəvi analizi", desc: "Endokrin pozuntuların markerləri (QF, xolesterin, qlükoza).", available: true },
+            { name: "ÜQA", desc: "Kuşinqdə stress leykoqramması.", available: true },
+            { name: "Böyrəküstü vəzilərin USM-i", desc: "Böyrəküstü vəzilərin ölçüsü və simmetriyası (Kuşinq).", available: true }
+        ],
+        additional: [
+            { name: "Dəri biopsiyası", desc: "Xarakterik «alovlu» follikul, əlavələrin atrofiyası. Şübhəli endokrin testlərdə təsdiq.", available: false },
+            { name: "Hormonal panel (estradiol, progesteron, 17-OH-progesteron)", desc: "Kastrasiya olunmamış heyvanlarda genişləndirilmiş endokrin diaqnostika.", available: false }
+        ],
+        differential: [
+            "Hipotireoz — T4/FT4 (↓), «siçan quyruğu», bradikardiya",
+            "Kuşinq sindromu — AKTH-stimulyasiya, poliuriya/polidipsiya",
+            "Mövsümi alopesiya — anamnez (yazda residiv)",
+            "Hiperestroqenizm — kastrasiya olunmamışlarda, kriptorhizmdə xayaların fermentasiyası",
+            "Demodekoz — dəri qaşıntısı"
+        ]
+    },
+    {
+        id: "iris_bombe",
+        name: "Quzehli qişanın bombjı (İris bombe)",
+        category: "ophth",
+        count: 21,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Arxa sinexiyalar səbəbindən gözdaxili mayenin axımının pozulması ilə quzehli qişanın öndən qabarması → ikincili qlaukoma. ÖGT-nin təcili azaldılması və səbəbin aradan qaldırılması tələb olunur. Tonometriya və müayinə olmadan görmənin təhlükə dərəcəsini qiymətləndirmək mümkün deyil.",
+        mandatory: [
+            { name: "Tonometriya", desc: "ÖGT-nin qiymətləndirilməsi. >25 mm c.s. artım — təcili terapiya tələb edən ikincili qlaukoma.", available: true },
+            { name: "Ön seqmentin müayinəsi (yarıqlı lampa)", desc: "Sinexiyaların, ön kameranın dərinliyinin, göz mərciyin vəziyyətinin vizualizasiyası.", available: true }
+        ],
+        recommended: [
+            { name: "Gözün USM-i (B-skan)", desc: "Qeyri-şəffaf mühitlərdə arxa strukturların qiymətləndirilməsi. İntraokulyar kütlələrin istisna edilməsi.", available: true },
+            { name: "ÜQA + Biokimya", desc: "İnfeksion mənşəli uveitə şübhə olduqda sistemik qiymətləndirmə.", available: true },
+            { name: "SNAP Combo FeLV/FIV (pişiklər) / SNAP 4Dx (itlər)", desc: "Uveitin infeksion səbəbləri → bombaj.", available: true }
+        ],
+        additional: [
+            { name: "Qonioskopiya", desc: "Drenaj bucağının qiymətləndirilməsi (bombajda bağlanma).", available: false }
+        ],
+        differential: [
+            "Bombajsız uveit — tonometriya (ÖGT ↓ ola bilər), quzehli qişanın qabarması yoxdur",
+            "Birincili qlaukoma — qonioskopiya (bucağın anadangəlmə anomaliyası)",
+            "İntraokulyar neoplaziya — gözün USM-i",
+            "Faktopik qlaukoma (göz mərciyin lüksasiyası) — müayinə (afakik yarımaypara, iridodonez)"
+        ]
+    },
+    {
+        id: "ankyloblepharon",
+        name: "Ankiloblefaronvit",
+        category: "ophth",
+        count: 13,
+        species: "Pişiklər (balalar) / İtlər (küçüklər)",
+        alertLevel: "info",
+        alertReason: "Göz qapaqlarının kənarlarının bitişməsi — yenidoğulanlarda fizioloji (10-14-cü günə açılma), infeksiyalarda patoloji (balalarda herpesvirus). İnfeksion ankiloblefaronda — qapaqlar arxasında irin toplanması → buynuz qişanın perforasiyası. İrinləmədə müayinə və açma lazımdır.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Qiymətləndirmə: fizioloji və ya patoloji (şişkinlik, irinli ifrazat). Açma zərurətinin müəyyənləşdirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Flüoresein testi (açıldıqdan sonra)", desc: "Buynuz qişanın xorasının, perforasiyanın istisna edilməsi — herpesvirus olan balalarda tez-tez rast gələn ağırlaşma.", available: true },
+            { name: "İfrazatın sitologiyası", desc: "İnfeksiya tipinin müəyyənləşdirilməsi (bakteriyalar, virus daxilolmaları).", available: true }
+        ],
+        additional: [
+            { name: "FHV-1 üçün PZR", desc: "Balalarda herpesvirus infeksiyasının təsdiqi.", available: false }
+        ],
+        differential: [
+            "Gözlərin fizioloji açılmaması (14 günə qədər) — yaş, iltihab yoxdur",
+            "Neonatal konyunktivit (yenidoğulmuşların oftalmiyası) — bitişmiş qapaqların arxasında irin",
+            "Simblefaron — konyunktivanın bitişməsi (qapaq kənarlarının deyil), herpesvirusun nəticəsi"
+        ]
+    },
+    {
+        id: "nasolacrimal_atresia",
+        name: "Burun-gözyaşı kanallarının atreziyası",
+        category: "ophth",
+        count: 9,
+        species: "Pişiklər / İtlər (braxisefallar)",
+        alertLevel: "info",
+        alertReason: "Burun-gözyaşı kanalının anadangəlmə və ya qazanılmış keçirilməzliyi. Xroniki epifora və tükün rənglənməsinə gətirib çıxarır. İltihabi mənşəli obstruksiyadan (dakriosistit) ayırmaq vacibdir. Diaqnostika — BGK-nın yuyulması.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Epiforanın, gözyaşı nöqtələrinin (yoxluğu, stenozu), konyunktivanın vəziyyətinin qiymətləndirilməsi.", available: true },
+            { name: "Flüoreseinlə test (Jones testi)", desc: "Gözə flüoresein damızdırmaq → 5 dəq sonra burun dəliyində görünməsini yoxlamaq. Yoxluğu = keçirilməzlik.", available: true }
+        ],
+        recommended: [
+            { name: "Burun-gözyaşı kanalının yuyulması", desc: "Diaqnostik və terapevtik prosedur. Keçirilməzlik atreziyanı/obstruksiyanı təsdiq edir.", available: true },
+            { name: "Şirmer testi", desc: "Epiforanın səbəbi kimi gözyaşının hipersekresiyasının istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Dakriosistorinografiya (kontrast + rentgen)", desc: "Cərrahi planlaşdırmada obstruksiyanın dəqiq lokalizasiyası.", available: false }
+        ],
+        differential: [
+            "Dakriosistit (gözyaşı kisəsinin iltihabı) — medial bucaqda şişkinlik, irinli ifrazat",
+            "Göz qapaqlarının bukulması (entropion) — mexaniki qıcıqlanma → refleks epifora",
+            "Konyunktivada yad cisim — göz qapağının çevrilməsi ilə müayinə",
+            "Allergik konyunktivit — seroz ifrazat, qaşınma"
+        ]
+    },
+    {
+        id: "retinal_degeneration",
+        name: "Tor qişanın proqressiv atrofiyası (PRA)",
+        category: "ophth",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Korluğa gətirib çıxaran fotoreseptorların irsi degenerasiyası. İtlərdə — cins meylliyi. Pişiklərdə — taurin çatışmazlığı. Müalicəsi yoxdur, lakin erkən diaqnostika yetişdirmədən istisna və müalicəsi mümkün olan korluq səbəblərindən diferensiasiya üçün vacibdir.",
+        mandatory: [
+            { name: "Oftalmoskopiya (birbaşa/dolayı)", desc: "Tapetumun hiperreflektivliyi, tor qişa damarlarının incəlməsi, görmə siniri diskinin solğunluğu.", available: true },
+            { name: "İşığa göz bəbəyinin reaksiyası", desc: "Son mərhələlərdə ləngimış və ya yoxdur.", available: true }
+        ],
+        recommended: [
+            { name: "Dazzl-refleks testi və maneə testi", desc: "Müxtəlif işıqlandırmada funksional görmənin qiymətləndirilməsi (əvvəlcə alaqaranlıq).", available: true },
+            { name: "Tonometriya", desc: "Korluğun alternativ səbəbi kimi qlaukomanın istisna edilməsi.", available: true }
+        ],
+        additional: [
+            { name: "Elektroretinografiya (ERQ)", desc: "Qızıl standart: oftalmoskopik dəyişikliklərdən əvvəl tor qişa funksiyasının obyektiv qiymətləndirilməsi.", available: false },
+            { name: "Genetik test (DNT)", desc: "Cinsspesifik mutasiyalar (prcd-PRA, rcd1 və s.).", available: false },
+            { name: "Taurin səviyyəsi (pişiklər)", desc: "Taurin çatışmazlığı — pişiklərdə tor qişa degenerasiyasının geri dönən səbəbi.", available: false }
+        ],
+        differential: [
+            "Qlaukoma — tonometriya (ÖGT artmış)",
+            "SARD (tor qişanın qəfil degenerasiyası, itlər) — kəskin başlanğıc, ERQ (sönmə)",
+            "Görmə sinirinin nevriti — diskin ödemi, ağrı",
+            "Katarakta — göz mərciyin bulanması, tor qişa deyil",
+            "Taurin çatışmazlığı (pişiklər) — qanda taurin səviyyəsi, pəhriz"
+        ]
+    },
+    {
+        id: "distichiasis",
+        name: "Distixiaz / Ektopik kirpiklər",
+        category: "ophth",
+        count: 6,
+        species: "İtlər (koker-spaniel, buldog, pudel)",
+        alertLevel: "info",
+        alertReason: "Meybom vəzilərinin axacaqlarından anomal bitən kirpiklər buynuz qişanı qıcıqlandırır. Ektopik kirpiklər — konyunktiva vasitəsilə, daha aqressivdir. Xroniki qıcıqlanma → buynuz qişa xorası, vaskulyarizasiya. Biomikroskopiya ilə diaqnostika.",
+        mandatory: [
+            { name: "Böyüdücü ilə müayinə (biomikroskopiya)", desc: "Göz qapağının kənarında və ya konyunktiva vasitəsilə anomal kirpiklərin vizualizasiyası.", available: true },
+            { name: "Flüoresein testi", desc: "Buynuz qişanın zədələnməsinin qiymətləndirilməsi (nöqtəli eroziyalar, kirpiyin təmas zonasında xora).", available: true }
+        ],
+        recommended: [
+            { name: "Şirmer testi", desc: "Əlaqəli patologiya kimi SKK-nın (quru keratokonyunktivit) istisna edilməsi.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Entropion — bütöv göz qapağının bukulması, ayrı-ayrı kirpiklər deyil",
+            "Trixiaz — normal bitən, lakin göz qapağının deformasiyası səbəbindən gözə yönəlmiş kirpiklər",
+            "Konyunktivada yad cisim — kəskin başlanğıc, birtərəfli",
+            "SKK — Şirmer testi (↓ gözyaşı istehsalı)"
+        ]
+    },
+    {
+        id: "corneal_dystrophy",
+        name: "Buynuz qişanın distrofiyası",
+        category: "ophth",
+        count: 5,
+        species: "İtlər (haski, biql, şelti) / Pişiklər",
+        alertLevel: "info",
+        alertReason: "İrsi, ikitərəfli, iltihabsız buynuz qişa bulanması (lipid, xolesterin və ya kalsium çöküntüləri). Adətən görmədə təsir göstərmir, lakin xora, keratit və hiperlipidemiyada lipid keratopatiyasından ayırmaq vacibdir.",
+        mandatory: [
+            { name: "Böyüdücü ilə müayinə (biomikroskopiya)", desc: "Bulanmanın lokalizasiyası: epitelial, stromal, endotelial distrofiya.", available: true },
+            { name: "Flüoresein testi", desc: "Epitelin defektinin (xora) istisna edilməsi. Distrofiya — flüoresein-mənfidir.", available: true }
+        ],
+        recommended: [
+            { name: "Biokimya (xolesterin, trigliseridlər)", desc: "Lipid keratopatiyasının səbəbi kimi hiperlipidemiyany istisna etmək (qazanılmış, irsi deyil).", available: true },
+            { name: "T4/FT4 (itlər)", desc: "Hipotireoz → hiperlipidemiya → lipid keratopatiya.", available: true }
+        ],
+        additional: [],
+        differential: [
+            "Lipid keratopatiya (qazanılmış) — hiperlipidemiya, tez-tez birtərəfli",
+            "Keratit — iltihab, vaskulyarizasiya, ağrı",
+            "Korneal sekvestr (pişiklər) — qəhvəyi ləkə, ağrılılıq",
+            "Buynuz qişanın ödemi (endotelial distrofiya/qlaukoma) — diffuz bulanma, tonometriya"
+        ]
+    },
+    {
+        id: "buphthalmos",
+        name: "Buftalmiya (göz almansının böyüməsi)",
+        category: "ophth",
+        count: 11,
+        species: "İtlər / Pişiklər",
+        alertLevel: "soft",
+        alertReason: "Xroniki ÖGT artımının nəticəsində göz almansının böyüməsi (qlaukomanın son mərhələsi). Göz, bir qayda olaraq, kordur. Ağrının qiymətləndirilməsi (enukleaiya göstərişi) və səbəb kimi intraokulyar yeni törəmənin istisna edilməsi vacibdir.",
+        mandatory: [
+            { name: "Tonometriya", desc: "ÖGT-nin qiymətləndirilməsi. Buftalmiyada tez-tez normallaşır (siliar cismin atrofiyası) və ya yüksək qalır.", available: true },
+            { name: "Göz müayinəsi", desc: "Ölçü, korneal strialar (Dessemet membranının çatları), göz bəbəyinin reaksiyası, ağrının qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Gözün USM-i (B-skan)", desc: "İntraokulyar yeni törəmənin istisna edilməsi (melanoma, limfoma) — pişiklərdə ikincili qlaukomanın tez-tez rast gələn səbəbi.", available: true },
+            { name: "Flüoresein testi", desc: "Buynuz qişa xorasının istisna edilməsi (buftalmiyada ekspozision keratopatiya).", available: true }
+        ],
+        additional: [
+            { name: "Orbitanın rentgeni / KT", desc: "Retrobulbar törəməyə şübhə olduqda.", available: false }
+        ],
+        differential: [
+            "Qlaukoma (buftalmiyasız) — tonometriya, qonioskopiya",
+            "Ekzoftalm (retrobulbar proses) — normal ölçülü göz, irəli çıxmış",
+            "İntraokulyar neoplaziya — gözün USM-i",
+            "Kontralateral gözün subatrofiyası — ölçülərin müqayisəsi, anamnez"
+        ]
+    },
+    {
+        id: "microphthalmia",
+        name: "Mikroftalmiya",
+        category: "ophth",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Göz almansının anadangəlmə kiçilməsi. İzoləolunmuş ola bilər və ya digər anomaliyalarla (koloboma, katarakta, persistə göz bəbəyi membranı) birləşə bilər. Görmə normadan tam korluğa qədər dəyişir. Diaqnoz vizualdır, subatrofiyanı istisna etmək vacibdir.",
+        mandatory: [
+            { name: "Göz müayinəsi", desc: "Gözün ölçüsü, kontralateral ilə müqayisə, əlaqəli anomaliyaların axtarılması.", available: true }
+        ],
+        recommended: [
+            { name: "Gözün USM-i (B-skan)", desc: "Aksial uzunluğun ölçülməsi, gözdaxili strukturların qiymətləndirilməsi (tor qişanın displaziyası, PHPV).", available: true },
+            { name: "Oftalmoskopiya", desc: "Göz dibi: tor qişa displaziyası, koloboma, görmə siniri diski anomaliyaları.", available: true }
+        ],
+        additional: [
+            { name: "Genetik test", desc: "Cins meylliyi olduqda (Merle-gen, kollilərdə NHEJ1).", available: false }
+        ],
+        differential: [
+            "Göz almansının subatrofiyası — qazanılmış (travma/uveit anamnezi), asimmetriya",
+            "Enoftalm — normal ölçülü göz, lakin batmış (ağrı, orbital yağın itirilməsi)",
+            "Anoftalm — gözün tamamilə yoxluğu (son dərəcə nadir)"
+        ]
+    },
+    {
+        id: "dermoid",
+        name: "Konyunktiva / buynuz qişa dermoidi",
+        category: "ophth",
+        count: 6,
+        species: "İtlər / Pişiklər",
+        alertLevel: "info",
+        alertReason: "Anadangəlmə xoristoma — konyunktiva və ya buynuz qişada tük follikulları olan dəri sahəsi. Tüklər buynuz qişanı qıcıqlandırır → xroniki keratit, vaskulyarizasiya, xora. Müalicə cərrahidir (keratektomiya).",
+        mandatory: [
+            { name: "Böyüdücü ilə göz müayinəsi", desc: "Konyunktiva/buynuz qişada tüklü sahənin vizualizasiyası. Zədənin ölçüsünün və dərinliyinin müəyyənləşdirilməsi.", available: true },
+            { name: "Flüoresein testi", desc: "Dermoidin yanında buynuz qişanın zədələnməsinin qiymətləndirilməsi.", available: true }
+        ],
+        recommended: [
+            { name: "Şirmer testi", desc: "Cərrahiyyədən əvvəl bazal gözyaşı istehsalı.", available: true }
+        ],
+        additional: [
+            { name: "Histologiya (çıxarıldıqdan sonra)", desc: "Təsdiq: dəri tipli epitel, tük follikulları, piy/tər vəziləri.", available: false }
+        ],
+        differential: [
+            "Konyunktiva papilloması — tüklər yoxdur, fərqli tekstura",
+            "Lipoqranuloma — tüksüz bərk törəmə",
+            "Distixiaz — meybom vəzilərinin axacaqlarından kirpiklər, konyunktiva/buynuz qişa səthindən deyil",
+            "Korneal sekvestr (pişiklər) — piqmentli lövhə, tüklər yoxdur"
+        ]
     }
 ];
 
@@ -5054,7 +5372,19 @@ const CHAINS_DATA = {
     "balanoposthitis": [{type: "sequential", nodes: ["Müayinə", "İfrazat sitologiyası"], reason: "Vizual qiymətləndirmə → TVT-nin istisna edilməsi və flora tipinin müəyyən edilməsi"}],
     "dirofilariasis": [{type: "sequential", nodes: ["SNAP 4Dx (antigen)", "Qan yaxması (mikrofilyariyalar)"], reason: "Antigen skrininqi → mikrofilyariyaların mövcudluğunun təsdiqi (müalicə protokolunu müəyyən edir)"}, {type: "sequential", nodes: ["SNAP 4Dx (+)", "Sinə rentgeni + Exokardioqrafiya"], reason: "Müsbət antigen → mərhələləmə: ağciyər arteriyaları və ürəyin qiymətləndirilməsi"}],
     "tetanus": [{type: "sequential", nodes: ["Klinik müayinə (rigidlik, trismus)", "Yaranın müayinəsi"], reason: "Klinik diaqnoz → infeksiyanın giriş qapısının axtarılması"}, {type: "sequential", nodes: ["Ağır qıcolmalar", "Biokimya (KFK, böyrəklər) + Qlükoza"], reason: "Qıcolmalarda rabdomioliz → böyrək zədələnməsinin və hipoqlikemiyanın qiymətləndirilməsi"}],
-    "discospondylitis": [{type: "sequential", nodes: ["Onurğa rentgeni", "ÜQA + ÜSA"], reason: "Rentgenoloji qiymətləndirmə → infeksiyanın təsdiqi və ilkin ocağın axtarılması (sidik yolları)"}, {type: "sequential", nodes: ["Rentgen (erkən mərhələ, dəyişiklik yoxdur)", "MRT"], reason: "Normal rentgendə şübhə → MRT erkən dəyişiklikləri aşkar edir"}]
+    "discospondylitis": [{type: "sequential", nodes: ["Onurğa rentgeni", "ÜQA + ÜSA"], reason: "Rentgenoloji qiymətləndirmə → infeksiyanın təsdiqi və ilkin ocağın axtarılması (sidik yolları)"}, {type: "sequential", nodes: ["Rentgen (erkən mərhələ, dəyişiklik yoxdur)", "MRT"], reason: "Normal rentgendə şübhə → MRT erkən dəyişiklikləri aşkar edir"}],
+
+    // --- Yeni zəncirlər (aprel 2026) ---
+    "cholestasis": [{type: "paired", nodes: ["Biokimya (bilirubin, QF, QQT)", "Qarın boşluğunun USM-i"], reason: "Xolestaz laborator profili + vizualizasiya — tipini müəyyən etmək üçün eyni vaxtda (qaraciyərdaxili vs obstruktiv)"}, {type: "sequential", nodes: ["USM (axacaqların genişlənməsi)", "SNAP fPL/cPL"], reason: "Obstruksiya təsdiq edildi → ümumi öd axacağının sıxılmasının səbəbi kimi pankreatitin istisna edilməsi"}, {type: "sequential", nodes: ["Şişə şübhə", "Sitologiya (USM altında TAB)"], reason: "Qaraciyər qapısında törəmə → cərrahi qərardan əvvəl verifikasiya"}],
+    "leishmaniasis": [{type: "sequential", nodes: ["Serologiya (İFA)", "Biokimya (A/Q, kreatinin)"], reason: "Serostatus müəyyən edildi → proteinoqramma və böyrək funksiyası əsasında LeishVet (I–IV) mərhələləmə"}, {type: "sequential", nodes: ["Şübhəli serologiya", "Sitologiya (limfa düyünü/sümük iliyi)"], reason: "Qeyri-müəyyən titr → amastiqlarin birbaşa aşkar edilməsi diaqnozu təsdiq edir"}, {type: "paired", nodes: ["ÜQA", "Biokimya", "ÜSA (UPC)"], reason: "Kompleks qiymətləndirmə: anemiya + hiperqlobulinemiya + proteinuriya = tam klinik mənzərə"}],
+    "alopecia_x": [{type: "sequential", nodes: ["T4/FT4", "SNAP Cortisol / AKTH"], reason: "Əvvəlcə hipotireozu istisna et → sonra hiperadrenokortisizmi. Hər ikisi istisna edildikdən sonra → Alopesiya X diaqnozu"}, {type: "sequential", nodes: ["Endokrin testlər normada", "Dəri biopsiyası"], reason: "Endokrinopatiyalar istisna edildi → biopsiya xarakterik histologiyanı təsdiq edir (follikulyar atrofiya)"}],
+    "iris_bombe": [{type: "paired", nodes: ["Tonometriya", "Müayinə (yarıqlı lampa)"], reason: "ÖGT + sinexiyaların vizualizasiyası — terapiyanın təcililiyini müəyyən etmək üçün eyni vaxtda"}, {type: "sequential", nodes: ["ÖGT artmış", "SNAP Combo/4Dx + biokimya"], reason: "İkincili qlaukoma təsdiq edildi → uveitin sistemik səbəbinin axtarılması (infeksiyalar)"}],
+    "buphthalmos": [{type: "sequential", nodes: ["Tonometriya + müayinə", "Gözün USM-i"], reason: "ÖGT və ağrının qiymətləndirilməsi → enukleaiya qərarından əvvəl intraokulyar yeni törəmənin istisna edilməsi"}, {type: "sequential", nodes: ["Ekspozision keratopatiya", "Flüoresein testi"], reason: "Bağlanmayan göz → buynuz qişa xorasının yoxlanması"}],
+    "ankyloblepharon": [{type: "sequential", nodes: ["Müayinə (irinləmə?)", "Açma + flüoresein testi"], reason: "İnfeksiyanın qiymətləndirilməsi → bitişmələrin açılması → buynuz qişanın perforasiyasının dərhal yoxlanması"}],
+    "retinal_degeneration": [{type: "sequential", nodes: ["Oftalmoskopiya", "Tonometriya"], reason: "Tor qişanın qiymətləndirilməsi → korluğun alternativ səbəbi kimi qlaukomanın istisna edilməsi"}, {type: "sequential", nodes: ["PRA-ya şübhə (itlər)", "Genetik test"], reason: "Oftalmoskopik əlamətlər → yetişdirmədən istisna üçün DNT təsdiqi"}],
+    "distichiasis": [{type: "sequential", nodes: ["Biomikroskopiya", "Flüoresein testi"], reason: "Anomal kirpiklərin vizualizasiyası → cərrahi göstərişləri müəyyən etmək üçün buynuz qişa zədəsinin qiymətləndirilməsi"}],
+    "corneal_dystrophy": [{type: "sequential", nodes: ["Biomikroskopiya + Flüoresein", "Biokimya (xolesterin, TQ)"], reason: "İltihabsız bulanmanın təsdiqi → səbəb kimi hiperlipidemiyany istisna etmək"}, {type: "sequential", nodes: ["Hiperlipidemiya aşkar edildi", "T4/FT4"], reason: "Lipidlər artmış → ilkin səbəb kimi hipotireozun istisna edilməsi"}],
+    "dermoid": [{type: "sequential", nodes: ["Göz müayinəsi", "Flüoresein testi"], reason: "Dermoidin vizualizasiyası → cərrahi təcililiyini müəyyən etmək üçün buynuz qişa zədəsinin qiymətləndirilməsi"}]
 };
 
 // Type labels
