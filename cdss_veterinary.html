@@ -1790,6 +1790,8 @@
 
         .toolbar-btn.green { border-color: var(--green); color: var(--green); }
         .toolbar-btn.green:hover { background: var(--green); color: #fff; }
+        .toolbar-btn.orange { border-color: var(--orange); color: var(--orange); }
+        .toolbar-btn.orange:hover { background: var(--orange); color: #fff; }
         .toolbar-btn.purple { border-color: var(--purple); color: var(--purple); }
         .toolbar-btn.purple:hover { background: var(--purple); color: #fff; }
 
@@ -2075,6 +2077,20 @@
         .calc-tab:hover { color:var(--text); }
         .calc-tab.active { background:rgba(34,197,94,0.12); color:var(--green); border-color:var(--border); border-bottom-color:transparent; }
         .calc-tab-content { min-height:200px; }
+
+        .calc-modal-wide { max-width:900px; }
+
+        .bcs-inputs { display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+        .bcs-inputs .calc-row { flex:1; min-width:140px; margin-bottom:0; }
+        .bcs-layout { display:flex; gap:0; }
+        .bcs-left { flex:1; min-width:0; max-height:50vh; overflow-y:auto; padding-right:14px; }
+        .bcs-divider { width:1px; background:var(--border); flex-shrink:0; margin:0 2px; }
+        .bcs-right { flex:1; min-width:0; max-height:50vh; overflow-y:auto; padding-left:14px; }
+        @media (max-width: 768px) {
+            .bcs-layout { flex-direction:column; }
+            .bcs-divider { width:100%; height:1px; margin:12px 0; }
+            .bcs-left, .bcs-right { max-height:none; padding:0; }
+        }
 
         .calc-row {
             display: flex;
@@ -2444,6 +2460,8 @@
             <button class="calc-tab" onclick="switchCalcTab('infusion',this)">&#128167; Инфузия</button>
             <button class="calc-tab" onclick="switchCalcTab('bsa',this)">&#9634; BSA</button>
             <button class="calc-tab" onclick="switchCalcTab('nutrition',this)">&#127860; Калории</button>
+            <button class="calc-tab" onclick="switchCalcTab('cri',this)">&#128260; CRI</button>
+            <button class="calc-tab" onclick="switchCalcTab('emergency',this)">&#9888; SOS-дозы</button>
         </div>
 
         <!-- TAB: Doses -->
@@ -2534,8 +2552,193 @@
             <div class="calc-results" id="nutResults"></div>
         </div>
 
+        <!-- TAB: CRI -->
+        <div class="calc-tab-content" id="calcTabCri" style="display:none">
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="criWeight" placeholder="Вес" min="0.1" step="0.1" oninput="calcCRI()">
+            </div>
+            <div class="calc-row">
+                <label>Препарат:</label>
+                <select class="calc-select" id="criDrug" onchange="calcCRI()">
+                    <option value="metoclopramide">Метоклопрамид (1-2 мг/кг/сут)</option>
+                    <option value="fentanyl">Фентанил (2-5 мкг/кг/ч)</option>
+                    <option value="lidocaine">Лидокаин (25-50 мкг/кг/мин)</option>
+                    <option value="ketamine">Кетамин (2-10 мкг/кг/мин)</option>
+                    <option value="insulin">Инсулин (0.05-0.1 ЕД/кг/ч)</option>
+                    <option value="dopamine">Допамин (2-10 мкг/кг/мин)</option>
+                    <option value="dobutamine">Добутамин (2-10 мкг/кг/мин)</option>
+                    <option value="norepinephrine">Норэпинефрин (0.1-1 мкг/кг/мин)</option>
+                    <option value="morphine">Морфин (0.1-0.3 мг/кг/ч)</option>
+                    <option value="maropitant">Маропитант (1 мг/кг/сут)</option>
+                </select>
+            </div>
+            <div class="calc-row">
+                <label>Объём р-ра (мл):</label>
+                <input type="number" class="calc-input" id="criVolume" value="250" min="50" step="50" oninput="calcCRI()">
+            </div>
+            <div class="calc-row">
+                <label>Скорость (мл/ч):</label>
+                <input type="number" class="calc-input" id="criRate" value="10" min="1" step="1" oninput="calcCRI()">
+            </div>
+            <div class="calc-results" id="criResults"></div>
+        </div>
+
+        <!-- TAB: Emergency -->
+        <div class="calc-tab-content" id="calcTabEmergency" style="display:none">
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="emergWeight" placeholder="Вес" min="0.1" step="0.1" oninput="calcEmergency()">
+            </div>
+            <div class="calc-row">
+                <label>Вид:</label>
+                <select class="calc-select" id="emergSpecies" onchange="calcEmergency()">
+                    <option value="dog">Собака</option>
+                    <option value="cat">Кошка</option>
+                </select>
+            </div>
+            <div class="calc-results" id="emergResults"></div>
+        </div>
+
         <div style="text-align:center;margin-top:16px">
             <button class="modal-btn cancel" onclick="closeCalc()">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- CLINICAL TOOLS: Pain Scale, BCS, Drug Compatibility -->
+<div class="calc-overlay" id="clinToolsOverlay">
+    <div class="calc-modal calc-modal-wide">
+        <div class="calc-tabs">
+            <button class="calc-tab active" onclick="switchClinTab('pain',this)">&#129657; Боль</button>
+            <button class="calc-tab" onclick="switchClinTab('bcs',this)">&#9878; BCS</button>
+            <button class="calc-tab" onclick="switchClinTab('compat',this)">&#128300; Совместимость</button>
+            <button class="calc-tab" onclick="switchClinTab('vaccines',this)">&#128137; Вакцины</button>
+            <button class="calc-tab" onclick="switchClinTab('parasites',this)">&#128027; Антипаразит.</button>
+            <button class="calc-tab" onclick="switchClinTab('converter',this)">&#8644; Конвертер</button>
+            <button class="calc-tab" onclick="switchClinTab('labref',this)">&#128202; Анализы</button>
+        </div>
+
+        <!-- TAB: Pain Scale -->
+        <div class="calc-tab-content" id="clinTabPain">
+            <div class="calc-row">
+                <label>Вид:</label>
+                <select class="calc-select" id="painSpecies" onchange="renderPainScale()">
+                    <option value="dog">Собака (Glasgow CMPS-SF)</option>
+                    <option value="cat">Кошка (CMPS-Feline)</option>
+                </select>
+            </div>
+            <div id="painScaleBody"></div>
+            <div id="painScoreResult" style="margin-top:14px"></div>
+        </div>
+
+        <!-- TAB: BCS -->
+        <div class="calc-tab-content" id="clinTabBcs" style="display:none">
+            <div class="bcs-inputs">
+                <div class="calc-row">
+                    <label>Вид:</label>
+                    <select class="calc-select" id="bcsSpecies" onchange="renderBCS()">
+                        <option value="dog">Собака</option>
+                        <option value="cat">Кошка</option>
+                    </select>
+                </div>
+                <div class="calc-row">
+                    <label>Вес (кг):</label>
+                    <input type="number" class="calc-input" id="bcsWeight" placeholder="Вес" min="0.1" step="0.1" oninput="renderBCS()">
+                </div>
+            </div>
+            <div class="bcs-layout">
+                <div class="bcs-left" id="bcsBody"></div>
+                <div class="bcs-divider"></div>
+                <div class="bcs-right" id="bcsResult"></div>
+            </div>
+        </div>
+
+        <!-- TAB: Drug Compatibility -->
+        <div class="calc-tab-content" id="clinTabCompat" style="display:none">
+            <div id="compatBody"></div>
+        </div>
+
+        <!-- TAB: Vaccination Calendar -->
+        <div class="calc-tab-content" id="clinTabVaccines" style="display:none">
+            <div class="calc-row">
+                <label>Вид:</label>
+                <select class="calc-select" id="vacSpecies" onchange="renderVaccines()">
+                    <option value="dog">Собака</option>
+                    <option value="cat">Кошка</option>
+                </select>
+            </div>
+            <div id="vaccinesBody"></div>
+        </div>
+
+        <!-- TAB: Antiparasitic Calendar -->
+        <div class="calc-tab-content" id="clinTabParasites" style="display:none">
+            <div class="calc-row">
+                <label>Вид:</label>
+                <select class="calc-select" id="paraSpecies" onchange="renderParasites()">
+                    <option value="dog">Собака</option>
+                    <option value="cat">Кошка</option>
+                </select>
+            </div>
+            <div id="parasitesBody"></div>
+        </div>
+
+        <!-- TAB: Unit Converter -->
+        <div class="calc-tab-content" id="clinTabConverter" style="display:none">
+            <div class="calc-row">
+                <label>Параметр:</label>
+                <select class="calc-select" id="convParam" onchange="renderConverter()">
+                    <option value="glucose">Глюкоза (ммоль/л - мг/дл)</option>
+                    <option value="creatinine">Креатинин (мкмоль/л - мг/дл)</option>
+                    <option value="bilirubin">Билирубин (мкмоль/л - мг/дл)</option>
+                    <option value="urea">Мочевина (ммоль/л - мг/дл)</option>
+                    <option value="calcium">Кальций (ммоль/л - мг/дл)</option>
+                    <option value="phosphorus">Фосфор (ммоль/л - мг/дл)</option>
+                    <option value="iron">Железо (мкмоль/л - мкг/дл)</option>
+                    <option value="cholesterol">Холестерин (ммоль/л - мг/дл)</option>
+                    <option value="weight">Вес (кг - фунты)</option>
+                    <option value="temp">Температура (C - F)</option>
+                    <option value="dose">Доза (мкг - мг)</option>
+                </select>
+            </div>
+            <div class="calc-row">
+                <label id="convLabelA">Значение:</label>
+                <input type="number" class="calc-input" id="convValueA" placeholder="Введите" step="any" oninput="convertUnits('a')">
+            </div>
+            <div class="calc-row">
+                <label id="convLabelB">Результат:</label>
+                <input type="number" class="calc-input" id="convValueB" placeholder="Результат" step="any" oninput="convertUnits('b')">
+            </div>
+            <div id="converterInfo" style="margin-top:10px"></div>
+        </div>
+
+        <!-- TAB: Lab Reference Values -->
+        <div class="calc-tab-content" id="clinTabLabref" style="display:none">
+            <div class="bcs-inputs">
+                <div class="calc-row">
+                    <label>Вид:</label>
+                    <select class="calc-select" id="labSpecies" onchange="renderLabRef()">
+                        <option value="dog">Собака</option>
+                        <option value="cat">Кошка</option>
+                    </select>
+                </div>
+                <div class="calc-row">
+                    <label>Панель:</label>
+                    <select class="calc-select" id="labPanel" onchange="renderLabRef()">
+                        <option value="cbc">ОАК (гематология)</option>
+                        <option value="chem">Биохимия</option>
+                        <option value="electrolytes">Электролиты</option>
+                        <option value="coag">Коагулограмма</option>
+                        <option value="urine">Анализ мочи</option>
+                    </select>
+                </div>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:10px;font-style:italic">Референсы на основе IDEXX/Plumb's. Сверяйте с нормами вашей лаборатории.</div>
+            <div id="labrefBody"></div>
+        </div>
+
+        <div style="text-align:center;margin-top:16px">
+            <button class="modal-btn cancel" onclick="closeClinTools()">Закрыть</button>
         </div>
     </div>
 </div>
@@ -2545,6 +2748,7 @@
     <button class="toolbar-btn green" onclick="openCalc()">&#128138; Калькулятор доз</button>
     <button class="toolbar-btn" onclick="exportDiagPDF()" id="pdfBtn" style="display:none">&#128196; PDF карточка</button>
     <button class="toolbar-btn" onclick="toggleAudit()">&#128203; Журнал <span class="audit-count" id="auditCount" style="display:none">0</span></button>
+    <button class="toolbar-btn" onclick="openClinTools()" style="border-color:var(--orange);color:var(--orange)">&#129657; Клин. инструменты</button>
     <button class="toolbar-btn purple" onclick="openWizard()">&#129668; Wizard</button>
 </div>
 
@@ -9314,10 +9518,11 @@ function calculateDoses() {
 }
 
 function switchCalcTab(tab, btn) {
-    document.querySelectorAll(".calc-tab-content").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".calc-tab").forEach(el => el.classList.remove("active"));
+    const overlay = document.getElementById("calcOverlay");
+    overlay.querySelectorAll(".calc-tab-content").forEach(el => el.style.display = "none");
+    overlay.querySelectorAll(".calc-tab").forEach(el => el.classList.remove("active"));
     btn.classList.add("active");
-    const map = { doses: "calcTabDoses", infusion: "calcTabInfusion", bsa: "calcTabBsa", nutrition: "calcTabNutrition" };
+    const map = { doses: "calcTabDoses", infusion: "calcTabInfusion", bsa: "calcTabBsa", nutrition: "calcTabNutrition", cri: "calcTabCri", emergency: "calcTabEmergency" };
     document.getElementById(map[tab]).style.display = "block";
 }
 
@@ -9446,6 +9651,779 @@ function calcNutrition() {
             <div class="calc-result-note">Собаки: 1-2% массы тела в неделю<br>Кошки: 0.5-1% в неделю (≤2% — риск липидоза!)</div>
         </div>` : ''}
     `;
+}
+
+// ===== CRI CALCULATOR =====
+const CRI_DRUGS = {
+    metoclopramide: { name:"Метоклопрамид", conc:5, concUnit:"мг/мл", doseMin:1, doseMax:2, doseUnit:"мг/кг/сут", perDay:true, notes:"Противорвотное, прокинетик. Противопоказан при обструкции ЖКТ." },
+    fentanyl: { name:"Фентанил", conc:0.05, concUnit:"мг/мл", doseMin:2, doseMax:5, doseUnit:"мкг/кг/ч", perHour:true, mcg:true, notes:"Опиоидный анальгетик. Болюс 2 мкг/кг в/в перед CRI." },
+    lidocaine: { name:"Лидокаин", conc:20, concUnit:"мг/мл", doseMin:25, doseMax:50, doseUnit:"мкг/кг/мин", perMin:true, mcg:true, notes:"Только собаки! Кошки — токсичен. Болюс 1-2 мг/кг медленно." },
+    ketamine: { name:"Кетамин", conc:50, concUnit:"мг/мл", doseMin:2, doseMax:10, doseUnit:"мкг/кг/мин", perMin:true, mcg:true, notes:"Субанестетическая анальгезия. Болюс 0.5 мг/кг в/в." },
+    insulin: { name:"Инсулин (регуляр)", conc:40, concUnit:"ЕД/мл", doseMin:0.05, doseMax:0.1, doseUnit:"ЕД/кг/ч", perHour:true, isInsulin:true, notes:"ДКА. Разводить в NaCl 0.9%. Мониторинг глюкозы каждый час!" },
+    dopamine: { name:"Допамин", conc:40, concUnit:"мг/мл", doseMin:2, doseMax:10, doseUnit:"мкг/кг/мин", perMin:true, mcg:true, notes:"Вазопрессор. 2-5: почечный, 5-10: кардио, >10: вазоконстрикция." },
+    dobutamine: { name:"Добутамин", conc:12.5, concUnit:"мг/мл", doseMin:2, doseMax:10, doseUnit:"мкг/кг/мин", perMin:true, mcg:true, notes:"Инотроп. Кошки: макс 5 мкг/кг/мин (судороги)." },
+    norepinephrine: { name:"Норэпинефрин", conc:1, concUnit:"мг/мл", doseMin:0.1, doseMax:1, doseUnit:"мкг/кг/мин", perMin:true, mcg:true, notes:"Вазопрессор первой линии при септическом шоке." },
+    morphine: { name:"Морфин", conc:10, concUnit:"мг/мл", doseMin:0.1, doseMax:0.3, doseUnit:"мг/кг/ч", perHour:true, notes:"Только собаки. Кошки — осторожно (0.05-0.1 мг/кг/ч)." },
+    maropitant: { name:"Маропитант (Серения)", conc:10, concUnit:"мг/мл", doseMin:1, doseMax:1, doseUnit:"мг/кг/сут", perDay:true, notes:"Противорвотное. 1 мг/кг в/в медленно 1 раз в сутки." }
+};
+
+function calcCRI() {
+    const w = parseFloat(document.getElementById("criWeight").value);
+    const container = document.getElementById("criResults");
+    if (!w || w <= 0) { container.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">Введите массу животного</div>'; return; }
+
+    const drugKey = document.getElementById("criDrug").value;
+    const vol = parseFloat(document.getElementById("criVolume").value) || 250;
+    const rate = parseFloat(document.getElementById("criRate").value) || 10;
+    const d = CRI_DRUGS[drugKey];
+
+    let addMin, addMax;
+    if (d.perDay) {
+        addMin = (d.doseMin * w) / 24 / d.conc * vol / (vol / rate); // мл препарата в объём
+        addMax = (d.doseMax * w) / 24 / d.conc * vol / (vol / rate);
+        // Проще: сколько мг/сут нужно, делим на конц = мл препарата на сутки
+        const mgDayMin = d.doseMin * w;
+        const mgDayMax = d.doseMax * w;
+        const mlDrugMin = mgDayMin / d.conc;
+        const mlDrugMax = mgDayMax / d.conc;
+        const hoursTotal = vol / rate;
+
+        container.innerHTML = `
+            <div class="calc-result-item" style="border-left:3px solid var(--cyan);padding-left:12px">
+                <div class="calc-result-drug">${d.name}</div>
+                <div class="calc-result-dose">${d.doseMin}${d.doseMin !== d.doseMax ? '-'+d.doseMax : ''} ${d.doseUnit}</div>
+            </div>
+            <div class="calc-result-item">
+                <div class="calc-result-drug">Суточная доза</div>
+                <div class="calc-result-dose">${mgDayMin.toFixed(1)}${mgDayMin !== mgDayMax ? ' - '+mgDayMax.toFixed(1) : ''} ${d.isInsulin ? 'ЕД' : 'мг'}/сут</div>
+            </div>
+            <div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+                <div class="calc-result-drug">Добавить в ${vol} мл раствора</div>
+                <div class="calc-result-dose" style="font-size:18px;color:var(--green)">${mlDrugMin.toFixed(2)}${mlDrugMin !== mlDrugMax ? ' - '+mlDrugMax.toFixed(2) : ''} мл препарата</div>
+                <div class="calc-result-note">При скорости ${rate} мл/ч, хватит на ~${hoursTotal.toFixed(1)} ч</div>
+            </div>
+            <div class="calc-result-item" style="opacity:0.8">
+                <div class="calc-result-note" style="font-style:italic">${d.notes}</div>
+            </div>
+        `;
+    } else {
+        // perHour or perMin
+        let mgPerHour;
+        if (d.perMin) {
+            const mcgMin = d.doseMin * w; // мкг/мин
+            const mcgMax = d.doseMax * w;
+            const mgHMin = (mcgMin * 60) / 1000;
+            const mgHMax = (mcgMax * 60) / 1000;
+            const mlDrugPerHMin = mgHMin / d.conc;
+            const mlDrugPerHMax = mgHMax / d.conc;
+            const addToVolMin = (mgHMin / d.conc) * (vol / rate);
+            const addToVolMax = (mgHMax / d.conc) * (vol / rate);
+            const hoursTotal = vol / rate;
+
+            container.innerHTML = `
+                <div class="calc-result-item" style="border-left:3px solid var(--cyan);padding-left:12px">
+                    <div class="calc-result-drug">${d.name}</div>
+                    <div class="calc-result-dose">${d.doseMin}-${d.doseMax} ${d.doseUnit}</div>
+                </div>
+                <div class="calc-result-item">
+                    <div class="calc-result-drug">Расход в час</div>
+                    <div class="calc-result-dose">${mgHMin.toFixed(3)} - ${mgHMax.toFixed(3)} мг/ч</div>
+                    <div class="calc-result-note">${mcgMin.toFixed(1)} - ${mcgMax.toFixed(1)} мкг/мин</div>
+                </div>
+                <div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+                    <div class="calc-result-drug">Добавить в ${vol} мл раствора</div>
+                    <div class="calc-result-dose" style="font-size:18px;color:var(--green)">${addToVolMin.toFixed(2)} - ${addToVolMax.toFixed(2)} мл препарата</div>
+                    <div class="calc-result-note">При скорости ${rate} мл/ч, хватит на ~${hoursTotal.toFixed(1)} ч</div>
+                </div>
+                <div class="calc-result-item" style="opacity:0.8">
+                    <div class="calc-result-note" style="font-style:italic">${d.notes}</div>
+                </div>
+            `;
+        } else {
+            // perHour (mg or mcg)
+            let doseHMin, doseHMax, unit;
+            if (d.mcg) {
+                doseHMin = d.doseMin * w; // мкг/ч
+                doseHMax = d.doseMax * w;
+                unit = "мкг/ч";
+            } else {
+                doseHMin = d.doseMin * w; // мг/ч
+                doseHMax = d.doseMax * w;
+                unit = "мг/ч";
+            }
+            const mgHMin = d.mcg ? doseHMin / 1000 : doseHMin;
+            const mgHMax = d.mcg ? doseHMax / 1000 : doseHMax;
+            const addToVolMin = (mgHMin / d.conc) * (vol / rate);
+            const addToVolMax = (mgHMax / d.conc) * (vol / rate);
+            const hoursTotal = vol / rate;
+
+            container.innerHTML = `
+                <div class="calc-result-item" style="border-left:3px solid var(--cyan);padding-left:12px">
+                    <div class="calc-result-drug">${d.name}</div>
+                    <div class="calc-result-dose">${d.doseMin}-${d.doseMax} ${d.doseUnit}</div>
+                </div>
+                <div class="calc-result-item">
+                    <div class="calc-result-drug">Расход в час</div>
+                    <div class="calc-result-dose">${doseHMin.toFixed(2)} - ${doseHMax.toFixed(2)} ${unit}</div>
+                </div>
+                <div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+                    <div class="calc-result-drug">Добавить в ${vol} мл раствора</div>
+                    <div class="calc-result-dose" style="font-size:18px;color:var(--green)">${addToVolMin.toFixed(2)} - ${addToVolMax.toFixed(2)} мл препарата</div>
+                    <div class="calc-result-note">При скорости ${rate} мл/ч, хватит на ~${hoursTotal.toFixed(1)} ч</div>
+                </div>
+                <div class="calc-result-item" style="opacity:0.8">
+                    <div class="calc-result-note" style="font-style:italic">${d.notes}</div>
+                </div>
+            `;
+        }
+    }
+}
+
+// ===== EMERGENCY DOSES =====
+function calcEmergency() {
+    const w = parseFloat(document.getElementById("emergWeight").value);
+    const container = document.getElementById("emergResults");
+    if (!w || w <= 0) { container.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">Введите массу животного</div>'; return; }
+    const sp = document.getElementById("emergSpecies").value;
+
+    const drugs = [
+        { name:"Адреналин (эпинефрин)", conc:"1 мг/мл", dose: w * 0.01, doseMax: w * 0.02, unit:"мл", note:"0.01-0.02 мг/кг в/в | СЛР: каждые 3-5 мин", color:"var(--red)", critical:true },
+        { name:"Атропин", conc:"1 мг/мл", dose: w * 0.04, doseMax: w * 0.04, unit:"мл", note:"0.04 мг/кг в/в | Брадикардия, отравление ФОС", color:"var(--red)", critical:true },
+        { name:"Диазепам (валиум)", conc:"5 мг/мл", dose: (sp==='dog' ? 0.5 : 0.5) * w / 5, doseMax: (sp==='dog' ? 2 : 1) * w / 5, unit:"мл", note:`${sp==='dog'?'0.5-2':'0.5-1'} мг/кг в/в | Status epilepticus, судороги`, color:"var(--orange)" },
+        { name:"Налоксон", conc:"0.4 мг/мл", dose: w * 0.01 / 0.4, doseMax: w * 0.04 / 0.4, unit:"мл", note:"0.01-0.04 мг/кг в/в | Передозировка опиоидов", color:"var(--orange)" },
+        { name:"Дексаметазон", conc:"4 мг/мл", dose: w * 0.1 / 4, doseMax: w * 1 / 4, unit:"мл", note:"0.1-1 мг/кг в/в | Шок, анафилаксия, отёк мозга", color:"var(--orange)" },
+        { name:"Фуросемид", conc:"10 мг/мл", dose: w * 2 / 10, doseMax: w * 4 / 10, unit:"мл", note:"2-4 мг/кг в/в | Отёк лёгких, острая застойная СН", color:"var(--blue)" },
+        { name:"Маннитол 20%", conc:"200 мг/мл", dose: w * 0.5, doseMax: w * 1.5, unit:"мл", note:"0.5-1.5 г/кг в/в за 20 мин | Отёк мозга, глаукома", color:"var(--blue)" },
+        { name:"Кальция глюконат 10%", conc:"100 мг/мл", dose: w * 0.5, doseMax: w * 1.5, unit:"мл", note:"50-150 мг/кг в/в медленно за 10-20 мин | Гипокальциемия, эклампсия", color:"var(--blue)" },
+        { name:"Витамин K1 (фитоменадион)", conc:"10 мг/мл", dose: w * 2.5 / 10, doseMax: w * 5 / 10, unit:"мл", note:"2.5-5 мг/кг п/к | Отравление антикоагулянтами", color:"var(--green)" },
+        { name:"Допамин", conc:"40 мг/мл", dose: 0, doseMax: 0, unit:"CRI", note:`${sp==='dog'?'5-10':'1-5'} мкг/кг/мин CRI | Гипотензия, шок — см. вкладку CRI`, color:"var(--purple)" },
+    ];
+
+    let html = `<div style="font-size:11px;color:var(--text3);margin-bottom:12px;text-align:center">Вес: <strong>${w} кг</strong> | ${sp === 'dog' ? 'Собака' : 'Кошка'} | Шоковая инфузия: <strong>${(sp==='dog' ? 90*w : 60*w).toFixed(0)} мл</strong> (по 1/4, оценивая ответ)</div>`;
+
+    drugs.forEach(d => {
+        if (d.unit === 'CRI') {
+            html += `<div class="calc-result-item" style="border-left:3px solid ${d.color};padding-left:12px;opacity:0.7">
+                <div class="calc-result-drug">${d.name}</div>
+                <div class="calc-result-note">${d.note}</div>
+            </div>`;
+        } else {
+            html += `<div class="calc-result-item" style="border-left:3px solid ${d.color};padding-left:12px">
+                <div class="calc-result-drug">${d.critical ? '&#9888; ' : ''}${d.name} <span style="font-weight:400;color:var(--text3)">(${d.conc})</span></div>
+                <div class="calc-result-dose" style="color:${d.color};font-size:16px">${d.dose.toFixed(2)}${d.dose !== d.doseMax ? ' - '+d.doseMax.toFixed(2) : ''} ${d.unit}</div>
+                <div class="calc-result-note">${d.note}</div>
+            </div>`;
+        }
+    });
+
+    container.innerHTML = html;
+}
+
+// ===== CLINICAL TOOLS (Pain, BCS, Compatibility) =====
+function openClinTools() {
+    document.getElementById("clinToolsOverlay").classList.add("visible");
+    renderPainScale();
+}
+function closeClinTools() {
+    document.getElementById("clinToolsOverlay").classList.remove("visible");
+}
+document.addEventListener("DOMContentLoaded", () => {
+    const ov = document.getElementById("clinToolsOverlay");
+    if (ov) ov.addEventListener("click", function(e) { if (e.target === this) closeClinTools(); });
+});
+
+function switchClinTab(tab, btn) {
+    document.querySelectorAll("#clinToolsOverlay .calc-tab-content").forEach(el => el.style.display = "none");
+    document.querySelectorAll("#clinToolsOverlay .calc-tab").forEach(el => el.classList.remove("active"));
+    btn.classList.add("active");
+    const map = { pain: "clinTabPain", bcs: "clinTabBcs", compat: "clinTabCompat", vaccines: "clinTabVaccines", parasites: "clinTabParasites", converter: "clinTabConverter", labref: "clinTabLabref" };
+    document.getElementById(map[tab]).style.display = "block";
+    if (tab === "pain") renderPainScale();
+    if (tab === "bcs") renderBCS();
+    if (tab === "compat") renderCompat();
+    if (tab === "vaccines") renderVaccines();
+    if (tab === "parasites") renderParasites();
+    if (tab === "converter") renderConverter();
+    if (tab === "labref") renderLabRef();
+}
+
+// ===== PAIN SCALES =====
+const PAIN_SCALE_DOG = [
+    { cat:"Голос", q:"Вокализация", opts:["Не вокализирует","Вокализирует при прикосновении к ране","Периодически вокализирует","Постоянно вокализирует/кричит"] },
+    { cat:"Внимание к ране", q:"Отношение к ране/болезненной области", opts:["Игнорирует","Смотрит на рану/область","Лижет/кусает/трёт рану","Лижет/кусает/трёт/трясёт рану постоянно"] },
+    { cat:"Подвижность", q:"Мобильность", opts:["Нормальная походка","Хромота/скованность","Медленный, неохотный подъём","Отказ двигаться"] },
+    { cat:"Реакция на пальпацию", q:"При пальпации болезненной области", opts:["Нет реакции","Оглядывается","Вздрагивает/отдёргивает","Рычит/кусает/кричит"] },
+    { cat:"Поведение", q:"Общее поведение", opts:["Активный, виляет хвостом","Тихий","Безразличный/вялый","Агрессивный/ригидный, не позволяет трогать"] },
+    { cat:"Поза", q:"Положение тела", opts:["Комфортная","Несколько напряжённая","Сжатая, защитная","Ригидная, застывшая"] }
+];
+
+const PAIN_SCALE_CAT = [
+    { cat:"Выражение морды", q:"Уши", opts:["Вперёд, нормально","Слегка разведены","Повёрнуты наружу/прижаты"] },
+    { cat:"Выражение морды", q:"Глаза", opts:["Открыты, нормально","Частично прикрыты","Прищурены/зажмурены"] },
+    { cat:"Выражение морды", q:"Морда/щёки", opts:["Расслаблены","Слегка напряжены","Напряжены, уплощены"] },
+    { cat:"Выражение морды", q:"Усы", opts:["Расслаблены, вперёд","Слегка изогнуты вниз","Прижаты к морде/выпрямлены"] },
+    { cat:"Поведение", q:"Активность", opts:["Нормальная, интерес к окружению","Снижена, тихий","Неподвижный, сжатый"] },
+    { cat:"Поведение", q:"Реакция на пальпацию", opts:["Нет реакции","Вздрагивает/уворачивается","Шипит/кусает/бежит"] },
+    { cat:"Поза", q:"Положение тела", opts:["Расслаблена, лежит на боку","Лежит, подобрав лапы","Сжатая, напряжённая, сгорблена"] }
+];
+
+let painScores = {};
+
+function renderPainScale() {
+    const sp = document.getElementById("painSpecies").value;
+    const scale = sp === "dog" ? PAIN_SCALE_DOG : PAIN_SCALE_CAT;
+    const maxScore = sp === "dog" ? 24 : 14;
+    painScores = {};
+
+    let html = `<div style="font-size:11px;color:var(--text3);margin-bottom:10px">${sp === 'dog' ? 'Glasgow CMPS-SF (модифицированная) | Макс: 24 | Обезболивание при >= 6' : 'CMPS-Feline (модифицированная) | Макс: 14 | Обезболивание при >= 4'}</div>`;
+    let curCat = "";
+    scale.forEach((item, i) => {
+        if (item.cat !== curCat) { curCat = item.cat; html += `<div style="font-size:12px;font-weight:700;color:var(--purple);margin:12px 0 6px;text-transform:uppercase">${curCat}</div>`; }
+        html += `<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">${item.q}</div>`;
+        item.opts.forEach((o, j) => {
+            html += `<div class="wiz-symptom-chip" style="display:inline-block;margin:2px" onclick="selectPainOpt(${i},${j},this)" data-pain="${i}">${j} — ${o}</div>`;
+        });
+        html += `</div>`;
+    });
+    document.getElementById("painScaleBody").innerHTML = html;
+    document.getElementById("painScoreResult").innerHTML = "";
+}
+
+function selectPainOpt(qi, val, el) {
+    document.querySelectorAll(`[data-pain="${qi}"]`).forEach(e => e.classList.remove("selected"));
+    el.classList.add("selected");
+    painScores[qi] = val;
+
+    const sp = document.getElementById("painSpecies").value;
+    const scale = sp === "dog" ? PAIN_SCALE_DOG : PAIN_SCALE_CAT;
+    const maxScore = sp === "dog" ? 24 : 14;
+    const threshold = sp === "dog" ? 6 : 4;
+    const total = Object.values(painScores).reduce((a, b) => a + b, 0);
+    const answered = Object.keys(painScores).length;
+    const scoreClass = total >= threshold ? "high" : "low";
+    const pct = (total / maxScore * 100).toFixed(0);
+
+    document.getElementById("painScoreResult").innerHTML = `
+        <div class="calc-result-item" style="border-left:3px solid ${total >= threshold ? 'var(--red)' : 'var(--green)'};padding-left:12px">
+            <div class="calc-result-drug">Итого: ${total} / ${maxScore} (${pct}%) <span style="font-size:11px;color:var(--text3)">[${answered}/${scale.length} отвечено]</span></div>
+            <div class="calc-result-dose" style="color:${total >= threshold ? 'var(--red)' : 'var(--green)'}">
+                ${total >= threshold ? 'ТРЕБУЕТСЯ ОБЕЗБОЛИВАНИЕ (порог >= '+threshold+')' : 'Боль в пределах допустимого'}
+            </div>
+            ${total >= threshold ? '<div class="calc-result-note">Рекомендация: назначить анальгезию, повторить оценку через 1 час</div>' : ''}
+        </div>
+    `;
+}
+
+// ===== BCS SCALE (WSAVA/AAHA) =====
+// fatPct: % жира выше идеала (BCS 5 = 0%). Каждый балл BCS выше 5 = ~10-15% избыточного веса.
+// Формула идеального веса: idealWeight = currentWeight / (1 + fatPct)
+// Источник: AAHA Weight Management Guidelines 2014, WSAVA Global Nutrition Guidelines 2011
+const BCS_DATA = [
+    { score:1, title:"Истощение", fatPct:-0.40, desc:"Рёбра, позвонки, тазовые кости легко видны на расстоянии. Нет пальпируемого жира. Явная потеря мышечной массы. У кошек — впавший живот.", color:"var(--red)" },
+    { score:2, title:"Очень худой", fatPct:-0.25, desc:"Рёбра легко видны (короткошёрстные). Минимальный жировой покров. Видны поясничные позвонки и тазовые кости. Выраженная талия и подтянутый живот.", color:"var(--red)" },
+    { score:3, title:"Худой", fatPct:-0.15, desc:"Рёбра легко пальпируются, минимальный жир. Остистые отростки видны. Талия чётко видна сверху, живот подтянут.", color:"var(--orange)" },
+    { score:4, title:"Ниже идеала", fatPct:-0.10, desc:"Рёбра пальпируются без давления с минимальным жировым покровом. Талия хорошо заметна сверху. Живот подтянут.", color:"var(--orange)" },
+    { score:5, title:"Идеальный", fatPct:0, desc:"Рёбра пальпируются без избыточного жира. Талия видна за рёбрами (сверху). Живот подтянут (сбоку). Пропорциональное телосложение.", color:"var(--green)" },
+    { score:6, title:"Выше идеала", fatPct:0.10, desc:"Рёбра пальпируются с небольшим избытком жира. Талия видна, но менее выражена. Живот слегка округлён, жировая подушка на животе.", color:"var(--orange)" },
+    { score:7, title:"Избыточный вес", fatPct:0.20, desc:"Рёбра пальпируются с трудом, значительный жировой покров. Жировые отложения в поясничной области. Талия слабо различима. Живот округлён.", color:"var(--orange)" },
+    { score:8, title:"Ожирение", fatPct:0.35, desc:"Рёбра не пальпируются под толстым слоем жира. Выраженные жировые отложения в поясничной области и у основания хвоста. Талия отсутствует. Живот явно округлён.", color:"var(--red)" },
+    { score:9, title:"Морбидное ожирение", fatPct:0.45, desc:"Массивные жировые отложения на груди, позвоночнике, конечностях и у основания хвоста. Живот отвисает. Жировые складки на шее и конечностях. Затруднённое передвижение.", color:"var(--red)" }
+];
+
+let selectedBCS = null;
+
+function renderBCS() {
+    const w = parseFloat(document.getElementById("bcsWeight").value);
+    const sp = document.getElementById("bcsSpecies").value;
+
+    let html = `<div style="font-size:11px;color:var(--text3);margin-bottom:14px">Body Condition Score (WSAVA/AAHA) | 9-балльная шкала | Кликните на балл пациента</div>`;
+    BCS_DATA.forEach(b => {
+        const isSelected = selectedBCS === b.score;
+        const pctLabel = b.fatPct === 0 ? "Норма" : (b.fatPct > 0 ? "+" : "") + Math.round(b.fatPct * 100) + "%";
+        html += `<div class="calc-result-item" style="border-left:3px solid ${b.color};padding-left:12px;cursor:pointer;${isSelected ? 'outline:2px solid '+b.color+';outline-offset:2px;background:var(--card2)' : ''}" onclick="selectBCS(${b.score})">
+            <div class="calc-result-drug" style="display:flex;justify-content:space-between;align-items:center">
+                <span>${b.score}/9 — ${b.title}</span>
+                <span style="font-size:11px;padding:2px 8px;border-radius:4px;background:${b.score===5?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.1)'};color:${b.color};font-weight:600">${pctLabel}</span>
+            </div>
+            <div class="calc-result-note" style="margin-top:4px">${b.desc}</div>
+        </div>`;
+    });
+    document.getElementById("bcsBody").innerHTML = html;
+    if (selectedBCS) {
+        calcBCSResult(w, sp);
+    } else {
+        document.getElementById("bcsResult").innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:13px;text-align:center;padding:40px 20px">&larr; Выберите балл BCS слева для расчёта рекомендаций</div>';
+    }
+}
+
+function selectBCS(score) {
+    selectedBCS = score;
+    renderBCS();
+}
+
+function calcBCSResult(w, sp) {
+    const container = document.getElementById("bcsResult");
+    const b = BCS_DATA.find(x => x.score === selectedBCS);
+    if (!b) { container.innerHTML = ""; return; }
+
+    let html = "";
+
+    if (!w || w <= 0) {
+        // Без веса — только общие рекомендации
+        html += `<div class="calc-result-item" style="border-left:3px solid ${b.color};padding-left:12px">
+            <div class="calc-result-drug">Оценка: BCS ${b.score}/9 — ${b.title}</div>
+            <div class="calc-result-note" style="margin-top:6px">${getBCSRecommendation(b.score, sp)}</div>
+            <div class="calc-result-note" style="margin-top:4px;color:var(--text3);font-style:italic">Введите вес для расчёта идеальной массы и калорийности</div>
+        </div>`;
+    } else {
+        // С весом — полный расчёт
+        const idealWeight = b.fatPct >= 0 ? w / (1 + b.fatPct) : w / (1 + b.fatPct);
+        const weightDiff = w - idealWeight;
+        const rer = 70 * Math.pow(idealWeight, 0.75);
+
+        let merFactor, merLabel;
+        if (b.score > 5) {
+            merFactor = 0.8; merLabel = "RER x 0.8 (похудение)";
+        } else if (b.score < 5) {
+            merFactor = 1.2; merLabel = "RER x 1.2 (набор веса)";
+        } else {
+            merFactor = 1.4; merLabel = "RER x 1.4 (поддержание)";
+        }
+        const mer = rer * merFactor;
+        const dryFood = mer / 3.8;
+        const wetFood = mer / 1.0;
+
+        // Безопасная скорость похудения
+        const weeklyLoss = sp === "dog" ? 0.015 : 0.01; // 1.5% собаки, 1% кошки (AAHA)
+        const weeklyLossKg = idealWeight * weeklyLoss; // от идеального веса
+        const weeksToIdeal = b.score > 5 && weightDiff > 0 ? Math.ceil(weightDiff / weeklyLossKg) : 0;
+
+        html += `<div class="calc-result-item" style="border-left:3px solid ${b.color};padding-left:12px">
+            <div class="calc-result-drug">Оценка: BCS ${b.score}/9 — ${b.title}</div>
+            <div class="calc-result-dose" style="font-size:16px;color:${b.color}">
+                Текущий вес: ${w} кг ${b.score !== 5 ? ' &rarr; Идеальный: <strong>' + idealWeight.toFixed(1) + ' кг</strong>' : '(идеальный)'}
+            </div>
+            ${b.score !== 5 ? `<div class="calc-result-note" style="margin-top:4px">Разница: ${weightDiff > 0 ? '+' : ''}${weightDiff.toFixed(1)} кг (${Math.round(b.fatPct * 100)}%)</div>` : ''}
+        </div>`;
+
+        html += `<div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+            <div class="calc-result-drug">Калорийность (на идеальный вес ${idealWeight.toFixed(1)} кг)</div>
+            <div class="calc-result-dose" style="font-size:18px;color:var(--green)">${mer.toFixed(0)} ккал/сут</div>
+            <div class="calc-result-note">RER = ${rer.toFixed(0)} ккал | ${merLabel}</div>
+            <div class="calc-result-note" style="margin-top:4px">Сухой корм (~3.8 ккал/г): <strong>~${dryFood.toFixed(0)} г/сут</strong> | Влажный (~1.0 ккал/г): <strong>~${wetFood.toFixed(0)} г/сут</strong></div>
+        </div>`;
+
+        if (b.score > 5 && weeksToIdeal > 0) {
+            html += `<div class="calc-result-item" style="border-left:3px solid var(--purple);padding-left:12px">
+                <div class="calc-result-drug">План снижения веса</div>
+                <div class="calc-result-note">
+                    Безопасная скорость: ${(weeklyLoss*100).toFixed(1)}% массы тела в неделю (~${weeklyLossKg.toFixed(2)} кг/нед)<br>
+                    ${sp === 'cat' ? '<strong style="color:var(--red)">Кошки: не более 1-2% в неделю — риск печёночного липидоза!</strong><br>' : ''}
+                    Ориентировочный срок до идеала: <strong>~${weeksToIdeal} нед (~${(weeksToIdeal/4.3).toFixed(1)} мес)</strong><br>
+                    Контроль веса: каждые 2 недели<br>
+                    Если нет прогресса за 4 нед — снизить калорийность ещё на 10%
+                </div>
+            </div>`;
+        }
+
+        if (b.score < 5) {
+            html += `<div class="calc-result-item" style="border-left:3px solid var(--cyan);padding-left:12px">
+                <div class="calc-result-drug">Рекомендации при недовесе</div>
+                <div class="calc-result-note">
+                    Исключить: паразиты, хронические заболевания (ХБП, ВЗК, неоплазия, гипертиреоз у кошек)<br>
+                    Увеличивать порцию постепенно (на 10-15% каждые 3-5 дней)<br>
+                    Высококалорийная диета (Recovery, a/d, Convalescence)<br>
+                    Контроль веса: еженедельно
+                </div>
+            </div>`;
+        }
+
+        html += `<div class="calc-result-item" style="border-left:3px solid var(--text3);padding-left:12px;opacity:0.7">
+            <div class="calc-result-note">${getBCSRecommendation(b.score, sp)}</div>
+        </div>`;
+    }
+
+    container.innerHTML = html;
+}
+
+function getBCSRecommendation(score, sp) {
+    if (score <= 2) return "Критический недовес. Срочная диагностика причины. Осторожное восстановление питания (refeeding syndrome). Начать с 25% RER, увеличивая за 3-5 дней.";
+    if (score === 3) return "Недостаточный вес. Полное обследование. Увеличить калорийность на 20% от текущей. Мониторинг каждую неделю.";
+    if (score === 4) return "Чуть ниже идеала. Небольшое увеличение рациона на 10%. Повторная оценка через 2-4 недели.";
+    if (score === 5) return "Идеальная кондиция. Поддерживать текущий рацион и уровень активности. Оценка BCS при каждом визите.";
+    if (score === 6) return "Начало набора веса. Снизить рацион на 10-15%. Увеличить активность. Убрать лакомства или учитывать их в общей калорийности (<10% рациона).";
+    if (score === 7) return "Избыточный вес. Программа похудения: кормление по RER идеального веса x 0.8. Диета для снижения веса (Metabolic, Satiety, r/d). Контроль каждые 2 нед.";
+    if (score === 8) return "Ожирение. " + (sp==='cat' ? "Риск печёночного липидоза, диабета, артроза. " : "Риск артроза, диабета, панкреатита. ") + "Строгая программа: RER идеального веса x 0.8. Лечебная диета обязательна. Контроль 1 раз в 2 нед.";
+    return "Морбидное ожирение. " + (sp==='cat' ? "Высокий риск липидоза! Снижение веса ОЧЕНЬ ПОСТЕПЕННОЕ (не более 1% в нед). " : "Высокий риск сопутствующих заболеваний. ") + "Комплексная программа: лечебная диета, ограничение подвижности минимальное, контроль каждые 1-2 нед. Обследование на сопутствующие патологии.";
+}
+
+// ===== DRUG COMPATIBILITY =====
+function renderCompat() {
+    const drugs = ["NaCl 0.9%","Рингер лактат","Глюкоза 5%","Метоклопрамид","Цефазолин","Метронидазол","Ампициллин","Энрофлоксацин","Дексаметазон","Фуросемид","Допамин","Добутамин","Инсулин","KCl","Вит. B комплекс"];
+
+    // C = compatible, X = incompatible, ? = no data/caution
+    const matrix = {
+        "NaCl 0.9%":       "C,C,C,C,C,C,C,C,C,C,C,C,C,C,C",
+        "Рингер лактат":   "C,C,X,C,C,X,C,X,C,C,C,C,X,C,C",
+        "Глюкоза 5%":      "C,X,C,C,C,C,C,?,C,C,C,C,C,C,C",
+        "Метоклопрамид":   "C,C,C,C,C,?,C,?,X,C,C,C,C,C,?",
+        "Цефазолин":       "C,C,C,C,C,X,C,?,?,C,?,?,C,C,X",
+        "Метронидазол":    "C,X,C,?,X,C,X,X,?,C,C,C,?,C,?",
+        "Ампициллин":      "C,C,C,C,C,X,C,X,?,C,X,?,C,C,?",
+        "Энрофлоксацин":   "C,X,?,?,?,X,X,C,?,?,?,?,?,?,?",
+        "Дексаметазон":    "C,C,C,X,?,?,?,?,C,?,?,?,?,?,X",
+        "Фуросемид":       "C,C,C,C,C,C,C,?,?,C,X,X,?,C,?",
+        "Допамин":         "C,C,C,C,?,C,X,?,?,X,C,C,X,C,?",
+        "Добутамин":       "C,C,C,C,?,C,?,?,?,X,C,C,?,C,?",
+        "Инсулин":         "C,X,C,C,C,?,C,?,?,?,X,?,C,C,?",
+        "KCl":             "C,C,C,C,C,C,C,?,?,C,C,C,C,C,C",
+        "Вит. B комплекс": "C,C,C,?,X,?,?,?,X,?,?,?,?,C,C"
+    };
+
+    let html = `<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Совместимость в одной линии/шприце. C = совместимы, X = НЕ совместимы, ? = нет данных/осторожно</div>`;
+    html += `<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:10px;width:100%;min-width:600px">`;
+    html += `<tr><th style="padding:4px;border:1px solid var(--border);background:var(--card2);position:sticky;left:0;z-index:1"></th>`;
+    drugs.forEach(d => { html += `<th style="padding:4px 3px;border:1px solid var(--border);background:var(--card2);writing-mode:vertical-rl;text-orientation:mixed;height:90px;font-weight:600;color:var(--text2)">${d}</th>`; });
+    html += `</tr>`;
+
+    drugs.forEach((row, i) => {
+        const vals = matrix[row].split(",");
+        html += `<tr><td style="padding:4px 6px;border:1px solid var(--border);background:var(--card2);font-weight:600;color:var(--text);white-space:nowrap;position:sticky;left:0;z-index:1">${row}</td>`;
+        vals.forEach((v, j) => {
+            let bg, txt;
+            if (i === j) { bg = "var(--card2)"; txt = "-"; }
+            else if (v === "C") { bg = "rgba(34,197,94,0.15)"; txt = "C"; }
+            else if (v === "X") { bg = "rgba(239,68,68,0.2)"; txt = "X"; }
+            else { bg = "rgba(245,158,11,0.15)"; txt = "?"; }
+            html += `<td style="padding:4px;border:1px solid var(--border);background:${bg};text-align:center;font-weight:700;color:${v==='C'?'var(--green)':v==='X'?'var(--red)':'var(--orange)'}">${txt}</td>`;
+        });
+        html += `</tr>`;
+    });
+    html += `</table></div>`;
+    html += `<div style="margin-top:10px;font-size:11px;color:var(--text3)"><strong>Важно:</strong> Рингер лактат несовместим с бикарбонатом, препаратами кальция и кровью. Глюкоза 5% — не смешивать с Рингером (карамелизация). Всегда проверяйте визуально на помутнение/осадок при смешивании.</div>`;
+
+    document.getElementById("compatBody").innerHTML = html;
+}
+
+// ===== VACCINATION CALENDAR (WSAVA 2024) =====
+function renderVaccines() {
+    const sp = document.getElementById("vacSpecies").value;
+    let html = `<div style="font-size:10px;color:var(--text3);margin-bottom:12px;font-style:italic">По рекомендациям WSAVA Vaccination Guidelines 2024. Бешенство — обязательно по законодательству Азербайджана.</div>`;
+
+    if (sp === "dog") {
+        html += vacSection("CORE (обязательные)", "var(--red)", [
+            { name:"Чума (CDV)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"Живая модифицированная вакцина. Поствакцинальный иммунитет 3+ лет." },
+            { name:"Парвовирус (CPV-2)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"Критически важна последняя доза в 16+ нед (материнские антитела). Ротвейлеры, доберманы — повышенный риск." },
+            { name:"Аденовирус (CAV-2)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"CAV-2 защищает и от инфекционного гепатита (CAV-1)." },
+            { name:"Бешенство", first:"12 нед", boosters:"—", annual:"Через 1 год, далее каждые 1-3 года (по закону AZ — ежегодно)", notes:"Обязательно по законодательству. Инактивированная вакцина." }
+        ]);
+        html += vacSection("NON-CORE (по показаниям)", "var(--orange)", [
+            { name:"Лептоспироз", first:"8-9 нед", boosters:"2-я доза через 2-4 нед", annual:"Ежегодно", notes:"Рекомендовано в AZ (эндемичный регион). Серовары: L. canicola, icterohaemorrhagiae, grippotyphosa, pomona." },
+            { name:"Парагрипп (CPiV)", first:"6-8 нед", boosters:"2-я доза через 2-4 нед", annual:"Ежегодно", notes:"Входит в состав комплексных вакцин. Питомниковый кашель." },
+            { name:"Bordetella bronchiseptica", first:"8 нед (интраназ.) или 8-16 нед (инъекц.)", boosters:"1 доза (интраназ.) или 2 дозы (инъекц.)", annual:"Ежегодно", notes:"Рекомендовано для собак в приютах, передержках, выставках." },
+            { name:"Лайм (Borrelia)", first:"12 нед", boosters:"2-я доза через 2-4 нед", annual:"Ежегодно (перед сезоном клещей)", notes:"Только в эндемичных регионах. В AZ — оценить риск индивидуально." }
+        ]);
+        html += vacSection("НЕ рекомендованы WSAVA", "var(--text3)", [
+            { name:"Коронавирус собак (CCV)", first:"—", boosters:"—", annual:"—", notes:"WSAVA не рекомендует. Инфекция самоограничивающаяся, вакцина не доказала эффективность." }
+        ]);
+    } else {
+        html += vacSection("CORE (обязательные)", "var(--red)", [
+            { name:"Панлейкопения (FPV)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"Живая модифицированная. НЕ применять беременным и иммунокомпрометированным." },
+            { name:"Герпесвирус (FHV-1)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"Не предотвращает инфекцию, но снижает тяжесть. Латентное носительство пожизненно." },
+            { name:"Калицивирус (FCV)", first:"6-8 нед", boosters:"Каждые 2-4 нед до 16+ нед", annual:"Ревакцинация в 6-12 мес, далее каждые 3 года", notes:"Множество штаммов. Вакцина снижает тяжесть, не предотвращает полностью." },
+            { name:"Бешенство", first:"12 нед", boosters:"—", annual:"Через 1 год, далее каждые 1-3 года (по закону AZ — ежегодно)", notes:"Обязательно по законодательству." }
+        ]);
+        html += vacSection("NON-CORE (по показаниям)", "var(--orange)", [
+            { name:"FeLV (лейкемия)", first:"8 нед", boosters:"2-я доза через 2-4 нед", annual:"Ежегодно (до 3-4 лет, далее по риску)", notes:"WSAVA рекомендует для всех котят. Для взрослых — по образу жизни (выход на улицу). Тест на FeLV перед вакцинацией!" },
+            { name:"Chlamydia felis", first:"9 нед", boosters:"2-я доза через 2-4 нед", annual:"Ежегодно", notes:"Только в многокошковых хозяйствах с подтверждённой проблемой." },
+            { name:"Bordetella bronchiseptica", first:"4 нед (интраназ.)", boosters:"1 доза", annual:"Ежегодно", notes:"Приюты, передержки. Интраназальная форма." }
+        ]);
+        html += vacSection("НЕ рекомендованы WSAVA", "var(--text3)", [
+            { name:"FIP (коронавирус)", first:"—", boosters:"—", annual:"—", notes:"WSAVA не рекомендует. Интраназальная вакцина доступна, но эффективность не доказана." },
+            { name:"FIV (иммунодефицит)", first:"—", boosters:"—", annual:"—", notes:"Вакцина снята с производства в большинстве стран. Интерференция с тестами." }
+        ]);
+    }
+    document.getElementById("vaccinesBody").innerHTML = html;
+}
+
+function vacSection(title, color, items) {
+    let html = `<div style="font-size:12px;font-weight:700;color:${color};margin:14px 0 8px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px">${title}</div>`;
+    items.forEach(v => {
+        html += `<div class="calc-result-item" style="border-left:3px solid ${color};padding-left:12px">
+            <div class="calc-result-drug">${v.name}</div>
+            <div class="calc-result-note" style="margin-top:4px">
+                <strong>Первая доза:</strong> ${v.first}<br>
+                <strong>Бустеры:</strong> ${v.boosters}<br>
+                <strong>Ревакцинация:</strong> ${v.annual}
+            </div>
+            <div class="calc-result-note" style="margin-top:4px;font-style:italic;color:var(--text3)">${v.notes}</div>
+        </div>`;
+    });
+    return html;
+}
+
+// ===== ANTIPARASITIC CALENDAR =====
+function renderParasites() {
+    const sp = document.getElementById("paraSpecies").value;
+    let html = `<div style="font-size:10px;color:var(--text3);margin-bottom:12px;font-style:italic">Рекомендации ESCCAP/CAPC. Корректируйте по доступности препаратов в вашем регионе.</div>`;
+
+    if (sp === "dog") {
+        html += paraSection("Гельминты (эндопаразиты)", "var(--green)", [
+            { name:"Дегельминтизация щенков", age:"С 2 нед", interval:"Каждые 2 нед до 12 нед, затем ежемесячно до 6 мес", drugs:"Пирантел (с 2 нед), Фенбендазол (с 2 нед), Мильбемицин (с 4 нед)", notes:"CAPC: щенки — главный источник Toxocara canis. Мать — одновременно со щенками." },
+            { name:"Взрослые собаки", age:"С 6 мес", interval:"Каждые 3 мес (квартально) или ежемесячно в зонах риска", drugs:"Мильбемицин, Фебантел, Празиквантел + Пирантел, Фенбендазол", notes:"При высоком риске (охотничьи, сырое кормление, эхинококкоз) — ежемесячно." },
+            { name:"Дирофиляриоз (профилактика)", age:"С 8 нед", interval:"Ежемесячно круглогодично (или с апреля по декабрь в сезонных зонах)", drugs:"Ивермектин, Мильбемицин, Моксидектин, Селамектин", notes:"В AZ — эндемичен в низинных районах. Тест на антиген перед началом профилактики (с 7 мес)." }
+        ]);
+        html += paraSection("Эктопаразиты (блохи, клещи)", "var(--orange)", [
+            { name:"Блохи", age:"По весу (обычно с 8 нед)", interval:"Ежемесячно или каждые 3 мес (по препарату)", drugs:"Фипронил (спот-он), Афоксоланер (NexGard), Флураланер (Bravecto — 12 нед), Сароланер (Simparica)", notes:"Изоксазолины (афоксоланер, флураланер, сароланер) — золотой стандарт. Не использовать у собак с эпилепсией (ОСТОРОЖНО)." },
+            { name:"Клещи (иксодовые)", age:"По весу (обычно с 8 нед)", interval:"Ежемесячно (март—ноябрь) или круглогодично", drugs:"Афоксоланер, Флураланер, Сароланер, Фипронил, ошейник Seresto (8 мес)", notes:"В AZ — высокий риск бабезиоза, эрлихиоза, анаплазмоза. Защита от клещей критически важна." },
+            { name:"Демодекоз (лечение)", age:"Любой", interval:"До 2 отрицательных соскобов с интервалом 1 мес", drugs:"Афоксоланер, Флураланер, Сароланер (off-label), Ивермектин (0.3-0.6 мг/кг/сут PO)", notes:"Изоксазолины вытеснили ивермектин как первую линию. Колли и родственные — проверить MDR1!" }
+        ]);
+    } else {
+        html += paraSection("Гельминты (эндопаразиты)", "var(--green)", [
+            { name:"Дегельминтизация котят", age:"С 3 нед", interval:"Каждые 2 нед до 12 нед, затем ежемесячно до 6 мес", drugs:"Пирантел (с 3 нед), Фенбендазол (с 3 нед), Мильбемицин (с 6 нед)", notes:"Toxocara cati — через молоко матери. Мать — одновременно с котятами." },
+            { name:"Взрослые кошки", age:"С 6 мес", interval:"Каждые 3 мес (домашние), ежемесячно (уличные)", drugs:"Мильбемицин, Празиквантел, Пирантел + Празиквантел, Эмодепсид", notes:"Уличные кошки — выше риск ленточных червей (Dipylidium, Taenia). Празиквантел обязателен." },
+            { name:"Дирофиляриоз (профилактика)", age:"С 8 нед", interval:"Ежемесячно", drugs:"Селамектин (Revolution), Мильбемицин, Ивермектин", notes:"Кошки — нетипичный хозяин, но болезнь тяжёлая. Профилактика в эндемичных зонах." }
+        ]);
+        html += paraSection("Эктопаразиты (блохи, клещи)", "var(--orange)", [
+            { name:"Блохи", age:"По весу (обычно с 8 нед)", interval:"Ежемесячно", drugs:"Селамектин (Revolution), Фипронил (спот-он), Флураланер (Bravecto для кошек, топикально)", notes:"НЕ использовать перметрин у кошек — ЛЕТАЛЬНО ТОКСИЧЕН! Изоксазолины — только флураланер (топикально) и сароланер для кошек." },
+            { name:"Клещи", age:"По весу", interval:"Ежемесячно в сезон", drugs:"Флураланер (Bravecto, топикально), Фипронил (спот-он)", notes:"Кошки менее подвержены, но уличные — обработка обязательна. Ошейники — только специальные для кошек!" },
+            { name:"Отодектоз (ушной клещ)", age:"Любой", interval:"Однократно или по курсу", drugs:"Селамектин (Revolution — однократно), Ивермектин (капли), Моксидектин", notes:"Очень распространён у котят и приютских кошек. Селамектин — самый удобный (1 доза)." }
+        ]);
+    }
+    document.getElementById("parasitesBody").innerHTML = html;
+}
+
+function paraSection(title, color, items) {
+    let html = `<div style="font-size:12px;font-weight:700;color:${color};margin:14px 0 8px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:4px">${title}</div>`;
+    items.forEach(p => {
+        html += `<div class="calc-result-item" style="border-left:3px solid ${color};padding-left:12px">
+            <div class="calc-result-drug">${p.name}</div>
+            <div class="calc-result-note" style="margin-top:4px">
+                <strong>Возраст начала:</strong> ${p.age}<br>
+                <strong>Интервал:</strong> ${p.interval}<br>
+                <strong>Препараты:</strong> ${p.drugs}
+            </div>
+            <div class="calc-result-note" style="margin-top:4px;font-style:italic;color:var(--text3)">${p.notes}</div>
+        </div>`;
+    });
+    return html;
+}
+
+// ===== UNIT CONVERTER =====
+const CONV_PARAMS = {
+    glucose:      { labelA:"ммоль/л", labelB:"мг/дл", factor:18.0182, formula:"мг/дл = ммоль/л x 18.02", refDog:"3.3-6.1 ммоль/л (60-110 мг/дл)", refCat:"3.9-8.8 ммоль/л (70-159 мг/дл)" },
+    creatinine:   { labelA:"мкмоль/л", labelB:"мг/дл", factor:0.01131, formula:"мг/дл = мкмоль/л x 0.01131", refDog:"44-159 мкмоль/л (0.5-1.8 мг/дл)", refCat:"71-212 мкмоль/л (0.8-2.4 мг/дл)" },
+    bilirubin:    { labelA:"мкмоль/л", labelB:"мг/дл", factor:0.05848, formula:"мг/дл = мкмоль/л x 0.0585", refDog:"1.7-8.5 мкмоль/л (0.1-0.5 мг/дл)", refCat:"1.7-8.5 мкмоль/л (0.1-0.5 мг/дл)" },
+    urea:         { labelA:"ммоль/л", labelB:"мг/дл", factor:2.8011, formula:"мг/дл = ммоль/л x 2.801 (BUN)", refDog:"2.5-9.6 ммоль/л (7-27 мг/дл)", refCat:"5.7-12.9 ммоль/л (16-36 мг/дл)" },
+    calcium:      { labelA:"ммоль/л", labelB:"мг/дл", factor:4.0080, formula:"мг/дл = ммоль/л x 4.008", refDog:"2.2-2.9 ммоль/л (8.8-11.6 мг/дл)", refCat:"2.1-2.8 ммоль/л (8.4-11.2 мг/дл)" },
+    phosphorus:   { labelA:"ммоль/л", labelB:"мг/дл", factor:3.0974, formula:"мг/дл = ммоль/л x 3.097", refDog:"0.8-1.9 ммоль/л (2.5-5.9 мг/дл)", refCat:"1.0-2.4 ммоль/л (3.1-7.4 мг/дл)" },
+    iron:         { labelA:"мкмоль/л", labelB:"мкг/дл", factor:5.5845, formula:"мкг/дл = мкмоль/л x 5.585", refDog:"18-54 мкмоль/л (100-300 мкг/дл)", refCat:"11-32 мкмоль/л (60-180 мкг/дл)" },
+    cholesterol:  { labelA:"ммоль/л", labelB:"мг/дл", factor:38.665, formula:"мг/дл = ммоль/л x 38.67", refDog:"3.5-8.8 ммоль/л (135-340 мг/дл)", refCat:"2.0-5.3 ммоль/л (77-205 мг/дл)" },
+    weight:       { labelA:"кг", labelB:"фунты (lbs)", factor:2.2046, formula:"lbs = кг x 2.205", refDog:"", refCat:"" },
+    temp:         { labelA:"°C", labelB:"°F", factor:0, formula:"°F = °C x 9/5 + 32", refDog:"Норма: 37.5-39.2°C (99.5-102.5°F)", refCat:"Норма: 37.5-39.2°C (99.5-102.5°F)", isTemp:true },
+    dose:         { labelA:"мкг", labelB:"мг", factor:0.001, formula:"мг = мкг / 1000", refDog:"", refCat:"" }
+};
+
+function renderConverter() {
+    const p = CONV_PARAMS[document.getElementById("convParam").value];
+    document.getElementById("convLabelA").textContent = p.labelA + ":";
+    document.getElementById("convLabelB").textContent = p.labelB + ":";
+    document.getElementById("convValueA").value = "";
+    document.getElementById("convValueB").value = "";
+    let info = `<div class="calc-result-item" style="border-left:3px solid var(--cyan);padding-left:12px">
+        <div class="calc-result-note"><strong>Формула:</strong> ${p.formula}</div>
+        ${p.refDog ? `<div class="calc-result-note" style="margin-top:4px">&#128054; Собака: ${p.refDog}</div>` : ''}
+        ${p.refCat ? `<div class="calc-result-note">&#128049; Кошка: ${p.refCat}</div>` : ''}
+    </div>`;
+    document.getElementById("converterInfo").innerHTML = info;
+}
+
+function convertUnits(from) {
+    const param = document.getElementById("convParam").value;
+    const p = CONV_PARAMS[param];
+    const a = document.getElementById("convValueA");
+    const b = document.getElementById("convValueB");
+
+    if (from === "a" && a.value !== "") {
+        const v = parseFloat(a.value);
+        if (p.isTemp) b.value = (v * 9/5 + 32).toFixed(1);
+        else b.value = (v * p.factor).toFixed(p.factor < 0.1 ? 4 : 2);
+    } else if (from === "b" && b.value !== "") {
+        const v = parseFloat(b.value);
+        if (p.isTemp) a.value = ((v - 32) * 5/9).toFixed(1);
+        else a.value = (v / p.factor).toFixed(p.factor < 0.1 ? 2 : 4);
+    }
+}
+
+// ===== LAB REFERENCE VALUES (IDEXX-based) =====
+const LAB_REF = {
+    cbc: {
+        title: "Общий анализ крови (ОАК)",
+        dog: [
+            { param:"Эритроциты (RBC)", unit:"x10^12/л", low:5.5, high:8.5 },
+            { param:"Гематокрит (HCT)", unit:"%", low:37, high:55 },
+            { param:"Гемоглобин (HGB)", unit:"г/дл", low:12, high:18 },
+            { param:"MCV", unit:"фл", low:60, high:77 },
+            { param:"MCH", unit:"пг", low:19, high:25 },
+            { param:"MCHC", unit:"г/дл", low:31, high:36 },
+            { param:"Ретикулоциты", unit:"x10^9/л", low:10, high:110 },
+            { param:"Тромбоциты (PLT)", unit:"x10^9/л", low:175, high:500 },
+            { param:"Лейкоциты (WBC)", unit:"x10^9/л", low:5.5, high:16.9 },
+            { param:"Нейтрофилы (сегм.)", unit:"x10^9/л", low:2.0, high:12.0 },
+            { param:"Лимфоциты", unit:"x10^9/л", low:1.0, high:4.8 },
+            { param:"Моноциты", unit:"x10^9/л", low:0.3, high:2.0 },
+            { param:"Эозинофилы", unit:"x10^9/л", low:0.1, high:1.4 },
+            { param:"Базофилы", unit:"x10^9/л", low:0, high:0.1 }
+        ],
+        cat: [
+            { param:"Эритроциты (RBC)", unit:"x10^12/л", low:5.0, high:10.0 },
+            { param:"Гематокрит (HCT)", unit:"%", low:30, high:45 },
+            { param:"Гемоглобин (HGB)", unit:"г/дл", low:8, high:15 },
+            { param:"MCV", unit:"фл", low:39, high:55 },
+            { param:"MCH", unit:"пг", low:12.5, high:17.5 },
+            { param:"MCHC", unit:"г/дл", low:30, high:36 },
+            { param:"Ретикулоциты", unit:"x10^9/л", low:3, high:50 },
+            { param:"Тромбоциты (PLT)", unit:"x10^9/л", low:175, high:500 },
+            { param:"Лейкоциты (WBC)", unit:"x10^9/л", low:5.5, high:19.5 },
+            { param:"Нейтрофилы (сегм.)", unit:"x10^9/л", low:2.5, high:12.5 },
+            { param:"Лимфоциты", unit:"x10^9/л", low:1.5, high:7.0 },
+            { param:"Моноциты", unit:"x10^9/л", low:0, high:0.85 },
+            { param:"Эозинофилы", unit:"x10^9/л", low:0, high:1.5 },
+            { param:"Базофилы", unit:"x10^9/л", low:0, high:0.2 }
+        ]
+    },
+    chem: {
+        title: "Биохимия крови",
+        dog: [
+            { param:"Глюкоза", unit:"ммоль/л", low:3.3, high:6.1 },
+            { param:"Мочевина (BUN)", unit:"ммоль/л", low:2.5, high:9.6 },
+            { param:"Креатинин", unit:"мкмоль/л", low:44, high:159 },
+            { param:"SDMA", unit:"мкг/дл", low:0, high:18 },
+            { param:"АЛТ (ALT)", unit:"Ед/л", low:10, high:125 },
+            { param:"ЩФ (ALP)", unit:"Ед/л", low:23, high:212 },
+            { param:"ГГТ (GGT)", unit:"Ед/л", low:0, high:11 },
+            { param:"Общий билирубин", unit:"мкмоль/л", low:1.7, high:8.5 },
+            { param:"Общий белок", unit:"г/л", low:52, high:82 },
+            { param:"Альбумин", unit:"г/л", low:23, high:40 },
+            { param:"Глобулин", unit:"г/л", low:25, high:45 },
+            { param:"Амилаза", unit:"Ед/л", low:500, high:1500 },
+            { param:"Липаза (spec cPL)", unit:"мкг/л", low:0, high:200 },
+            { param:"Холестерин", unit:"ммоль/л", low:3.5, high:8.8 },
+            { param:"Триглицериды", unit:"ммоль/л", low:0.3, high:1.5 }
+        ],
+        cat: [
+            { param:"Глюкоза", unit:"ммоль/л", low:3.9, high:8.8 },
+            { param:"Мочевина (BUN)", unit:"ммоль/л", low:5.7, high:12.9 },
+            { param:"Креатинин", unit:"мкмоль/л", low:71, high:212 },
+            { param:"SDMA", unit:"мкг/дл", low:0, high:18 },
+            { param:"АЛТ (ALT)", unit:"Ед/л", low:12, high:130 },
+            { param:"ЩФ (ALP)", unit:"Ед/л", low:14, high:111 },
+            { param:"ГГТ (GGT)", unit:"Ед/л", low:0, high:4 },
+            { param:"Общий билирубин", unit:"мкмоль/л", low:1.7, high:8.5 },
+            { param:"Общий белок", unit:"г/л", low:57, high:89 },
+            { param:"Альбумин", unit:"г/л", low:21, high:33 },
+            { param:"Глобулин", unit:"г/л", low:26, high:51 },
+            { param:"Амилаза", unit:"Ед/л", low:500, high:1500 },
+            { param:"Липаза (spec fPL)", unit:"мкг/л", low:0, high:3.5 },
+            { param:"Холестерин", unit:"ммоль/л", low:2.0, high:5.3 },
+            { param:"Триглицериды", unit:"ммоль/л", low:0.1, high:1.2 },
+            { param:"Т4 общий", unit:"мкг/дл", low:1.0, high:4.0 },
+            { param:"фТ4 (свободный)", unit:"пмоль/л", low:12, high:35 }
+        ]
+    },
+    electrolytes: {
+        title: "Электролиты",
+        dog: [
+            { param:"Натрий (Na+)", unit:"ммоль/л", low:144, high:160 },
+            { param:"Калий (K+)", unit:"ммоль/л", low:3.5, high:5.8 },
+            { param:"Хлор (Cl-)", unit:"ммоль/л", low:109, high:122 },
+            { param:"Кальций общий", unit:"ммоль/л", low:2.2, high:2.9 },
+            { param:"Кальций ионизир.", unit:"ммоль/л", low:1.12, high:1.40 },
+            { param:"Фосфор", unit:"ммоль/л", low:0.8, high:1.9 },
+            { param:"Магний", unit:"ммоль/л", low:0.6, high:1.1 }
+        ],
+        cat: [
+            { param:"Натрий (Na+)", unit:"ммоль/л", low:150, high:165 },
+            { param:"Калий (K+)", unit:"ммоль/л", low:3.5, high:5.8 },
+            { param:"Хлор (Cl-)", unit:"ммоль/л", low:112, high:129 },
+            { param:"Кальций общий", unit:"ммоль/л", low:2.1, high:2.8 },
+            { param:"Кальций ионизир.", unit:"ммоль/л", low:1.12, high:1.40 },
+            { param:"Фосфор", unit:"ммоль/л", low:1.0, high:2.4 },
+            { param:"Магний", unit:"ммоль/л", low:0.6, high:1.1 }
+        ]
+    },
+    coag: {
+        title: "Коагулограмма",
+        dog: [
+            { param:"ПВ (PT)", unit:"сек", low:11, high:17 },
+            { param:"АЧТВ (aPTT)", unit:"сек", low:72, high:102 },
+            { param:"Фибриноген", unit:"г/л", low:1.0, high:5.0 },
+            { param:"D-димер", unit:"мкг/мл", low:0, high:0.5 },
+            { param:"Время кровотечения (слизистая)", unit:"мин", low:1, high:5 }
+        ],
+        cat: [
+            { param:"ПВ (PT)", unit:"сек", low:9, high:17 },
+            { param:"АЧТВ (aPTT)", unit:"сек", low:72, high:102 },
+            { param:"Фибриноген", unit:"г/л", low:0.5, high:3.0 },
+            { param:"D-димер", unit:"мкг/мл", low:0, high:0.5 },
+            { param:"Время кровотечения (слизистая)", unit:"мин", low:1, high:3 }
+        ]
+    },
+    urine: {
+        title: "Анализ мочи",
+        dog: [
+            { param:"Удельный вес (USG)", unit:"", low:1.015, high:1.045 },
+            { param:"pH", unit:"", low:5.5, high:7.5 },
+            { param:"Белок", unit:"", low:0, high:0, note:"Отрицательно / следы" },
+            { param:"Глюкоза", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"Билирубин", unit:"", low:0, high:0, note:"Следы допустимы (собаки)" },
+            { param:"Кетоны", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"Кровь/Гемоглобин", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"UPC (белок/креатинин)", unit:"", low:0, high:0.5, note:"<0.2 норма, 0.2-0.5 серая зона, >0.5 протеинурия" }
+        ],
+        cat: [
+            { param:"Удельный вес (USG)", unit:"", low:1.035, high:1.060 },
+            { param:"pH", unit:"", low:5.5, high:7.0 },
+            { param:"Белок", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"Глюкоза", unit:"", low:0, high:0, note:"Отрицательно (стрессовая гипергликемия!)" },
+            { param:"Билирубин", unit:"", low:0, high:0, note:"Отрицательно (любой + у кошек — патология)" },
+            { param:"Кетоны", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"Кровь/Гемоглобин", unit:"", low:0, high:0, note:"Отрицательно" },
+            { param:"UPC (белок/креатинин)", unit:"", low:0, high:0.4, note:"<0.2 норма, 0.2-0.4 серая зона, >0.4 протеинурия" }
+        ]
+    }
+};
+
+function renderLabRef() {
+    const sp = document.getElementById("labSpecies").value;
+    const panel = document.getElementById("labPanel").value;
+    const data = LAB_REF[panel];
+    const params = data[sp];
+
+    let html = `<div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px">${data.title} — ${sp === 'dog' ? 'Собака' : 'Кошка'}</div>`;
+    html += `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">`;
+    html += `<tr style="background:var(--card2)">
+        <th style="text-align:left;padding:8px 10px;border:1px solid var(--border);color:var(--text)">Параметр</th>
+        <th style="text-align:center;padding:8px 6px;border:1px solid var(--border);color:var(--text)">Мин</th>
+        <th style="text-align:center;padding:8px 6px;border:1px solid var(--border);color:var(--text)">Макс</th>
+        <th style="text-align:center;padding:8px 6px;border:1px solid var(--border);color:var(--text)">Ед.</th>
+    </tr>`;
+
+    params.forEach(p => {
+        const isQual = p.note && p.low === 0 && p.high === 0;
+        html += `<tr>
+            <td style="padding:6px 10px;border:1px solid var(--border);font-weight:600;color:var(--text)">${p.param}</td>
+            <td style="padding:6px;border:1px solid var(--border);text-align:center;color:var(--text2)">${isQual ? '—' : p.low}</td>
+            <td style="padding:6px;border:1px solid var(--border);text-align:center;color:var(--text2)">${isQual ? '—' : p.high}</td>
+            <td style="padding:6px;border:1px solid var(--border);text-align:center;color:var(--text3);font-size:11px">${p.unit || '—'}</td>
+        </tr>`;
+        if (p.note) {
+            html += `<tr><td colspan="4" style="padding:2px 10px 6px;border:1px solid var(--border);border-top:none;color:var(--text3);font-size:10px;font-style:italic">${p.note}</td></tr>`;
+        }
+    });
+
+    html += `</table></div>`;
+    document.getElementById("labrefBody").innerHTML = html;
 }
 
 // ===== MULTI-DIAGNOSIS =====
