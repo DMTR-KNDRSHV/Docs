@@ -1365,6 +1365,17 @@
         .treatment-block.monitoring { border-left: 3px solid var(--cyan); }
         .treatment-block.monitoring h4 { color: var(--cyan); }
 
+        /* ===== STAGING SELECTOR ===== */
+        .staging-selector { margin-bottom: 14px; }
+        .staging-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .staging-system { font-size: 11px; font-weight: 700; color: var(--purple); background: rgba(168,85,247,0.12); padding: 4px 10px; border-radius: 6px; margin-right: 4px; white-space: nowrap; }
+        .staging-btn { font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--text2); cursor: pointer; transition: all 0.2s; font-weight: 500; }
+        .staging-btn:hover { border-color: var(--purple); color: var(--purple); }
+        .staging-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 700; }
+        .staging-criteria { font-size: 12px; color: var(--text2); background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2); border-radius: 8px; padding: 8px 12px; line-height: 1.5; }
+        .staging-criteria strong { color: var(--purple); }
+        .staging-name { font-size: 12px; color: var(--purple); font-weight: 600; margin-left: 4px; }
+
         .treatment-block p {
             font-size: 13px;
             color: var(--text2);
@@ -1779,6 +1790,88 @@
 
         .toolbar-btn.green { border-color: var(--green); color: var(--green); }
         .toolbar-btn.green:hover { background: var(--green); color: #fff; }
+        .toolbar-btn.purple { border-color: var(--purple); color: var(--purple); }
+        .toolbar-btn.purple:hover { background: var(--purple); color: #fff; }
+
+        /* ===== WIZARD ===== */
+        .wizard-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center; }
+        .wizard-overlay.open { display:flex; }
+        .wizard-modal { background:var(--bg); border-radius:16px; width:96%; max-width:700px; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+        .wizard-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); }
+        .wizard-header h2 { font-size:18px; margin:0; color:var(--text); }
+        .wizard-close { background:none; border:none; font-size:28px; cursor:pointer; color:var(--text2); line-height:1; padding:0 4px; }
+        .wizard-close:hover { color:var(--red); }
+        .wizard-progress { display:flex; gap:4px; padding:12px 24px; border-bottom:1px solid var(--border); }
+        .wiz-step { flex:1; text-align:center; padding:8px 4px; font-size:11px; font-weight:600; color:var(--text3); border-radius:8px; background:var(--card2); transition:all 0.2s; }
+        .wiz-step span { display:inline-block; width:20px; height:20px; line-height:20px; border-radius:50%; background:var(--border); color:var(--text3); font-size:10px; margin-right:4px; }
+        .wiz-step.active { color:var(--purple); background:rgba(168,85,247,0.1); }
+        .wiz-step.active span { background:var(--purple); color:#fff; }
+        .wiz-step.done { color:var(--green); }
+        .wiz-step.done span { background:var(--green); color:#fff; }
+        .wizard-body { flex:1; overflow-y:auto; padding:20px 24px; }
+        .wizard-footer { display:flex; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--border); gap:8px; }
+        .wiz-btn { padding:10px 24px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--card2); color:var(--text2); transition:all 0.15s; }
+        .wiz-btn:hover { border-color:var(--accent); color:var(--accent); }
+        .wiz-btn.primary { background:var(--purple); color:#fff; border-color:var(--purple); }
+        .wiz-btn.primary:hover { opacity:0.9; }
+        .wiz-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+        .wiz-symptom-search { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-size:14px; margin-bottom:12px; }
+        .wiz-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; min-height:28px; }
+        .wiz-tag { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:6px; background:var(--purple); color:#fff; font-size:12px; font-weight:600; }
+        .wiz-tag .remove { cursor:pointer; opacity:0.7; font-size:14px; }
+        .wiz-tag .remove:hover { opacity:1; }
+        .wiz-group-title { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; margin:10px 0 6px; letter-spacing:0.5px; }
+        .wiz-symptom-grid { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+        .wiz-symptom-chip { padding:5px 10px; border-radius:6px; border:1px solid var(--border); background:var(--card2); color:var(--text2); font-size:12px; cursor:pointer; transition:all 0.15s; }
+        .wiz-symptom-chip:hover { border-color:var(--purple); color:var(--purple); }
+        .wiz-symptom-chip.selected { background:var(--purple); color:#fff; border-color:var(--purple); }
+
+        .wiz-species-row { display:flex; gap:12px; margin-bottom:16px; }
+        .wiz-species-btn { flex:1; padding:20px; border-radius:12px; border:2px solid var(--border); background:var(--card); cursor:pointer; text-align:center; font-size:14px; font-weight:600; color:var(--text2); transition:all 0.2s; }
+        .wiz-species-btn:hover { border-color:var(--purple); }
+        .wiz-species-btn.selected { border-color:var(--purple); background:rgba(168,85,247,0.1); color:var(--purple); }
+        .wiz-species-btn .icon { font-size:32px; display:block; margin-bottom:6px; }
+
+        .wiz-age-row { display:flex; gap:8px; margin-bottom:16px; }
+        .wiz-age-btn { flex:1; padding:12px 8px; border-radius:10px; border:1px solid var(--border); background:var(--card2); cursor:pointer; text-align:center; font-size:12px; font-weight:600; color:var(--text2); transition:all 0.15s; }
+        .wiz-age-btn.selected { border-color:var(--purple); background:rgba(168,85,247,0.1); color:var(--purple); }
+        .wiz-breed-input { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-size:13px; }
+        .wiz-breed-wrap { position:relative; }
+        .wiz-breed-dropdown { position:absolute; top:100%; left:0; right:0; max-height:200px; overflow-y:auto; background:var(--card); border:1px solid var(--border); border-top:none; border-radius:0 0 10px 10px; z-index:10; display:none; }
+        .wiz-breed-dropdown.open { display:block; }
+        .wiz-breed-option { padding:8px 14px; font-size:13px; color:var(--text); cursor:pointer; transition:background 0.1s; }
+        .wiz-breed-option:hover { background:rgba(168,85,247,0.12); color:var(--purple); }
+        .wiz-breed-selected { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:var(--purple); color:#fff; font-size:13px; font-weight:600; margin-top:8px; }
+        .wiz-breed-selected .remove { cursor:pointer; opacity:0.7; font-size:16px; }
+        .wiz-breed-selected .remove:hover { opacity:1; }
+
+        .wiz-q-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+        .wiz-q-label { font-size:13px; color:var(--text); font-weight:500; }
+        .wiz-q-btns { display:flex; gap:6px; }
+        .wiz-q-btn { padding:5px 14px; border-radius:6px; border:1px solid var(--border); background:var(--card2); color:var(--text2); font-size:12px; cursor:pointer; transition:all 0.15s; }
+        .wiz-q-btn.selected { background:var(--purple); color:#fff; border-color:var(--purple); }
+
+        .wiz-result { border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; background:var(--card); cursor:pointer; transition:all 0.15s; }
+        .wiz-result:hover { border-color:var(--purple); }
+        .wiz-result-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .wiz-result-name { font-size:14px; font-weight:700; color:var(--text); }
+        .wiz-result-score { font-size:12px; font-weight:700; padding:3px 10px; border-radius:6px; }
+        .wiz-result-score.high { background:rgba(239,68,68,0.15); color:var(--red); }
+        .wiz-result-score.med { background:rgba(245,158,11,0.15); color:var(--orange); }
+        .wiz-result-score.low { background:rgba(34,197,94,0.15); color:var(--green); }
+        .wiz-result-meta { font-size:11px; color:var(--text3); display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
+        .wiz-result-notes { font-size:12px; color:var(--text2); line-height:1.5; }
+        .wiz-result-tests { font-size:11px; color:var(--cyan); margin-top:6px; }
+        .wiz-summary { background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:12px; color:var(--text2); line-height:1.5; }
+        .wiz-summary strong { color:var(--purple); }
+        .wiz-no-results { text-align:center; padding:40px 20px; color:var(--text3); font-size:14px; }
+
+        @media (max-width:768px) {
+            .wizard-modal { width:100%; max-width:100%; height:100%; max-height:100%; border-radius:0; }
+            .wiz-species-btn .icon { font-size:24px; }
+            .wiz-species-btn { padding:14px; }
+        }
 
         /* ===== DOSE HIGHLIGHTING ===== */
         .dose-hl { color: var(--green); font-weight: 600; }
@@ -1893,6 +1986,14 @@
 
         body.light .test-card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-color: #e8eaf0; }
         body.light .treatment-block { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-color: #e8eaf0; }
+        body.light .staging-btn { background: #fff; border-color: #ddd; color: #555; }
+        body.light .staging-btn:hover { border-color: #7c3aed; color: #7c3aed; }
+        body.light .staging-btn.active { background: #7c3aed; color: #fff; }
+        body.light .staging-criteria { background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.15); }
+        body.light .staging-system { background: rgba(124,58,237,0.08); }
+        body.light .wizard-modal { background: #f8f9fb; }
+        body.light .wiz-symptom-chip { background: #fff; }
+        body.light .wiz-result { background: #fff; }
         body.light .chain-card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-color: #e8eaf0; }
         body.light .diff-tree-item { background: #fff; border-color: #e8eaf0; }
         body.light .workflow-box { background: #fff; border-color: #e8eaf0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -1969,6 +2070,11 @@
         }
 
         .calc-modal h3 { font-size: 18px; margin-bottom: 16px; color: var(--green); }
+        .calc-tabs { display:flex; gap:4px; margin-bottom:18px; border-bottom:1px solid var(--border); padding-bottom:10px; flex-wrap:wrap; }
+        .calc-tab { padding:8px 14px; border-radius:8px 8px 0 0; border:1px solid transparent; background:none; color:var(--text3); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+        .calc-tab:hover { color:var(--text); }
+        .calc-tab.active { background:rgba(34,197,94,0.12); color:var(--green); border-color:var(--border); border-bottom-color:transparent; }
+        .calc-tab-content { min-height:200px; }
 
         .calc-row {
             display: flex;
@@ -2333,31 +2439,101 @@
 <!-- DOSE CALCULATOR -->
 <div class="calc-overlay" id="calcOverlay">
     <div class="calc-modal">
-        <h3>&#128138; Калькулятор дозировок</h3>
-        <div class="calc-row">
-            <label>Вид:</label>
-            <select class="calc-select" id="calcSpecies" onchange="updateCalcDrugs()">
-                <option value="dog">Собака</option>
-                <option value="cat">Кошка</option>
-            </select>
+        <div class="calc-tabs">
+            <button class="calc-tab active" onclick="switchCalcTab('doses',this)">&#128138; Дозировки</button>
+            <button class="calc-tab" onclick="switchCalcTab('infusion',this)">&#128167; Инфузия</button>
+            <button class="calc-tab" onclick="switchCalcTab('bsa',this)">&#9634; BSA</button>
+            <button class="calc-tab" onclick="switchCalcTab('nutrition',this)">&#127860; Калории</button>
         </div>
-        <div class="calc-row">
-            <label>Масса (кг):</label>
-            <input type="number" class="calc-input" id="calcWeight" placeholder="Введите вес" min="0.1" step="0.1" oninput="calculateDoses()">
+
+        <!-- TAB: Doses -->
+        <div class="calc-tab-content" id="calcTabDoses">
+            <div class="calc-row">
+                <label>Вид:</label>
+                <select class="calc-select" id="calcSpecies" onchange="updateCalcDrugs()">
+                    <option value="dog">Собака</option>
+                    <option value="cat">Кошка</option>
+                </select>
+            </div>
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="calcWeight" placeholder="Введите вес" min="0.1" step="0.1" oninput="calculateDoses()">
+            </div>
+            <div class="calc-row">
+                <label>Категория:</label>
+                <select class="calc-select" id="calcCategory" onchange="updateCalcDrugs()">
+                    <option value="all">Все препараты</option>
+                    <option value="antibiotic">Антибиотики</option>
+                    <option value="nsaid">НПВС</option>
+                    <option value="emergency">Экстренные</option>
+                    <option value="immunosupp">Иммуносупрессоры</option>
+                    <option value="antiemetic">Антиэметики</option>
+                    <option value="other">Прочие</option>
+                </select>
+            </div>
+            <div class="calc-results" id="calcResults"></div>
         </div>
-        <div class="calc-row">
-            <label>Категория:</label>
-            <select class="calc-select" id="calcCategory" onchange="updateCalcDrugs()">
-                <option value="all">Все препараты</option>
-                <option value="antibiotic">Антибиотики</option>
-                <option value="nsaid">НПВС</option>
-                <option value="emergency">Экстренные</option>
-                <option value="immunosupp">Иммуносупрессоры</option>
-                <option value="antiemetic">Антиэметики</option>
-                <option value="other">Прочие</option>
-            </select>
+
+        <!-- TAB: Infusion -->
+        <div class="calc-tab-content" id="calcTabInfusion" style="display:none">
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="infWeight" placeholder="Вес" min="0.1" step="0.1" oninput="calcInfusion()">
+            </div>
+            <div class="calc-row">
+                <label>Дегидратация (%):</label>
+                <select class="calc-select" id="infDehydration" onchange="calcInfusion()">
+                    <option value="0">Нет (0%)</option>
+                    <option value="5" selected>Лёгкая (5%)</option>
+                    <option value="7">Умеренная (7%)</option>
+                    <option value="10">Тяжёлая (10%)</option>
+                    <option value="12">Критическая (12%)</option>
+                </select>
+            </div>
+            <div class="calc-row">
+                <label>Период (ч):</label>
+                <input type="number" class="calc-input" id="infHours" value="24" min="1" max="72" oninput="calcInfusion()">
+            </div>
+            <div class="calc-row">
+                <label>Капельница:</label>
+                <select class="calc-select" id="infDropSet" onchange="calcInfusion()">
+                    <option value="20">Макро (20 кап/мл)</option>
+                    <option value="60">Микро (60 кап/мл)</option>
+                </select>
+            </div>
+            <div class="calc-results" id="infResults"></div>
         </div>
-        <div class="calc-results" id="calcResults"></div>
+
+        <!-- TAB: BSA -->
+        <div class="calc-tab-content" id="calcTabBsa" style="display:none">
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="bsaWeight" placeholder="Вес" min="0.1" step="0.1" oninput="calcBSA()">
+            </div>
+            <div class="calc-results" id="bsaResults"></div>
+        </div>
+
+        <!-- TAB: Nutrition -->
+        <div class="calc-tab-content" id="calcTabNutrition" style="display:none">
+            <div class="calc-row">
+                <label>Масса (кг):</label>
+                <input type="number" class="calc-input" id="nutWeight" placeholder="Вес" min="0.1" step="0.1" oninput="calcNutrition()">
+            </div>
+            <div class="calc-row">
+                <label>Статус:</label>
+                <select class="calc-select" id="nutStatus" onchange="calcNutrition()">
+                    <option value="rest">Покой (госпитализация)</option>
+                    <option value="normal" selected>Норма (домашний)</option>
+                    <option value="active">Активный</option>
+                    <option value="growth">Рост (щенок/котёнок)</option>
+                    <option value="lactation">Лактация</option>
+                    <option value="weightloss">Похудение</option>
+                    <option value="critical">Критический пациент</option>
+                </select>
+            </div>
+            <div class="calc-results" id="nutResults"></div>
+        </div>
+
         <div style="text-align:center;margin-top:16px">
             <button class="modal-btn cancel" onclick="closeCalc()">Закрыть</button>
         </div>
@@ -2369,7 +2545,25 @@
     <button class="toolbar-btn green" onclick="openCalc()">&#128138; Калькулятор доз</button>
     <button class="toolbar-btn" onclick="exportDiagPDF()" id="pdfBtn" style="display:none">&#128196; PDF карточка</button>
     <button class="toolbar-btn" onclick="toggleAudit()">&#128203; Журнал <span class="audit-count" id="auditCount" style="display:none">0</span></button>
-    <button class="toolbar-btn" onclick="window.print()">&#128424; Печать</button>
+    <button class="toolbar-btn purple" onclick="openWizard()">&#129668; Wizard</button>
+</div>
+
+<!-- ===== WIZARD MODAL ===== -->
+<div class="wizard-overlay" id="wizardOverlay">
+    <div class="wizard-modal">
+        <div class="wizard-header">
+            <h2>&#129668; Диагностический помощник</h2>
+            <button class="wizard-close" onclick="closeWizard()">&times;</button>
+        </div>
+        <div class="wizard-progress" id="wizardProgress">
+            <div class="wiz-step active" data-step="1"><span>1</span> Симптомы</div>
+            <div class="wiz-step" data-step="2"><span>2</span> Пациент</div>
+            <div class="wiz-step" data-step="3"><span>3</span> Уточнения</div>
+            <div class="wiz-step" data-step="4"><span>4</span> Результаты</div>
+        </div>
+        <div class="wizard-body" id="wizardBody"></div>
+        <div class="wizard-footer" id="wizardFooter"></div>
+    </div>
 </div>
 
 <script>
@@ -6995,6 +7189,717 @@ const TREATMENT_DATA = {
     "heat_stroke": { firstLine: "Немедленное охлаждение: обливание прохладной (не ледяной!) водой, вентилятор, влажные полотенца. Прекратить при T 39.4-39.5°C. Инфузия: кристаллоиды 40-90 мл/кг/ч начальная ресусцитация (DVM360, VetGirl — шоковая доза), затем снижать по эффекту.", supportive: "Кислородотерапия. Маннитол 0.5 г/кг при отёке мозга. Антибиотики широкого спектра (транслокация бактерий из кишечника).", contraindications: "Лёд и ледяная вода (вазоконстрикция). Продолжение охлаждения <39°C (гипотермия). НПВС (неэффективны при тепловом ударе). Инфузия 20 мл/кг/ч — недостаточно для ресусцитации.", monitoring: "Температура каждые 5-10 мин при охлаждении. Биохимия (печень, почки) через 24-48ч. Коагулограмма. Источник: DVM360, Today's Vet Practice, PMC 2023." }
 };
 
+// ===== STAGING DATA =====
+const STAGING_DATA = {
+    "ckd": {
+        system: "IRIS 2023",
+        stages: [
+            { label: "Стадия I", name: "Ранняя",
+              criteria: "Креатинин <140 мкмоль/л (кошки), <125 (собаки). SDMA <18. Неазотемия с аномалией почек (протеинурия, снижение УВ мочи, визуализация).",
+              firstLine: "Ренальная диета. Свободный доступ к воде. При протеинурии (UPC >0.4 кошки, >0.5 собаки): телмисартан 1 мг/кг per os 1р/д (собаки — первая линия, IRIS 2023) или беназеприл 0.5 мг/кг per os 1р/д.",
+              supportive: "Контроль АД: амлодипин при >160 мм рт. ст. Лечение основного заболевания (пиелонефрит, обструкция).",
+              contraindications: "НПВС. Аминогликозиды. Избыточное ограничение белка на ранней стадии.",
+              monitoring: "Креатинин + SDMA + ОАМ (УВ, UPC) каждые 6 мес. АД. Масса тела." },
+            { label: "Стадия II", name: "Умеренная",
+              criteria: "Креатинин 140-250 мкмоль/л (кошки), 125-250 (собаки). SDMA 18-35.",
+              firstLine: "Ренальная диета (обязательно). Антипротеинурийная терапия: телмисартан или беназеприл. Фосфат-байндеры при фосфоре >4.5 мг/дл: алюминия гидроксид 30-90 мг/кг/сут, лантана карбонат.",
+              supportive: "Антигипертензивные: амлодипин 0.625 мг/кошку, 0.1 мг/кг собаки. Калий (при гипокалиемии): калия глюконат per os.",
+              contraindications: "НПВС. Высокобелковая диета. Фосфорсодержащие клизмы.",
+              monitoring: "Креатинин + SDMA + UPC каждые 3-4 мес. АД. Фосфор, калий, кальций. Масса тела." },
+            { label: "Стадия III", name: "Тяжёлая",
+              criteria: "Креатинин 251-440 мкмоль/л (кошки/собаки). SDMA 36-54.",
+              firstLine: "Ренальная диета. Фосфат-байндеры (обязательно). П/к инфузия: Рингер-лактат 75-150 мл/сут (кошки), 150-300 мл (собаки) через день-ежедневно. Антиэметики: маропитант 2 мг/кг per os 1р/д. Антипротеинурийная терапия.",
+              supportive: "Дарбэпоэтин при анемии (Ht <20%): 1 мкг/кг п/к 1р/нед. Фамотидин 0.5 мг/кг per os 2р/д при уремическом гастрите. Антигипертензивные.",
+              contraindications: "НПВС. Агрессивная в/в инфузия. Кальцитриол (недостаточно доказательств — IRIS 2023).",
+              monitoring: "Креатинин + SDMA + UPC каждые 2-3 мес. ОАК (анемия). Фосфор, калий. АД. Масса тела, аппетит." },
+            { label: "Стадия IV", name: "Терминальная",
+              criteria: "Креатинин >440 мкмоль/л. SDMA >54. Выраженная уремия.",
+              firstLine: "В/в инфузия при уремическом кризе: кристаллоиды 2-4 мл/кг/ч. П/к поддерживающая инфузия ежедневно. Антиэметики: маропитант + ондансетрон. Фосфат-байндеры (увеличить дозу). Нутритивная поддержка через эзофагостомический зонд.",
+              supportive: "Дарбэпоэтин при тяжёлой анемии. Гемотрансфузия при Ht <12%. Паллиативная помощь. Обсуждение прогноза и качества жизни с владельцем.",
+              contraindications: "Любые нефротоксичные препараты. Агрессивное лечение без учёта качества жизни.",
+              monitoring: "Индивидуально. Оценка качества жизни. Контроль гидратации, аппетита, рвоты ежедневно." }
+        ]
+    },
+    "heart_failure": {
+        system: "ACVIM 2019",
+        stages: [
+            { label: "B1", name: "Без ремоделирования",
+              criteria: "Шум в сердце, но нет кардиомегалии (LA/Ao <1.6, LVIDDN <1.7). Нет клинических признаков.",
+              firstLine: "Лечение НЕ показано (EPIC Trial — пимобендан только с B2). Мониторинг.",
+              supportive: "Контроль веса. Ограничение натрия нецелесообразно на этой стадии.",
+              contraindications: "Пимобендан (нет доказательств пользы на B1). Диуретики. Ограничительная диета.",
+              monitoring: "Эхо + рентген ГК каждые 12 мес. ЧДД дома (<30/мин). При ↑ размеров сердца → переход в B2." },
+            { label: "B2", name: "С ремоделированием",
+              criteria: "Кардиомегалия (LA/Ao ≥1.6, LVIDDN ≥1.7 у собак). Нет клинических признаков СН.",
+              firstLine: "Пимобендан 0.25-0.3 мг/кг per os 2р/д натощак (EPIC Trial — задерживает наступление СН на 15 мес).",
+              supportive: "Контроль веса. Умеренная физическая активность. Диета с умеренным ограничением натрия.",
+              contraindications: "Диуретики (нет застоя). иАПФ (не доказано на B2 — ACVIM 2019). Чрезмерное ограничение активности.",
+              monitoring: "Эхо каждые 6 мес. ЧДД дома ежедневно. Рентген ГК каждые 6-12 мес. NT-proBNP." },
+            { label: "C", name: "Клиническая СН",
+              criteria: "Кардиогенный отёк лёгких или плевральный выпот. Первый или повторный эпизод декомпенсации.",
+              firstLine: "Острая: фуросемид 2 мг/кг в/в болюс, повтор каждые 1-2ч до эффекта → 1-2 мг/кг per os 2-3р/д. Кислородотерапия 40-60%. Пимобендан 0.25 мг/кг 2р/д. Хроническая: фуросемид + пимобендан + иАПФ (эналаприл/беназеприл 0.5 мг/кг 1-2р/д) + спиронолактон 1-2 мг/кг 1р/д.",
+              supportive: "Минимальный стресс. Торакоцентез при плевральном выпоте (кошки). Клопидогрел 18.75 мг 1р/д (кошки — профилактика ТЭ). Седация: буторфанол 0.2 мг/кг в/м при выраженной тревоге.",
+              contraindications: "Инфузия при отёке лёгких! Бета-блокаторы при декомпенсации. Пимобендан при обструктивной ГКМП с SAM.",
+              monitoring: "ЧДД в покое (<30/мин). Биохимия (почки, электролиты) каждые 1-3 мес. Рентген ГК при ухудшении. Вес." },
+            { label: "D", name: "Рефрактерная СН",
+              criteria: "Клинические признаки СН, рефрактерные к стандартной терапии стадии C.",
+              firstLine: "Увеличить фуросемид до 4-6 мг/кг per os 3р/д. Добавить торасемид 0.1-0.3 мг/кг 1-2р/д. КРИ фуросемида 1 мг/кг/ч при кризе. Увеличить пимобендан до 0.3 мг/кг 3р/д (off-label).",
+              supportive: "Гидралазин 0.5-2 мг/кг per os 2р/д (вазодилатация). Силденафил 1-2 мг/кг per os 3р/д (при лёгочной гипертензии). Абдоминоцентез при асците.",
+              contraindications: "Дальнейшее увеличение доз без контроля почек. Эвтаназия без обсуждения всех опций.",
+              monitoring: "Креатинин, электролиты каждые 1-2 нед. ЧДД, аппетит, активность ежедневно. Обсуждение качества жизни." }
+        ]
+    },
+    "epilepsy": {
+        system: "ACVIM 2024",
+        stages: [
+            { label: "Единичные", name: "Единичные приступы",
+              criteria: "Отдельные генерализованные или фокальные приступы. Менее 2 приступов за 6 мес.",
+              firstLine: "Начать поддерживающую терапию при ≥2 приступах за 6 мес ИЛИ при постиктальном периоде >24ч. Леветирацетам 20-60 мг/кг per os каждые 8ч (ACVIM 2024) — первая линия для кошек. Фенобарбитал 2-3 мг/кг per os 2р/д — первая линия для собак (рекомендация A — ACVIM 2024). Или имепитоин 10-30 мг/кг per os 2р/д (только собаки, Европа).",
+              supportive: "Дневник приступов (дата, длительность, тип). Избегать триггеров (стресс, недосыпание). Обучение владельца распознаванию аур.",
+              contraindications: "Ацепромазин. Резкая отмена/смена препарата. Фенобарбитал у кошек (гепатотоксичность).",
+              monitoring: "Фенобарбитал: уровень в крови через 2 нед, затем каждые 6 мес. Биохимия (печень) каждые 6 мес. Леветирацетам: строгий режим приёма." },
+            { label: "Кластерные", name: "Кластерные приступы",
+              criteria: "≥2 приступов за 24 часа. Высокий риск перехода в статус.",
+              firstLine: "Экстренно: диазепам 0.5-1 мг/кг в/в или ректально. Леветирацетам пульс 30-60 мг/кг в/в болюс, затем 20 мг/кг в/в каждые 8ч. Если на фенобарбитале — добавить леветирацетам (или наоборот).",
+              supportive: "Домашняя экстренная помощь: ректальный диазепам (0.5 мг/кг). Мидазолам интраназально 0.2 мг/кг. Госпитализация при ≥3 приступах.",
+              contraindications: "Ожидание «само пройдёт». Задержка госпитализации. Фенобарбитал быстро в/в (респираторная депрессия).",
+              monitoring: "Неврологический статус каждые 2-4ч. Температура (гипертермия). Глюкоза, электролиты." },
+            { label: "Статус", name: "Эпилептический статус",
+              criteria: "Непрерывный приступ >5 мин или серия приступов без восстановления сознания между ними. ЖИЗНЕУГРОЖАЮЩЕЕ состояние.",
+              firstLine: "1) Диазепам 0.5-1 мг/кг в/в (макс 3 болюса). 2) Леветирацетам 30-60 мг/кг в/в за 5 мин (рекомендация B — ACVIM 2024). 3) Фенобарбитал 2-4 мг/кг в/в медленно (рекомендация A для собак). 4) При рефрактерном: пропофол 1-6 мг/кг в/в болюс → КРИ 0.1-0.6 мг/кг/мин.",
+              supportive: "Кислородотерапия. В/в доступ + инфузия. Охлаждение при T>40°C. Коррекция гипогликемии (декстроза). ИВЛ при необходимости.",
+              contraindications: "Промедление (каждая минута статуса → повреждение мозга). Ацепромазин. Кетамин (проконвульсант при статусе).",
+              monitoring: "ЭКГ, SpO2, температура непрерывно. Глюкоза каждые 30 мин. Газы крови. Неврологический статус после купирования." }
+        ]
+    },
+    "demodicosis": {
+        system: "Клиническая классификация",
+        stages: [
+            { label: "Локализованный", name: "Локализованный демодекоз",
+              criteria: "≤4 поражённых участка, каждый ≤2.5 см в диаметре. Общая площадь <10% тела. Обычно на морде/передних лапах.",
+              firstLine: "Наблюдение (у щенков часто самоограничивается). Изоксазолины могут ускорить: флураланер (Бравекто) однократно per os или сароланер 2 мг/кг per os однократно.",
+              supportive: "Шампунь с хлоргексидином 2-4% при вторичной пиодерме. Диета, иммуноподдержка.",
+              contraindications: "Кортикостероиды (обострение). Ивермектин MDR1-породам. Амитраз (устаревший). Преждевременный пессимизм — 90% ювенильных самоизлечиваются.",
+              monitoring: "Глубокий соскоб через 4 нед. Переход в генерализованный — при появлении новых очагов." },
+            { label: "Генерализованный", name: "Генерализованный демодекоз",
+              criteria: "≥5 поражённых участков ИЛИ вовлечение ≥2 лап (пододемодекоз) ИЛИ поражение >50% тела. Тяжёлая вторичная пиодерма.",
+              firstLine: "Изоксазолины — ОБЯЗАТЕЛЬНО: флураланер (Бравекто) per os однократно (100% эрадикация к 3 мес — Fourie 2020) или сароланер (Симпарика) 2 мг/кг per os 1р/мес, 2-3 последовательных дозы. Кошки: моксидектин + имидаклоприд (Адвокат) спот-он 1р/нед.",
+              supportive: "Антибиотики при глубокой пиодерме: цефалексин 22-30 мг/кг per os 2р/д (минимум 4-6 нед до отрицательного соскоба + 2 нед). Шампуни с хлоргексидином. Исключить иммуносупрессию (Кушинг, гипотиреоз, неоплазия).",
+              contraindications: "Кортикостероиды (абсолютно!). Ивермектин MDR1-породам. Прекращение лечения до 2 отрицательных соскобов. Амитраз.",
+              monitoring: "Глубокий соскоб каждые 4 нед. Лечение до 2 отрицательных соскобов подряд с интервалом 1 мес. У взрослых собак — обязательный поиск первопричины." }
+        ]
+    },
+    "patellar_luxation": {
+        system: "Putnam / Singleton",
+        stages: [
+            { label: "Степень I", name: "Минимальная",
+              criteria: "Надколенник вывихивается при ручном давлении, самопроизвольно возвращается. Животное не хромает.",
+              firstLine: "Консервативное ведение. Контроль веса. Хондропротекторы (глюкозамин + хондроитин). Умеренная физическая нагрузка.",
+              supportive: "НПВС при периодической болезненности: мелоксикам 0.1 мг/кг 1р/д (короткий курс). Физиотерапия.",
+              contraindications: "Хирургия (не показана при I степени без прогрессирования). Ограничение всей физической активности.",
+              monitoring: "Ортопедический осмотр каждые 6-12 мес. Рентген при появлении хромоты." },
+            { label: "Степень II", name: "Умеренная",
+              criteria: "Надколенник вывихивается спонтанно при сгибании, может быть вправлен вручную. Периодическая хромота.",
+              firstLine: "Хирургия рекомендована: транспозиция бугристости большеберцовой кости + углубление блока. Пре-оп рентген (TPA, углы).",
+              supportive: "НПВС пред/послеоперационно. Ограничение нагрузки 6-8 нед после операции. Физиотерапия.",
+              contraindications: "Длительное консервативное ведение (прогрессирование артроза). Изолированная мягкотканная пластика (рецидив).",
+              monitoring: "Рентген через 6-8 нед после операции. Ортопедический осмотр через 3, 6, 12 мес." },
+            { label: "Степень III", name: "Тяжёлая",
+              criteria: "Надколенник постоянно вывихнут, может быть вправлен мануально, но немедленно релюксирует. Хромота постоянная.",
+              firstLine: "Хирургия ОБЯЗАТЕЛЬНА: транспозиция бугристости + сулькопластика (углубление блока) + релиз капсулы. Возможна корригирующая остеотомия.",
+              supportive: "Послеоперационная аналгезия: мелоксикам + габапентин. Строгое ограничение 8 нед. Физиотерапия с 3-й недели.",
+              contraindications: "Откладывание операции (эрозия хряща, контрактуры). Только мягкотканная пластика.",
+              monitoring: "Рентген через 6-8 нед. Оценка функции через 3, 6, 12 мес. Контралатеральная конечность." },
+            { label: "Степень IV", name: "Крайне тяжёлая",
+              criteria: "Надколенник постоянно вывихнут, НЕ может быть вправлен. Ротация большеберцовой кости. Тяжёлая деформация конечности.",
+              firstLine: "Сложная реконструктивная хирургия: корригирующая остеотомия бедренной/большеберцовой кости + транспозиция бугристости + сулькопластика. Часто этапная.",
+              supportive: "Интенсивная послеоперационная аналгезия. Длительная реабилитация 3-6 мес. Возможен неполный результат.",
+              contraindications: "Простая транспозиция без остеотомии (неэффективна). Откладывание (необратимые контрактуры).",
+              monitoring: "Рентген серийно. КТ перед операцией для планирования. Функциональная оценка длительно." }
+        ]
+    },
+    "discopathy": {
+        system: "Модифицированная Frankel",
+        stages: [
+            { label: "Степень I", name: "Только боль",
+              criteria: "Боль в спине/шее без неврологических дефицитов. Скованность, кифоз, нежелание двигаться.",
+              firstLine: "Строгий клеточный покой 4-6 недель. НПВС: мелоксикам 0.1 мг/кг 1р/д или карпрофен 2.2 мг/кг 2р/д. Габапентин 5-10 мг/кг per os 2-3р/д.",
+              supportive: "Миорелаксанты: метокарбамол 15-20 мг/кг per os 3р/д. Опиоиды при сильной боли: трамадол 3-5 мг/кг per os 2-3р/д.",
+              contraindications: "ГКС + НПВС одновременно. Физическая активность (прыжки, лестницы). Мануальная терапия позвоночника.",
+              monitoring: "Неврологический статус ежедневно (переход в высшие степени). Боль по шкале. Повтор через 2-3 нед." },
+            { label: "Степень II", name: "Амбулаторный парапарез",
+              criteria: "Атаксия, парапарез, но животное ходит самостоятельно. Снижение проприоцепции.",
+              firstLine: "Строгий покой 4-6 нед. НПВС + габапентин. Рассмотреть хирургию (гемиламинэктомия) при рецидиве или отсутствии улучшения за 2 нед.",
+              supportive: "Физиотерапия после острой фазы. Поддержка при ходьбе (шлейка). Мягкая подстилка.",
+              contraindications: "Ожидание при ухудшении неврологии. НПВС + ГКС.",
+              monitoring: "Неврологический осмотр каждые 3-5 дней. МРТ при ухудшении." },
+            { label: "Степень III", name: "Неамбулаторный парапарез",
+              criteria: "Параплегия, но произвольные движения сохранены. Не может ходить. Глубокая болевая чувствительность СОХРАНЕНА.",
+              firstLine: "Хирургия рекомендована: гемиламинэктомия / вентральный слот (шейный). МРТ перед операцией обязательна. Преднизолон (если хирургия невозможна): 0.5-1 мг/кг per os 1р/д, короткий курс.",
+              supportive: "Уход за лежачим: мягкая подстилка, повороты каждые 4ч. Катетеризация мочевого пузыря. Физиотерапия послеоперационная.",
+              contraindications: "Выжидательная тактика при ухудшении. НПВС + ГКС. Игнорирование функции мочевого пузыря.",
+              monitoring: "Неврологический статус каждые 6-12ч. Функция мочевого пузыря. УЗИ мочевого пузыря." },
+            { label: "Степень IV", name: "Параплегия, глубокая боль +",
+              criteria: "Параплегия. Отсутствие произвольных движений. Глубокая болевая чувствительность СОХРАНЕНА.",
+              firstLine: "Экстренная хирургия: гемиламинэктомия. МРТ срочно. Прогноз при хирургии: 85-95% восстановление.",
+              supportive: "Метилпреднизолон (сукцинат) 30 мг/кг в/в однократно (в первые 8ч, спорно). Уход за лежачим. Катетеризация.",
+              contraindications: "Промедление >48ч (ухудшение прогноза). Консервативное ведение при быстром ухудшении.",
+              monitoring: "Неврологический статус каждые 4-6ч. Диурез. Послеоперационная МРТ при отсутствии улучшения." },
+            { label: "Степень V", name: "Параплегия, глубокая боль −",
+              criteria: "Параплегия. Отсутствие глубокой болевой чувствительности (зажим пальцев — нет реакции). НАИХУДШИЙ ПРОГНОЗ.",
+              firstLine: "Экстренная хирургия в первые 24-48ч: гемиламинэктомия + дуротомия. Прогноз: ~50% при хирургии <24ч, <5% при >48ч. Обсудить прогноз с владельцем до операции.",
+              supportive: "Полный уход за лежачим. Нейрогенный мочевой пузырь — ручное опорожнение 3-4р/д. Профилактика пролежней. Каталка (при необратимой параплегии).",
+              contraindications: "Откладывание хирургии (каждый час снижает шансы). Повторный метилпреднизолон. Эвтаназия без обсуждения всех опций.",
+              monitoring: "Глубокая болевая чувствительность каждые 6ч. Появление = положительный прогноз. Функция мочевого пузыря." }
+        ]
+    },
+    "pancreatitis": {
+        system: "Клиническая тяжесть",
+        stages: [
+            { label: "Лёгкий", name: "Лёгкий / неосложнённый",
+              criteria: "Рвота, анорексия, абдоминальная боль. Нет системных осложнений (SIRS, ДВС, ОПН). Стабильная гемодинамика.",
+              firstLine: "Амбулаторно возможно. Антиэметики: маропитант 1 мг/кг п/к 1р/д. Обезболивание: бупренорфин 0.01-0.02 мг/кг п/к каждые 8ч. Инфузия п/к при лёгкой дегидратации.",
+              supportive: "Раннее кормление (через 12-24ч): низкожировая диета (собаки), обычная (кошки — не голодать!). Фамотидин 0.5 мг/кг per os 2р/д.",
+              contraindications: "Голодная диета >24ч (особенно кошки — липидоз!). НПВС. Кортикостероиды без показаний.",
+              monitoring: "cPL/fPL через 48-72ч. Аппетит, рвота, болезненность. Биохимия через 5-7 дней." },
+            { label: "Тяжёлый", name: "Тяжёлый / осложнённый",
+              criteria: "SIRS (≥2: ЧСС↑, ЧДД↑, T↑/>39.2 или <37.8, лейкоциты↑↓). Шок, ДВС, ОПН, ОРДС. Перипанкреатический некроз.",
+              firstLine: "Госпитализация (ОРИТ). Агрессивная инфузия: кристаллоиды в/в 40-60 мл/кг/сут (осторожно с перегрузкой). Обезболивание: фентанил КРИ 2-5 мкг/кг/ч или лидокаин КРИ 25-50 мкг/кг/мин (собаки). Антиэметики: маропитант + ондансетрон 0.5 мг/кг в/в.",
+              supportive: "Коллоиды при гипоальбуминемии. Плазма при ДВС. Энтеральное питание через НГЗ/эзофагостому (ACVIM 2021 — раннее питание улучшает исход). Антибиотики только при доказанной инфекции/некрозе.",
+              contraindications: "Выжидание при шоке. НПВС. Недостаточная аналгезия. Парентеральное питание как первая линия (энтеральное предпочтительнее — ACVIM 2021).",
+              monitoring: "Биохимия каждые 12-24ч. ОАК, коагулограмма. Диурез (катетер). Лактат. УЗИ через 48-72ч. Источник: ACVIM Consensus Pancreatitis 2021." }
+        ]
+    },
+    "pyoderma": {
+        system: "Глубина поражения",
+        stages: [
+            { label: "Поверхностная", name: "Поверхностная пиодерма",
+              criteria: "Папулы, пустулы, эпидермальные «воротнички». Поражение в пределах эпидермиса/фолликула. Бактериальный фолликулит.",
+              firstLine: "Топикальная терапия (если <10% тела): хлоргексидин 2-4% шампунь 2р/нед. Муппироцин/фузидовая кислота локально. Системно (при распространённой): цефалексин 22-30 мг/кг per os 2р/д, 21 день минимум (до клинического излечения + 7 дней).",
+              supportive: "Поиск первопричины: аллергия, эндокринопатия, демодекоз. Без устранения причины — рецидив.",
+              contraindications: "Кортикостероиды (маскируют и ухудшают). Антибиотики <3 нед (рецидив, резистентность).",
+              monitoring: "Клиническая оценка через 2-3 нед. При рецидиве — бак. посев + чувствительность." },
+            { label: "Глубокая", name: "Глубокая пиодерма",
+              criteria: "Фурункулы, свищи, целлюлит. Поражение дермы/подкожной клетчатки. Гнойное/геморрагическое отделяемое.",
+              firstLine: "Бак. посев + чувствительность ПЕРЕД антибиотикотерапией! Цефалексин 22-30 мг/кг per os 2р/д или амоксициллин-клавуланат 25 мг/кг per os 2р/д. Минимум 6-8 недель (до излечения + 14 дней).",
+              supportive: "Хлоргексидин 2-4% шампунь/промывания ежедневно. Компрессы с тёплым NaCl. Поиск первопричины обязателен (демодекоз, гипотиреоз, Кушинг, аллергия).",
+              contraindications: "Эмпирический выбор антибиотика без посева (резистентность!). Кортикостероиды. Короткие курсы. Только топикальная терапия.",
+              monitoring: "Повторный осмотр каждые 2 нед. Бак. посев при отсутствии ответа через 2 нед. Исследование первопричины." }
+        ]
+    },
+    "glaucoma": {
+        system: "Клиническая форма",
+        stages: [
+            { label: "Острая", name: "Острая глаукома",
+              criteria: "ВГД >30 мм рт.ст. Боль (блефароспазм, эпифора). Мидриаз. Отёк роговицы. Застойная инъекция. Зрение может быть сохранено. ЭКСТРЕННОСТЬ.",
+              firstLine: "Латанопрост 0.005% 1 капля → повтор через 15 мин (собаки, первичная). Маннитол 1-2 г/кг в/в за 20 мин (быстрое снижение ВГД). Дорзоламид 2% + тимолол 0.5% каждые 8ч.",
+              supportive: "Обезболивание: НПВС per os. Противовоспалительное: дексаметазон 0.1% капли каждые 6ч (если нет язвы). Минимизация стресса.",
+              contraindications: "Латанопрост при увеите (усиливает воспаление)! Атропин (расширяет зрачок → ухудшает отток). Промедление >24-48ч (необратимая потеря зрения).",
+              monitoring: "ВГД каждые 2-4ч до стабилизации. Оценка зрения (реакция зрачка, тест «ватный шарик»). Контралатеральный глаз (профилактика)." },
+            { label: "Хроническая", name: "Хроническая глаукома",
+              criteria: "Длительно повышенное ВГД. Буфтальмия. Атрофия/экскавация ДЗН. Линзолюксация. Потеря зрения (часто необратимая).",
+              firstLine: "Зрячий глаз: дорзоламид + тимолол каждые 8-12ч, латанопрост 1р/д (поддержание). Слепой болезненный глаз: энуклеация или эвисцерация с протезом (интрасклеральный) или фармакологическая аблация (интравитреальная инъекция гентамицина 25 мг + дексаметазона 1 мг).",
+              supportive: "Обезболивание (хроническая боль = сниженное качество жизни). Профилактика второго глаза: латанопрост на ночь.",
+              contraindications: "Длительное лечение слепого болезненного глаза (страдание). Откладывание энуклеации при хронической боли.",
+              monitoring: "ВГД ежемесячно. Оценка зрения и комфорта. Контралатеральный глаз каждые 3-6 мес." }
+        ]
+    },
+    "dic": {
+        system: "Фаза",
+        stages: [
+            { label: "Компенсированный", name: "Гиперкоагуляционная фаза",
+              criteria: "Повышенный D-димер, снижение АТ III. Тромбоциты в норме или незначительно снижены. ПВ/АЧТВ в норме. Нет клинического кровотечения.",
+              firstLine: "Лечение основного заболевания (сепсис, неоплазия, панкреатит). Нефракционированный гепарин 150-300 ЕД/кг п/к каждые 8ч ИЛИ эноксапарин 0.8 мг/кг п/к каждые 6ч.",
+              supportive: "Инфузионная терапия. Антибиотики при сепсисе. Мониторинг перехода в декомпенсированную фазу.",
+              contraindications: "Игнорирование лабораторных изменений. Отсутствие терапии основного заболевания.",
+              monitoring: "Коагулограмма (ПВ, АЧТВ, фибриноген, D-димер) каждые 6-12ч. Тромбоциты. АТ III." },
+            { label: "Декомпенсированный", name: "Гипокоагуляционная фаза / кровотечение",
+              criteria: "Тромбоцитопения (<50×10⁹/л). ↑ПВ, ↑АЧТВ. ↓Фибриноген. ↑↑D-димер. Клиническое кровотечение (петехии, экхимозы, из мест пункции). Шок.",
+              firstLine: "Свежезамороженная плазма 10-15 мл/кг в/в (восполнение факторов). Криопреципитат при ↓фибриногене. Лечение основного заболевания (ПРИОРИТЕТ). Тромбоцитарная масса при критической тромбоцитопении.",
+              supportive: "Агрессивная инфузия при шоке. Кислородотерапия. Гемотрансфузия при Ht <15%. Транексамовая кислота 10-15 мг/кг в/в (при гиперфибринолизе).",
+              contraindications: "Гепарин при активном кровотечении (усугубит). Хирургия при некорригированной коагулопатии.",
+              monitoring: "Коагулограмма каждые 4-6ч. Ht, тромбоциты. Лактат. Диурез. Клинические признаки кровотечения." }
+        ]
+    },
+    "ibd": {
+        system: "WSAVA / клиническая тяжесть",
+        stages: [
+            { label: "Лёгкий", name: "Лёгкая степень",
+              criteria: "Периодическая диарея/рвота. Аппетит сохранён. Вес стабилен. Альбумин в норме.",
+              firstLine: "Элиминационная диета 6-8 нед (гидролизованный белок или новый источник белка). Пробиотики. Метронидазол 10-15 мг/кг per os 2р/д, 2-3 нед.",
+              supportive: "B12 (кобаламин) 250-1000 мкг п/к 1р/нед (6 нед) при дефиците. Фолиевая кислота. Пребиотики.",
+              contraindications: "Иммуносупрессия без попытки диетотерапии. Эмпирические антибиотики длительно.",
+              monitoring: "Клиническая оценка (стул, вес, аппетит) через 2-4 нед диеты. B12, фолат, альбумин." },
+            { label: "Умеренный", name: "Умеренная степень",
+              criteria: "Частая диарея/рвота. Снижение аппетита. Потеря веса <10%. Альбумин на нижней границе.",
+              firstLine: "Элиминационная диета + преднизолон 1-2 мг/кг per os 1р/д, тапперинг 25% каждые 2-3 нед до минимальной эффективной дозы. Будесонид 3 мг/м² per os 1р/д (альтернатива с меньшими системными побочными).",
+              supportive: "B12 обязательно. Пробиотики. Метронидазол при колитическом компоненте. Противорвотные по необходимости.",
+              contraindications: "Длительные высокие дозы ГКС без тапперинга. Диагноз IBD без биопсии (исключить лимфому!).",
+              monitoring: "Клиническая оценка каждые 2-3 нед. Альбумин, B12 каждые 2-3 мес. Повторная биопсия при отсутствии ответа." },
+            { label: "Тяжёлый", name: "Тяжёлая степень / PLE",
+              criteria: "Хроническая диарея, значительная потеря веса (>10%). Гипоальбуминемия (<2.0 г/дл). Отёки, асцит (PLE — энтеропатия с потерей белка).",
+              firstLine: "Преднизолон 2 мг/кг per os 1р/д + хлорамбуцил 4-6 мг/м² per os через день (кошки) или азатиоприн 2 мг/кг per os 1р/д → через день (ТОЛЬКО собаки). Ультранизкожировая диета при лимфангиэктазии.",
+              supportive: "Альбумин 25% 1-2 мл/кг в/в при критической гипоальбуминемии. B12 обязательно (часто тяжёлый дефицит). Плазма. Антитромботические: клопидогрел (риск тромбоза при PLE).",
+              contraindications: "Азатиоприн у кошек (летально!). Монотерапия ГКС при тяжёлом PLE. Диагноз IBD без исключения лимфомы (иммуногистохимия!).",
+              monitoring: "Альбумин каждые 1-2 нед до стабилизации. Вес еженедельно. ОАК каждые 2 нед (миелосупрессия хлорамбуцил/азатиоприн). Повторная биопсия при отсутствии ответа." }
+        ]
+    },
+    "lymphoma": {
+        system: "WHO (модифицированная)",
+        stages: [
+            { label: "I-II", name: "Локализованная",
+              criteria: "Стадия I: один ЛУ или одна экстранодальная локализация. Стадия II: несколько ЛУ одной анатомической области. Подстадия a (без симптомов) или b (с симптомами).",
+              firstLine: "Химиотерапия: CHOP-протокол (циклофосфамид + доксорубицин + винкристин + преднизолон) — 25 нед, золотой стандарт. Медиана выживания: 12-14 мес (собаки). Кошки: COP или CHOP. Лимфома Т-типа: ломустин 70 мг/м² per os каждые 3 нед.",
+              supportive: "Преднизолон 2 мг/кг per os 1р/д (если ХТ невозможна — паллиатив, медиана 1-2 мес). Антиэметики при ХТ.",
+              contraindications: "Преднизолон ДО цитологии/гистологии (MDR-резистентность!). ХТ без типирования (B vs T).",
+              monitoring: "ОАК перед каждым циклом ХТ (нейтрофилы >3000). Размер ЛУ. Рентген ГК каждые 2-3 мес." },
+            { label: "III-IV", name: "Генерализованная",
+              criteria: "Стадия III: генерализованная лимфаденопатия. Стадия IV: вовлечение печени/селезёнки. Подстадия b (анорексия, потеря веса) — хуже прогноз.",
+              firstLine: "CHOP-протокол (стандарт). Медиана: 10-12 мес (подстадия a), 6-8 мес (подстадия b). Кошки: COP или CHOP, медиана 6-9 мес.",
+              supportive: "Нутритивная поддержка. Антибиотики при нейтропении (<1000). Обезболивание при дискомфорте. Обсуждение прогноза.",
+              contraindications: "ХТ при критической нейтропении. Преднизолон как монотерапия перед ХТ.",
+              monitoring: "ОАК каждые 7 дней в первый цикл. Размер ЛУ. Рестадирование каждые 2-3 мес." },
+            { label: "V", name: "Вовлечение КМ / крови",
+              criteria: "Стадия V: лейкемическая фаза (бластные клетки в крови/костном мозге). Наихудший прогноз.",
+              firstLine: "Агрессивная ХТ: CHOP + L-аспарагиназа 400 ЕД/кг в/м (индукция). Медиана: 4-6 мес. Обсудить прогноз и качество жизни.",
+              supportive: "Гемотрансфузия при анемии. Антибиотики широкого спектра. Паллиативная помощь. Обсуждение эвтаназии при рефрактерности.",
+              contraindications: "Агрессивная ХТ без информированного согласия. Игнорирование качества жизни.",
+              monitoring: "ОАК 2р/нед. Мазок крови. Контроль инфекций. Оценка качества жизни еженедельно." }
+        ]
+    },
+    "mammary_tumor": {
+        system: "TNM (модифицированная)",
+        stages: [
+            { label: "I", name: "Ранняя",
+              criteria: "Опухоль <3 см. Региональные ЛУ не увеличены (N0). Нет метастазов (M0).",
+              firstLine: "Хирургия: региональная мастэктомия (с краями ≥2 см). Собаки: гистология определяет дальнейшую тактику. Одновременная ОГЭ если не стерилизована.",
+              supportive: "Обезболивание: мелоксикам 0.1 мг/кг per os 3-5 дней. Обработка швов.",
+              contraindications: "Только нодулэктомия (<2 см краёв). Хирургия без рентгена лёгких (стадирование!).",
+              monitoring: "Гистология: тип + степень злокачественности + краёв. Рентген ГК каждые 3 мес (1 год), затем каждые 6 мес." },
+            { label: "II", name: "Местнораспространённая",
+              criteria: "Опухоль 3-5 см. Или подвижный региональный ЛУ (N1). Нет отдалённых метастазов.",
+              firstLine: "Хирургия: унилатеральная мастэктомия (собаки) или билатеральная (кошки — 85-90% злокачественные). ОГЭ одновременно. Кошки: рассмотреть адъювантную ХТ (доксорубицин 25 мг/м² каждые 3 нед, 4-5 циклов).",
+              supportive: "Послеоперационная аналгезия. Антибиотики при обширной операции. Компрессионная повязка.",
+              contraindications: "Неадекватные краёв резекции. Отказ от ОГЭ. Откладывание операции.",
+              monitoring: "Гистология. Рентген ГК + УЗИ БП каждые 2-3 мес. Пальпация оставшихся молочных желёз." },
+            { label: "III-IV", name: "Поздняя / метастатическая",
+              criteria: "Стадия III: опухоль >5 см и/или фиксированный ЛУ. Стадия IV: отдалённые метастазы (лёгкие, печень, кости). Воспалительная карцинома.",
+              firstLine: "Стадия III без метастазов: радикальная мастэктомия + адъювантная ХТ. Стадия IV / воспалительная: паллиативная терапия. НПВС (мелоксикам/пироксикам 0.3 мг/кг per os 1р/д), габапентин, трамадол.",
+              supportive: "Обезболивание — приоритет. Нутритивная поддержка. Обсуждение прогноза (воспалительная — медиана <3 мес). Лучевая терапия при доступности.",
+              contraindications: "Хирургия при воспалительной карциноме (не улучшает прогноз, ухудшает заживление). Агрессивное лечение без учёта качества жизни.",
+              monitoring: "Оценка качества жизни. Аналгезия. Рентген ГК ежемесячно." }
+        ]
+    },
+    "aki": {
+        system: "IRIS AKI 2023",
+        stages: [
+            { label: "Степень I", name: "Неазотемическая ОПН",
+              criteria: "Креатинин <140 мкмоль/л, но: ↑ на ≥26.4 мкмоль/л за 48ч ИЛИ олигурия (<1 мл/кг/ч) ИЛИ ↑SDMA при нормальном креатинине.",
+              firstLine: "Устранение причины (нефротоксины, обструкция). В/в инфузия: кристаллоиды 2-4 мл/кг/ч. Коррекция электролитов.",
+              supportive: "Антиэметики. Гастропротекция. Отмена всех нефротоксичных препаратов.",
+              contraindications: "НПВС. Аминогликозиды. Недостаточная инфузия.",
+              monitoring: "Креатинин, SDMA каждые 12-24ч. Диурез (катетер). Электролиты." },
+            { label: "Степень II", name: "Лёгкая азотемия",
+              criteria: "Креатинин 140-220 мкмоль/л или ↑ на ≥26.4 от базового.",
+              firstLine: "В/в инфузия 3-5 мл/кг/ч. Лечение причины. При олигурии: фуросемид 2-4 мг/кг в/в болюс → 1 мг/кг/ч КРИ.",
+              supportive: "Антиэметики: маропитант. Коррекция ацидоза (NaHCO₃). Нутритивная поддержка.",
+              contraindications: "НПВС. Контрастные вещества. Недостаточный объём инфузии.",
+              monitoring: "Креатинин каждые 12ч. Диурез ежечасно. Электролиты, газы крови каждые 12ч." },
+            { label: "Степень III", name: "Умеренная азотемия",
+              criteria: "Креатинин 221-440 мкмоль/л.",
+              firstLine: "Агрессивная инфузия. Лечение причины. Диуретики при олигурии. Маннитол 0.5-1 г/кг в/в (если ответ на фуросемид недостаточен). Рассмотреть перитонеальный диализ.",
+              supportive: "Коррекция гиперкалиемии: кальция глюконат + декстроза + инсулин. Энтеральное питание через зонд.",
+              contraindications: "Ожидание без активных мер. Допамин (не доказана ренопротекция).",
+              monitoring: "Креатинин каждые 8-12ч. Диурез, электролиты, газы крови. ЭКГ при K+>6." },
+            { label: "Степень IV-V", name: "Тяжёлая / критическая",
+              criteria: "Степень IV: креатинин 441-880 мкмоль/л. Степень V: >880 мкмоль/л. Анурия. Тяжёлая уремия.",
+              firstLine: "Гемодиализ (при доступности) — показание: анурия, тяжёлая гиперкалиемия, fluid overload, токсины. Перитонеальный диализ как альтернатива. Агрессивная коррекция электролитов.",
+              supportive: "Контроль уремической энцефалопатии. Гемотрансфузия при тяжёлой анемии. Обсуждение прогноза: при анурии >24ч без диализа — критический.",
+              contraindications: "Избыточная инфузия при анурии (отёк лёгких!). Отсрочка диализа при показаниях. Эвтаназия без попытки лечения.",
+              monitoring: "Биохимия каждые 6-8ч. ЧДД (отёк лёгких). ЭКГ непрерывно. Диурез. Оценка качества жизни." }
+        ]
+    },
+    "osteosarcoma": {
+        system: "Клиническая стадия",
+        stages: [
+            { label: "Без метастазов", name: "Локализованная (M0)",
+              criteria: "Рентген конечности + 3 проекции ГК: нет видимых метастазов. КТ ГК предпочтительнее (чувствительность выше).",
+              firstLine: "Ампутация + адъювантная химиотерапия: карбоплатин 300 мг/м² в/в каждые 3 нед (4-6 циклов). Медиана: 10-12 мес (ампутация + ХТ) vs 4 мес (только ампутация). Или доксорубицин 30 мг/м² каждые 3 нед.",
+              supportive: "Обезболивание пред/послеоперационное. Реабилитация после ампутации. 80% собак хорошо адаптируются к 3 ногам.",
+              contraindications: "Только ампутация без ХТ (микрометастазы есть у 90% на момент диагноза). Биопсия без хирургического плана (патологический перелом).",
+              monitoring: "Рентген ГК каждые 2-3 мес (метастазы лёгких). ОАК перед каждым циклом ХТ. Культя." },
+            { label: "С метастазами", name: "Метастатическая (M1)",
+              criteria: "Видимые метастазы в лёгких/костях при рентгене или КТ. Или патологический перелом.",
+              firstLine: "Паллиативная терапия. Обезболивание: НПВС (мелоксикам/пироксикам) + габапентин 5-10 мг/кг 2-3р/д + трамадол 3-5 мг/кг 2-3р/д. Паллиативная лучевая терапия (2-4 фракции — облегчение боли у 70%).",
+              supportive: "Бисфосфонаты: памидронат 1-2 мг/кг в/в каждые 3-4 нед (снижение костной боли). Нутритивная поддержка. Обсуждение прогноза (медиана <3 мес).",
+              contraindications: "Агрессивная ХТ при тяжёлом метастатическом поражении (QoL). Откладывание обезболивания.",
+              monitoring: "Оценка боли еженедельно. Качество жизни (аппетит, активность, комфорт). Рентген ГК ежемесячно." }
+        ]
+    },
+    "parvovirus": {
+        system: "Клиническая тяжесть",
+        stages: [
+            { label: "Лёгкий", name: "Лёгкая форма",
+              criteria: "Рвота/диарея умеренные. Лейкоциты >3000. Глюкоза в норме. Нет признаков сепсиса. Гемодинамика стабильна.",
+              firstLine: "Амбулаторный протокол возможен (Colorado State): п/к инфузия (Рингер-лактат 30-50 мл/кг/сут дробно). Маропитант 1 мг/кг п/к 1р/д. Антибиотики per os: амоксициллин-клавуланат 12.5-25 мг/кг 2р/д.",
+              supportive: "Раннее энтеральное питание (через 12ч без рвоты). Пробиотики. Контроль глюкозы 2р/д.",
+              contraindications: "НПВС. Отсутствие наблюдения дома (владелец должен контролировать). Пероральные препараты при рвоте.",
+              monitoring: "Осмотр каждые 24ч. Глюкоза, гидратация, аппетит. ОАК через 48ч. Переход на стационар при ухудшении." },
+            { label: "Средний", name: "Средняя тяжесть",
+              criteria: "Частая рвота, геморрагическая диарея. Лейкоциты 1000-3000. Умеренная дегидратация (5-8%). Глюкоза на нижней границе.",
+              firstLine: "Госпитализация. В/в инфузия: кристаллоиды (Рингер-лактат) 40-60 мл/кг/сут. Маропитант 1 мг/кг п/к 1р/д. Антибиотики в/в: ампициллин 20 мг/кг в/в 3р/д + метронидазол 10-15 мг/кг в/в 2р/д.",
+              supportive: "Декстроза 2.5-5% в инфузию при гипогликемии. Обезболивание: буторфанол 0.1-0.4 мг/кг в/в. Раннее энтеральное питание.",
+              contraindications: "НПВС. Метоклопрамид при подозрении на инвагинацию. Выписка без стабилизации лейкоцитов.",
+              monitoring: "Глюкоза каждые 6ч, ОАК ежедневно, температура 2р/д, масса тела, диурез." },
+            { label: "Тяжёлый", name: "Тяжёлая / критическая",
+              criteria: "Сепсис/SIRS (ЧСС↑, T<37.5 или >39.5, лейкоциты <1000). Гипогликемия. Гипоальбуминемия (<1.5 г/дл). Шок, гипотензия. ДВС.",
+              firstLine: "ОРИТ. Агрессивная инфузия: кристаллоиды болюс 10-20 мл/кг за 15-20 мин → до 80-120 мл/кг/сут. Коллоиды при гипоальбуминемии <1.5 г/дл (плазма 10-15 мл/кг или Гетастарч 5-10 мл/кг). Декстроза 50% 0.5-1 мл/кг в/в болюс при гипогликемии → 2.5-5% в инфузию. Антибиотики в/в: ампициллин + метронидазол + энрофлоксацин 5 мг/кг в/в 1р/д.",
+              supportive: "Вазопрессоры при рефрактерной гипотензии: допамин 5-10 мкг/кг/мин КРИ. Гемотрансфузия при Ht<15%. Обезболивание: фентанил КРИ 2-5 мкг/кг/ч. Контроль ДВС: плазма. Парентеральное питание при невозможности энтерального.",
+              contraindications: "Недостаточная инфузия. Откладывание коррекции гипогликемии. Выжидание при шоке. НПВС.",
+              monitoring: "Глюкоза каждые 2-4ч, ОАК каждые 12ч, лактат, АД, диурез (катетер), температура каждые 4ч, коагулограмма при подозрении на ДВС." }
+        ]
+    },
+    "diabetes": {
+        system: "Клинический статус",
+        stages: [
+            { label: "Стабильный", name: "Неосложнённый сахарный диабет",
+              criteria: "Полиурия/полидипсия, потеря веса. Гипергликемия >14 ммоль/л. Нет кетоацидоза (рН >7.3, кетоны отр. или следовые). Животное ест и пьёт.",
+              firstLine: "Собаки: инсулин НПХ (Протафан) 0.25-0.5 ЕД/кг п/к 2р/д. Кошки: инсулин гларгин (Лантус) 1-2 ЕД/кошку п/к 2р/д или протамин-цинк (ProZinc) 1-2 ЕД п/к 2р/д. Старт с низкой дозы — титрация каждые 5-7 дней.",
+              supportive: "Диабетическая диета: высокобелковая/низкоуглеводная (кошки), высоковолокнистая (собаки). Стерилизация сук (прогестерон → инсулинорезистентность). Лечение сопутствующего панкреатита.",
+              contraindications: "Кортикостероиды. Прогестагены. Инсулин без подтверждения диагноза (фруктозамин!). Резкое увеличение дозы инсулина.",
+              monitoring: "Кривая глюкозы (каждые 2ч, 12ч) через 5-7 дней после старта. Фруктозамин каждые 3-4 нед. Масса тела. Ремиссия у кошек: возможна в первые 3 мес." },
+            { label: "ДКА", name: "Диабетический кетоацидоз",
+              criteria: "Рвота, анорексия, летаргия, дегидратация. Гипергликемия + кетонурия/кетонемия. рН <7.3 (метаболический ацидоз). Часто сопутствующая инфекция (панкреатит, ИМП, пиометра).",
+              firstLine: "ЭКСТРЕННАЯ госпитализация. В/в инфузия: NaCl 0.9% (скорость по степени дегидратации, обычно 60-100 мл/кг/сут). Инсулин короткого действия: регулярный инсулин 0.1 ЕД/кг/ч в/в КРИ (в NaCl). При снижении глюкозы <14 ммоль/л → добавить 2.5-5% декстрозу в инфузию, НЕ отменять инсулин.",
+              supportive: "Коррекция калия: KCl в инфузию (20-40 мЭкв/л при K+ 3.5-5.5; 40-60 мЭкв/л при K+ <3.5). Фосфор: KPO₄ при <1.5 мг/дл. Бикарбонат: NaHCO₃ только при рН <7.0 (1-2 мЭкв/кг медленно). Антиэметики: маропитант. Лечение провоцирующего фактора (панкреатит, ИМП).",
+              contraindications: "Инсулин п/к при ДКА (непредсказуемое всасывание). Резкое снижение глюкозы >5.5 ммоль/л/ч (отёк мозга). Инсулин без коррекции K+ (гипокалиемия!). Бикарбонат при рН >7.1.",
+              monitoring: "Глюкоза каждые 1-2ч. Калий, фосфор каждые 4-6ч. Газы крови каждые 6-12ч. Кетоны (в/м-β-гидроксибутират). Диурез. Переход на п/к инсулин: когда ест, рН >7.3, кетоны ↓." }
+        ]
+    },
+    "fip": {
+        system: "Клиническая форма (ABCD 2026)",
+        stages: [
+            { label: "Эффузивная", name: "Влажная (эффузивная) форма",
+              criteria: "Асцит и/или плевральный выпот. Жидкость вязкая, соломенно-жёлтая. Белок >35 г/л, A/G <0.4. Ривальта-тест положительный. Часто лихорадка, потеря веса.",
+              firstLine: "GS-441524 per os: 10-15 мг/кг/сут (ABCD 2026 — пероральная форма предпочтительна). Курс 84 дня (12 нед). Молнупиравир 10-15 мг/кг per os 2р/д — вторая линия.",
+              supportive: "Дренирование выпота при дыхательной недостаточности. Нутритивная поддержка (высококалорийная диета). Противорвотные при ЖКТ-побочных GS-441524. Кортикостероиды коротким курсом при тяжёлом воспалении.",
+              contraindications: "Только ГКС без противовирусных. Старые инъекционные дозы 4-6 мг/кг (недостаточно для per os). Эвтаназия без попытки лечения.",
+              monitoring: "Глобулин, A/G каждые 2 нед. Объём выпота (УЗИ). Вес, аппетит, температура. Рецидив 10-15% — повышение дозы или смена препарата." },
+            { label: "Сухая", name: "Сухая (гранулематозная) форма",
+              criteria: "Гранулёмы в органах (почки, ЛУ, печень, кишечник). Нет или минимальный выпот. Лихорадка, потеря веса, увеличение ЛУ/органов. Гиперглобулинемия.",
+              firstLine: "GS-441524 per os: 15-20 мг/кг/сут (доза выше из-за необходимости пенетрации в ткани). Курс 84 дня.",
+              supportive: "Нутритивная поддержка. Симптоматическая терапия по локализации гранулём (гепатопротекторы при печёночных, антигипертензивные при почечных).",
+              contraindications: "Иммуносупрессия без противовирусных. Недостаточная доза GS-441524 (как при эффузивной форме).",
+              monitoring: "УЗИ БП каждые 2-4 нед (размер гранулём). Биохимия (органоспецифичная). A/G, глобулин. Вес." },
+            { label: "Нейро/Окулярная", name: "Неврологическая и/или окулярная форма",
+              criteria: "Неврологические: атаксия, судороги, парезы, нистагм, поведенческие изменения. Окулярные: увеит (гипопион, преципитаты), хориоретинит, отслойка сетчатки. МРТ: менингоэнцефалит.",
+              firstLine: "GS-441524 per os: 20-25 мг/кг/сут (ABCD 2026 — МАКСИМАЛЬНАЯ доза, необходима пенетрация через ГЭБ). Курс 84 дня минимум (часто продлевают до 12-16 нед).",
+              supportive: "Противосудорожные: леветирацетам 20-60 мг/кг per os каждые 8ч при судорогах. Топикальные ГКС при увеите (дексаметазон 0.1% капли каждые 6ч). Системные ГКС: преднизолон 1 мг/кг при тяжёлом воспалении ЦНС (короткий курс).",
+              contraindications: "Низкая доза GS-441524 (<20 мг/кг для нейроформы). Изолированная терапия увеита без системного антивирусного. Ранняя отмена при улучшении симптомов.",
+              monitoring: "Неврологический статус еженедельно. Офтальмоскопия. МРТ при доступности (через 4-6 нед). A/G, глобулин. Длительное наблюдение — рецидив нейроформы выше (до 20%)." }
+        ]
+    },
+    "corneal_ulcer": {
+        system: "Глубина поражения",
+        stages: [
+            { label: "Поверхностная", name: "Поверхностная язва / эрозия",
+              criteria: "Повреждение эпителия без вовлечения стромы. Флюоресцеин +. Нет инфильтрата. Боль умеренная.",
+              firstLine: "Топикальный антибиотик: тобрамицин 0.3% или офлоксацин 0.3% каждые 6-8ч. Атропин 1% капли 2р/д (мидриаз + обезболивание). Защитный воротник.",
+              supportive: "Системная аналгезия: мелоксикам 0.1 мг/кг per os 1р/д (собаки). Индолентная язва (собаки >6 лет): дебридмент сухим ватным тампоном + точечная/решётчатая кератотомия.",
+              contraindications: "Кортикостероидные капли (замедляют эпителизацию, риск расплавления!). Контактная линза без антибиотика.",
+              monitoring: "Ре-окрашивание флюоресцеином через 5-7 дней. Должна зажить за 7-10 дней. Если нет — переоценка (индолентная? глубокая?)." },
+            { label: "Глубокая стромальная", name: "Глубокая стромальная язва",
+              criteria: "Потеря >50% толщины стромы. Видимое углубление. Возможен стромальный инфильтрат. Высокий риск перфорации.",
+              firstLine: "Интенсивная топикальная терапия: фторхинолон (офлоксацин/моксифлоксацин) каждые 2-4ч. Аутологичная сыворотка каждые 2ч (антиколлагеназное). Атропин 1% каждые 8-12ч. Рассмотреть конъюнктивальный лоскут или амниотическую мембрану.",
+              supportive: "Системный доксициклин 5 мг/кг per os 2р/д (антиколлагеназный эффект). Системная аналгезия. N-ацетилцистеин 5-10% капли каждые 4-6ч (антиколлагеназное).",
+              contraindications: "ГКС топикальные (категорически!). Ожидание без интенсивной терапии. Откладывание хирургии при прогрессировании.",
+              monitoring: "Осмотр каждые 24-48ч. Тест Зейделя (исключить перфорацию). Цитология/посев при подозрении на инфекционный кератит." },
+            { label: "Расплавляющаяся", name: "Кератомаляция (расплавляющаяся язва)",
+              criteria: "Желатинозная, «тающая» строма. Быстрое прогрессирование (часы). Белый/жёлтый инфильтрат. Pseudomonas или другие протеазопродуцирующие бактерии.",
+              firstLine: "ЭКСТРЕННОСТЬ. Посев + цитология немедленно. Топикально: фторхинолон каждые 1-2ч + аминогликозид (тобрамицин) каждые 1-2ч (чередовать). Аутологичная сыворотка каждые 1-2ч. EDTA 0.2% капли каждые 2ч (ингибитор металлопротеиназ).",
+              supportive: "Системный доксициклин 5 мг/кг 2р/д. Системный фторхинолон. N-ацетилцистеин 5-10% каждые 2ч. Хирургия при прогрессировании: конъюнктивальный лоскут, корнеосклеральная транспозиция.",
+              contraindications: "ГКС (ускоряют расплавление!). Задержка лечения даже на часы. Монотерапия одним антибиотиком.",
+              monitoring: "Осмотр каждые 6-12ч. Тест Зейделя каждый осмотр. Хирургия при отсутствии стабилизации за 24-48ч." },
+            { label: "Перфорация", name: "Перфорация роговицы / десцеметоцеле",
+              criteria: "Десцеметоцеле: прозрачный пузырёк в дне язвы (десцеметова мембрана обнажена). Перфорация: тест Зейделя + (истечение водянистой влаги). Мелкая передняя камера. Возможно выпадение радужки.",
+              firstLine: "ЭКСТРЕННАЯ хирургия. Десцеметоцеле: конъюнктивальный лоскут или корнеосклеральная транспозиция. Перфорация: цианоакрилатный клей (временно) → корнеальный трансплантат или лоскут. Системные антибиотики: амоксициллин-клавуланат 12.5-25 мг/кг в/в.",
+              supportive: "Не давить на глаз! Защитный воротник. Атропин 1% (стабилизация ГОБ). Топикальный антибиотик после хирургии. Обезболивание.",
+              contraindications: "Промедление с хирургией. ГКС. Давление на глаз при осмотре (экструзия содержимого). Попытка консервативного лечения перфорации.",
+              monitoring: "Послеоперационно: осмотр каждые 24-48ч. Тест Зейделя. ВГД. Функция лоскута." }
+        ]
+    },
+    "head_trauma": {
+        system: "MGCS (Modified Glasgow Coma Scale)",
+        stages: [
+            { label: "Лёгкая (15-18)", name: "Лёгкая ЧМТ",
+              criteria: "MGCS 15-18. Сознание ясное или лёгкая оглушённость. Зрачки реактивные. Ходит самостоятельно.",
+              firstLine: "Наблюдение 24-48ч. Покой, голова приподнята 30°. Анальгезия: буторфанол 0.2-0.4 мг/кг в/м каждые 6-8ч. Инфузия поддерживающая.",
+              supportive: "Противорвотные при тошноте. Мониторинг неврологического статуса каждые 2-4ч. Рентген черепа (переломы).",
+              contraindications: "Ацепромазин (снижает порог судорог). Седация без контроля. Ранняя выписка без стабильного MGCS.",
+              monitoring: "MGCS каждые 2-4ч первые 24ч. Размер зрачков, ЧСС, АД. При ухудшении → переоценка стадии." },
+            { label: "Средняя (9-14)", name: "Средняя ЧМТ",
+              criteria: "MGCS 9-14. Сопорозное состояние. Реакция на боль сохранена. Возможен анизокория. Атаксия.",
+              firstLine: "Госпитализация. Маннитол 0.5-1 г/кг в/в за 15-20 мин (снижение ВЧД), повтор каждые 6-8ч при необходимости. Или гипертонический NaCl 3-7.5% 3-5 мл/кг в/в за 10-15 мин. Голова 30°. Инфузия: кристаллоиды (избегать гипотензии — MAP >80).",
+              supportive: "Кислородотерапия. Леветирацетам 20 мг/кг в/в (профилактика ранних судорог). Обезболивание: фентанил КРИ 2-5 мкг/кг/ч.",
+              contraindications: "Гипотензия (снижает перфузию мозга — хуже прогноз!). Маннитол при гиповолемии (сначала стабилизировать АД). ГКС (дексаметазон) — нет доказательств пользы, ухудшает прогноз.",
+              monitoring: "MGCS каждые 1-2ч. Зрачки (анизокория = вклинение). АД (MAP >80). Диурез (маннитол — осмотический диурез). КТ/МРТ при доступности." },
+            { label: "Тяжёлая (<9)", name: "Тяжёлая ЧМТ",
+              criteria: "MGCS <9. Кома или глубокий сопор. Фиксированные расширенные зрачки. Децеребрационная ригидность. Нарушения дыхания.",
+              firstLine: "ОРИТ. Маннитол 1-2 г/кг в/в + гипертонический NaCl. Интубация + ИВЛ при нарушении дыхания (целевой EtCO₂ 35-40 мм рт.ст. — лёгкая гипервентиляция). Инфузия: MAP >80 (вазопрессоры при необходимости).",
+              supportive: "Леветирацетам в/в (профилактика судорог). Энтеральное питание через НГЗ. Уход за лежачим. Краниотомия при компрессионных переломах/гематомах (КТ!).",
+              contraindications: "ГКС (нет эффекта, усиливают гипергликемию → ухудшение). Гипервентиляция до EtCO₂ <30 (ишемия мозга). Длительный маннитол без контроля осмоляльности (>320 мОсм → стоп). Отсутствие мониторинга.",
+              monitoring: "MGCS каждые 30-60 мин. Зрачки непрерывно. АД, SpO2, EtCO₂ непрерывно. Осмоляльность сыворотки. Глюкоза (гипергликемия ухудшает прогноз). Обсуждение прогноза (MGCS <8 → гуарированная смертность >50%)." }
+        ]
+    },
+    "leishmaniasis": {
+        system: "LeishVet 2018",
+        stages: [
+            { label: "I (лёгкая)", name: "Лёгкая — субклиническая",
+              criteria: "Низкий титр антител. Лёгкая лимфаденопатия или папулёзный дерматит. Нет потери веса. Биохимия и ОАМ в норме.",
+              firstLine: "Аллопуринол 10 мг/кг per os 2р/д — пожизненно (или минимум 12 мес при серонегативизации). Монотерапия достаточна на этой стадии.",
+              supportive: "Репелленты от москитов (дельтаметрин-ошейник). Контроль среды обитания. Обучение владельца.",
+              contraindications: "Меглюмина антимониат (не показан при лёгкой форме — нефротоксичность). Иммуносупрессия (ГКС).",
+              monitoring: "Серология каждые 3-6 мес. Биохимия + ОАМ (протеинурия). Клинический осмотр каждые 3-4 мес." },
+            { label: "II (умеренная)", name: "Умеренная — клиническая",
+              criteria: "Высокий титр антител. Алопеция, дерматит, онихогрифоз, лимфаденопатия, потеря веса. Лёгкая анемия. Диспротеинемия (↑глобулин, ↓альбумин). UPC <1.",
+              firstLine: "Меглюмина антимониат (Глюкантим) 100 мг/кг п/к 1р/д — 28 дней + аллопуринол 10 мг/кг per os 2р/д (продолжать после курса антимониата). Альтернатива: милтефозин 2 мг/кг per os 1р/д — 28 дней + аллопуринол.",
+              supportive: "Репелленты. Высокобелковая диета. Лечение кожных поражений (шампуни).",
+              contraindications: "Монотерапия аллопуринолом при клинической форме (недостаточно). ГКС. Отсутствие комбинированной терапии.",
+              monitoring: "Биохимия + электрофорез белков каждые 3 мес. ОАМ (UPC). Серология каждые 6 мес. ОАК." },
+            { label: "III (тяжёлая)", name: "Тяжёлая — нефропатия",
+              criteria: "Иммунокомплексный гломерулонефрит. UPC 1-5. Протеинурия. ХБП IRIS I-II. Васкулит, увеит, полиартрит возможны.",
+              firstLine: "Меглюмина антимониат 100 мг/кг п/к 1р/д — 28 дней + аллопуринол 10 мг/кг 2р/д (пожизненно). Антипротеинурийная терапия: телмисартан 1 мг/кг per os 1р/д или беназеприл 0.5 мг/кг per os 1р/д.",
+              supportive: "Ренальная диета. Контроль АД: амлодипин при гипертензии. Лечение увеита (топ. ГКС при изолированном увеите).",
+              contraindications: "Игнорирование нефропатии. Высокие дозы НПВС (нефротоксичность). ГКС системно.",
+              monitoring: "Креатинин + SDMA + UPC каждые 2-3 мес. Электрофорез. АД. Серология." },
+            { label: "IV (критическая)", name: "Критическая — почечная недостаточность",
+              criteria: "ХБП IRIS III-IV. UPC >5. Нефротический синдром. Тромбоэмболия. Тяжёлая кахексия.",
+              firstLine: "Меглюмина антимониат ПРОТИВОПОКАЗАН (нефротоксичность при азотемии!). Аллопуринол 10 мг/кг per os 2р/д — единственный антилейшманиозный препарат. Лечение ХБП по IRIS (см. стадирование ХБП).",
+              supportive: "Инфузионная терапия. Антипротеинурийная терапия. Антигипертензивные. Нутритивная поддержка. Обсуждение прогноза (резервированный).",
+              contraindications: "Меглюмина антимониат! Милтефозин (нефротоксичность). Агрессивная терапия без учёта качества жизни.",
+              monitoring: "Как ХБП IRIS III-IV. Качество жизни. Прогноз: резервированный при IRIS IV." }
+        ]
+    },
+    "dirofilariasis": {
+        system: "AHS (American Heartworm Society)",
+        stages: [
+            { label: "Класс I-II", name: "Лёгкая-умеренная",
+              criteria: "Класс I: бессимптомно или лёгкий кашель. Рентген: норма или минимальные изменения. Класс II: умеренный кашель, снижение толерантности к нагрузке. Рентген: умеренное увеличение ЛА.",
+              firstLine: "Предварительная подготовка (1 мес): доксициклин 10 мг/кг per os 2р/д — 28 дней (убивает Wolbachia). Макроциклический лактон (ивермектин 6 мкг/кг или моксидектин) ежемесячно. Через 1 мес: меларсомин (Иммитицид) 2.5 мг/кг глубоко в/м — 3 инъекции по протоколу AHS (1-я → через 30 дней 2-я → через 24ч 3-я).",
+              supportive: "Строгое ограничение физической активности 6-8 нед после каждой инъекции. Преднизолон 0.5 мг/кг per os 1р/д первую неделю после инъекций (снижение воспалительной реакции на гибнущих червей).",
+              contraindications: "Физическая нагрузка (тромбоэмболия гибнущими червями!). Двухинъекционный протокол (2 дозы за 24ч без предварительной — выше риск ТЭ).",
+              monitoring: "Рентген ГК перед лечением. Антиген-тест через 6 мес после последней инъекции (должен стать отрицательным). Наблюдение за признаками ТЭ: кашель, одышка, кровохарканье." },
+            { label: "Класс III", name: "Тяжёлая",
+              criteria: "Кахексия, одышка, кашель, асцит. Рентген: увеличение правых отделов сердца, расширение ЛА, перибронхиальные инфильтраты. Возможна лёгочная гипертензия.",
+              firstLine: "Расширенная подготовка: доксициклин 28 дней + макроциклический лактон 2-3 мес ДО адультицида. Преднизолон 1-2 мг/кг per os с тапперингом (снижение воспаления лёгочных артерий). Затем меларсомин 3-инъекционный протокол.",
+              supportive: "Фуросемид при правосторонней СН. Силденафил 1-2 мг/кг per os 3р/д (лёгочная гипертензия). Строжайшее ограничение нагрузки (клеточное содержание). Кислородотерапия.",
+              contraindications: "Меларсомин без предварительной стабилизации. Физическая нагрузка. Двухинъекционный протокол.",
+              monitoring: "Рентген ГК каждые 2-4 нед. ЧДД, кашель. Антиген через 6 мес. Эхо (лёгочная гипертензия)." },
+            { label: "Класс IV (Caval)", name: "Кавальный синдром",
+              criteria: "Массивная инвазия: черви в правом предсердии и полых венах. Внутрисосудистый гемолиз (гемоглобинурия, желтуха). Коллапс, шок. ДВС. ЖИЗНЕУГРОЖАЮЩЕЕ.",
+              firstLine: "ХИРУРГИЧЕСКОЕ ИЗВЛЕЧЕНИЕ червей (через яремную вену под рентгеноскопией/эхо) — ПЕРВООЧЕРЕДНАЯ мера. Меларсомин ПРОТИВОПОКАЗАН до операции (массовая гибель → фатальная ТЭ). После хирургии: стабилизация, затем стандартный протокол адультицидной терапии.",
+              supportive: "Инфузия, стабилизация гемодинамики. Гемотрансфузия при тяжёлом гемолизе. Лечение ДВС (плазма). Кислородотерапия.",
+              contraindications: "Меларсомин без предварительного хирургического извлечения! Промедление с хирургией. Физическая нагрузка.",
+              monitoring: "ЧСС, АД, Ht, цвет мочи (гемоглобинурия). Коагулограмма. Послеоперационная эхо. Стабилизация → стандартный протокол." }
+        ]
+    },
+    "feline_asthma": {
+        system: "Клиническая тяжесть",
+        stages: [
+            { label: "Стабильная", name: "Интермиттирующая / стабильная",
+              criteria: "Периодический кашель/хрипы. Между эпизодами — норма. ЧДД в норме. SpO2 >95%. Рентген: перибронхиальные уплотнения, гиперинфляция.",
+              firstLine: "Ингаляционный флутиказон 125 мкг (через спейсер AeroKat) 2р/д. Бронходилататор-ресукю: сальбутамол (альбутерол) ингаляционно при приступе.",
+              supportive: "Устранение аллергенов/триггеров (пыль, дым, аэрозоли). Наполнитель без пыли. Снижение веса при ожирении.",
+              contraindications: "Системные ГКС длительно как первая линия (ингаляционные предпочтительнее). Бета-блокаторы.",
+              monitoring: "ЧДД дома. Частота использования сальбутамола (>2р/нед = недостаточный контроль). Рентген ГК каждые 6-12 мес." },
+            { label: "Хроническая", name: "Персистирующая",
+              criteria: "Ежедневный или почти ежедневный кашель. Снижение активности. Периодическая одышка. Рентген: выраженные бронхиальные изменения.",
+              firstLine: "Ингаляционный флутиказон 250 мкг 2р/д (увеличить дозу). При невозможности ингаляций: преднизолон 1-2 мг/кг per os 1р/д × 5-7 дней → тапперинг до минимальной эффективной дозы (часто 0.5 мг/кг через день).",
+              supportive: "Сальбутамол ингаляционно по необходимости. Исключить лёгочных паразитов (Aelurostrongylus — фенбендазол 50 мг/кг per os 1р/д × 10 дней). Бронхоскопия + БАЛ при рефрактерном.",
+              contraindications: "Длительные системные ГКС без попытки ингаляционных. Кодеин (подавление кашля опасно). Кошки >8 лет на ГКС длительно → риск диабета.",
+              monitoring: "ЧДД, кашель (дневник). Глюкоза каждые 3-6 мес при системных ГКС. Рентген ГК каждые 6 мес." },
+            { label: "Криз", name: "Острый бронхоспазм",
+              criteria: "Выраженная экспираторная одышка. Цианоз. Дыхание открытым ртом. SpO2 <90%. ЧДД >60. ЖИЗНЕУГРОЖАЮЩЕЕ.",
+              firstLine: "Тербуталин 0.01 мг/кг п/к или в/м (НЕМЕДЛЕННО — действует за 15 мин). Кислородотерапия (кислородная клетка, flow-by). Дексаметазон 0.25-0.5 мг/кг в/в (системный ГКС при кризе).",
+              supportive: "Минимальный стресс (не фиксировать, не выполнять процедуры до стабилизации!). Сальбутамол ингаляционно (если переносит). Инфузия поддерживающая.",
+              contraindications: "Стрессовые процедуры до стабилизации (рентген, катетеризация). Седация (угнетение дыхания). Бета-блокаторы. Задержка тербуталина.",
+              monitoring: "SpO2 непрерывно. ЧДД каждые 15 мин. Аускультация (хрипы → улучшение). Рентген после стабилизации." }
+        ]
+    },
+    "hip_dysplasia": {
+        system: "По возрасту и тяжести ОА",
+        stages: [
+            { label: "Ювенильная", name: "Молодые собаки (<12 мес)",
+              criteria: "4-12 мес: боль, «кроличий бег», нежелание подниматься. Положительный тест Ортолани. Рентген: подвывих, DI >0.3 (PennHIP). Нет или минимальный ОА.",
+              firstLine: "Ювенильный лобковый симфизиодез (JPS): <16-20 нед (изменяет рост таза). Тройная остеотомия таза (TPO): 5-10 мес, если Norberg <105°, нет ОА. Двойная остеотомия (DPO): менее инвазивная альтернатива.",
+              supportive: "Контроль роста (не перекармливать). Умеренная нагрузка (плавание). Хондропротекторы (глюкозамин + хондроитин). Контроль веса.",
+              contraindications: "JPS после 20 нед (неэффективно). TPO при наличии ОА. Избыточный вес и прыжки.",
+              monitoring: "Рентген (Norberg, DI) каждые 3-4 мес до 12 мес. OFA-рентген в 2 года. Оценка хромоты." },
+            { label: "Консервативная", name: "Взрослые, лёгкий-умеренный ОА",
+              criteria: "Хромота перемежающаяся. Рентген: ОА лёгкий-умеренный. Функция конечности сохранена. Боль контролируемая.",
+              firstLine: "Мультимодальная терапия: НПВС (мелоксикам 0.1 мг/кг 1р/д или карпрофен 2.2 мг/кг 2р/д). Контроль веса (снижение на 6-8% = значимое улучшение). Физиотерапия: плавание, подводная беговая дорожка.",
+              supportive: "Габапентин 5-10 мг/кг per os 2-3р/д (нейропатическая боль). Хондропротекторы. Омега-3 жирные кислоты. Адекватная подстилка. Антислип-покрытие полов. Оклацитиниб рассматривать нельзя (не для боли).",
+              contraindications: "Длительные ГКС внутрисуставно (деструкция хряща). НПВС без гастропротекции при длительном приёме. Чрезмерная нагрузка.",
+              monitoring: "Ортопедический осмотр каждые 3-6 мес. Рентген ежегодно. Биохимия (почки, печень) при длительных НПВС." },
+            { label: "Хирургическая", name: "Тяжёлый ОА / рефрактерная боль",
+              criteria: "Тяжёлый ОА. Хроническая боль, не контролируемая медикаментозно. Выраженная хромота. Снижение качества жизни.",
+              firstLine: "Тотальное эндопротезирование (THR) — золотой стандарт при тяжёлом ОА у собак >20 кг: полное восстановление функции в 90-95%. Резекционная артропластика (FHNE) — для мелких собак <15-20 кг и кошек: удаление головки бедренной кости.",
+              supportive: "Послеоперационная реабилитация 8-12 нед (физиотерапия). Обезболивание: НПВС + габапентин + трамадол. Ограничение нагрузки 8 нед.",
+              contraindications: "THR при активной инфекции. FHNE у крупных собак (недостаточная функция). Откладывание операции при хронической боли (страдание).",
+              monitoring: "Рентген через 6-8 нед, 6 мес, 12 мес после операции. Оценка функции и хромоты. Контралатеральная сторона." }
+        ]
+    },
+    "heat_stroke": {
+        system: "Клиническая тяжесть",
+        stages: [
+            { label: "Компенсированный", name: "Без органной дисфункции",
+              criteria: "T 40-41°C. Тахикардия, тахипноэ, гиперемия слизистых. Сознание сохранено. Нет кровотечений. Лактат <4 ммоль/л.",
+              firstLine: "Немедленное охлаждение: обливание прохладной (не ледяной!) водой, вентилятор, влажные полотенца на шею/пах/подмышки. Прекратить при T 39.4-39.5°C. Инфузия: кристаллоиды 20-40 мл/кг/ч.",
+              supportive: "Кислородотерапия. Покой в прохладном помещении. Маропитант при рвоте.",
+              contraindications: "Лёд/ледяная вода (вазоконстрикция → ухудшает теплоотдачу). Продолжение охлаждения ниже 39°C. НПВС (неэффективны при тепловом ударе). Жаропонижающие (парацетамол — ЛЕТАЛЕН для кошек).",
+              monitoring: "Температура каждые 5-10 мин при охлаждении. Биохимия (печень, почки) через 24ч (отсроченная органная дисфункция). Коагулограмма. Наблюдение 24-48ч." },
+            { label: "Декомпенсированный", name: "Полиорганная дисфункция",
+              criteria: "T >41.5°C. ДВС (петехии, кровотечения из мест пункции). ОПН (олигурия, ↑креатинин). Печёночная недостаточность (↑АЛТ >10×). Рабдомиолиз. Отёк мозга (судороги, кома). Лактат >6 ммоль/л.",
+              firstLine: "ОРИТ. Агрессивное охлаждение + инфузия: кристаллоиды 40-90 мл/кг/ч начальная ресусцитация. Свежезамороженная плазма 10-15 мл/кг при ДВС. Маннитол 0.5-1 г/кг в/в при отёке мозга. Диазепам 0.5 мг/кг в/в при судорогах.",
+              supportive: "Гемотрансфузия при тяжёлом гемолизе. Антибиотики широкого спектра (транслокация из кишечника). Допамин 5-10 мкг/кг/мин при гипотензии. Лечение ОПН (см. AKI).",
+              contraindications: "Недостаточная инфузия (20 мл/кг/ч — мало!). Лёд. НПВС. ГКС (не доказана польза, ухудшают ЖКТ). Промедление с плазмой при ДВС.",
+              monitoring: "Температура, АД, ЧСС непрерывно. Биохимия (печень, почки) каждые 12-24ч. Коагулограмма каждые 6-12ч. Лактат. Диурез. Летальность 50% при T >42°C. Источник: PMC 2023, VetGirl." }
+        ]
+    },
+    "tetanus": {
+        system: "Клиническая степень",
+        stages: [
+            { label: "Степень I", name: "Локализованный",
+              criteria: "Ригидность одной конечности или области (рядом с раной). Дисфагии нет. Хвост/уши могут быть ригидными. Нет тризма.",
+              firstLine: "Обработка раны (дебридмент, промывание). Метронидазол 10-15 мг/кг per os/в/в 2р/д — 10-14 дней (убивает C. tetani). Противостолбнячный антитоксин (ПСА) 100-500 ЕД/кг в/в однократно (нейтрализует циркулирующий токсин).",
+              supportive: "Тихое, тёмное помещение (снижение стимуляции). Диазепам 0.5-1 мг/кг per os 3р/д (лёгкая миорелаксация). Мягкая подстилка.",
+              contraindications: "Пенициллин G (усиливает ГАМК-блокаду — теоретический риск). ПСА повторно (анафилаксия). Яркий свет/шум (провоцирует спазмы).",
+              monitoring: "Неврологический статус ежедневно (прогрессирование). Способность есть и пить. Переход в генерализованный — обычно 1-3 дня." },
+            { label: "Степень II", name: "Генерализованный умеренный",
+              criteria: "Генерализованная ригидность (пилообразная стойка). Тризм (не может открыть пасть). «Сардоническая улыбка». Может стоять и ходить. Дисфагия. Нет судорог.",
+              firstLine: "Госпитализация. Метронидазол в/в. ПСА. Миорелаксация: диазепам 0.5-2 мг/кг в/в каждые 6-8ч ИЛИ метокарбамол 44-220 мг/кг в/в медленно (не >330 мг/кг/сут). Фенобарбитал 2-4 мг/кг per os/в/в 2р/д при неадекватном контроле.",
+              supportive: "Энтеральное питание через НГЗ или эзофагостому (дисфагия!). Инфузия в/в. Мочевой катетер при задержке мочи. Уход за лежачим при невозможности стоять.",
+              contraindications: "Стимуляция (свет, шум). Попытка насильственного кормления per os (аспирация!). Ацепромазин.",
+              monitoring: "Ригидность, способность есть, дыхание каждые 4-6ч. Температура (гипертермия от спазмов). Гидратация." },
+            { label: "Степень III-IV", name: "Тяжёлый / дыхательная недостаточность",
+              criteria: "Степень III: опистотонус, тяжёлые спазмы, тахикардия, лабильность АД. Степень IV: всё вышеперечисленное + дыхательная недостаточность (спазм дыхательных мышц), автономная дисфункция.",
+              firstLine: "ОРИТ. Глубокая седация: пропофол КРИ 0.1-0.4 мг/кг/мин или мидазолам КРИ 0.1-0.5 мг/кг/ч. ИВЛ при дыхательной недостаточности (интубация под глубокой седацией). ПСА + метронидазол в/в.",
+              supportive: "Магния сульфат 25-50 мг/кг/ч в/в КРИ (контроль автономной дисфункции). Парентеральное питание или НГЗ. Уход за лежачим: мягкая подстилка, повороты каждые 4ч, профилактика пролежней. Мочевой катетер.",
+              contraindications: "Недостаточная седация (спазмы → гипертермия → смерть). Попытка кормления per os. Отмена ИВЛ до восстановления дыхания.",
+              monitoring: "ЧДД, SpO2, EtCO₂ непрерывно. Температура (гипертермия от спазмов). АД (автономная нестабильность). ЭКГ. Прогноз: выздоровление возможно (2-4 нед), но требует интенсивного ухода." }
+        ]
+    },
+    "pneumonia": {
+        system: "Клиническая тяжесть",
+        stages: [
+            { label: "Лёгкая", name: "Нетяжёлая",
+              criteria: "Кашель, лёгкая одышка. ЧДД <40. SpO2 >94%. Аппетит сохранён. Рентген: локализованный инфильтрат (1 доля).",
+              firstLine: "Амбулаторно возможно. Амоксициллин-клавуланат 12.5-25 мг/кг per os 2р/д или доксициклин 5-10 мг/кг per os 2р/д. Курс минимум 2-3 нед (до рентген. разрешения + 1 нед).",
+              supportive: "Небулизация с NaCl 0.9% 2-3р/д. Купаж грудной клетки после небулизации. Увлажнение воздуха. Активность умеренная (не клеточное содержание — нужно откашливание).",
+              contraindications: "Подавление кашля (кодеин, бутамират). Диуретики. Короткий курс антибиотиков (<14 дней).",
+              monitoring: "Осмотр через 5-7 дней. Рентген ГК через 10-14 дней. ОАК. При отсутствии улучшения → госпитализация." },
+            { label: "Тяжёлая", name: "Тяжёлая / ОРДС",
+              criteria: "ЧДД >60. SpO2 <90%. Лихорадка >40°C или гипотермия. SIRS. Рентген: двусторонние инфильтраты. Цианоз. Анорексия. ОРДС: PaO₂/FiO₂ <300.",
+              firstLine: "Госпитализация (ОРИТ). В/в антибиотики: ампициллин 20 мг/кг в/в 3р/д + энрофлоксацин 5 мг/кг в/в 1р/д ± метронидазол 10 мг/кг в/в 2р/д (аспирационная). Кислородотерапия: кислородная клетка 40-60%. HFNO при доступности.",
+              supportive: "Инфузия осторожно (не перегрузить → отёк лёгких). Небулизация + купаж. Нутритивная поддержка (НГЗ). Бронхоскопия + БАЛ для посева при рефрактерной. ИВЛ при ОРДС.",
+              contraindications: "Подавление кашля. Диуретики (не кардиогенный отёк!). Монотерапия антибиотиком при тяжёлой. Агрессивная инфузия.",
+              monitoring: "SpO2 непрерывно. ЧДД каждые 2-4ч. Газы крови. Рентген ГК каждые 48-72ч. ОАК (лейкоциты). Посев крови при сепсисе." }
+        ]
+    },
+    "uveitis": {
+        system: "Этиологическая классификация",
+        stages: [
+            { label: "Инфекционный", name: "Инфекционный увеит",
+              criteria: "Токсоплазмоз, FIP, FIV/FeLV, лептоспироз, бруцеллёз, бластомикоз, эрлихиоз. Односторонний или двусторонний. Преципитаты, клеточная реакция.",
+              firstLine: "Лечение основного заболевания: токсоплазмоз — клиндамицин 10-12.5 мг/кг per os 2р/д × 4 нед. FIP — GS-441524 (см. стадирование FIP). Лептоспироз — доксициклин. Топикально: дексаметазон 0.1% каждые 4-6ч + атропин 1% 2-3р/д (мидриаз + обезболивание + профилактика синехий).",
+              supportive: "Системные НПВС (мелоксикам) при умеренном воспалении. Системные ГКС при неинфекционном компоненте (осторожно при FIV!).",
+              contraindications: "Системные ГКС при активной грибковой инфекции. Латанопрост (разрушает ГОБ). Атропин при глаукоме (закрывает угол).",
+              monitoring: "ВГД (увеит → вторичная глаукома). Офтальмоскопия каждые 3-7 дней. Серология/ПЦР основного заболевания." },
+            { label: "Иммуноопосред.", name: "Иммуноопосредованный увеит",
+              criteria: "Увеодерматологический синдром (VKH) у акит/самоедов. Пигментарный увеит золотистых ретриверов. Линзоиндуцированный (катаракта). Часто двусторонний. Рецидивирующий.",
+              firstLine: "Системная иммуносупрессия: преднизолон 1-2 мг/кг per os 1р/д → тапперинг. Азатиоприн 2 мг/кг per os 1р/д (собаки) при рефрактерном VKH. Циклоспорин 5 мг/кг per os 2р/д (альтернатива). Топикально: дексаметазон 0.1% каждые 4-6ч + атропин.",
+              supportive: "Длительная (часто пожизненная) терапия. Линзоиндуцированный: факоэмульсификация (удаление катаракты). Контроль ВГД.",
+              contraindications: "Монотерапия топикальными ГКС (недостаточно при иммуноопосредованном). Прекращение терапии при ремиссии (рецидив). Латанопрост.",
+              monitoring: "ВГД каждые 2-4 нед. Офтальмоскопия. Биохимия (при азатиоприне — печень, ОАК каждые 2 нед). Пожизненный мониторинг." },
+            { label: "Неопластический", name: "Увеит при неоплазии",
+              criteria: "Лимфома радужки/цилиарного тела. Меланома. Метастатическая неоплазия. Односторонний чаще. Масса в камере, изменение цвета радужки, гифема.",
+              firstLine: "Первичная внутриглазная: энуклеация (диагностическая и лечебная). Лимфома: системная химиотерапия (CHOP) + энуклеация поражённого глаза. Метастатическая: лечение первичной опухоли.",
+              supportive: "Обезболивание: НПВС + топикальные ГКС (паллиатив до хирургии). Атропин при боли.",
+              contraindications: "Длительная иммуносупрессия при неопластическом увеите (ускоряет рост). Откладывание энуклеации при подозрении на меланому. Топикальная терапия как единственное лечение.",
+              monitoring: "УЗИ глаза. Стадирование (рентген ГК, УЗИ БП, ОАК). Контралатеральный глаз." }
+        ]
+    },
+    "cardiomyopathy": {
+        system: "Тип КМП + ACVIM статус",
+        stages: [
+            { label: "ГКМП доклинич.", name: "ГКМП доклиническая (кошки)",
+              criteria: "Эхо: гипертрофия ЛЖ (стенка ≥6 мм). Нет увеличения ЛП (LA/Ao <1.6). Нет клинических признаков. Часто случайная находка.",
+              firstLine: "Лечение НЕ показано (нет доказательств пользы). Генетический тест у мейн-кунов/рэгдоллов (MYBPC3). Скрининг семьи.",
+              supportive: "Избегать стресса. Обучение владельца: признаки СН (ЧДД >40 в покое, одышка, летаргия).",
+              contraindications: "Атенолол без показаний. Пимобендан. Диуретики.",
+              monitoring: "Эхо каждые 6-12 мес. NT-proBNP. ЧДД дома. При ↑ЛП → переход к следующей стадии." },
+            { label: "ГКМП с ↑ЛП", name: "ГКМП с увеличением ЛП (кошки)",
+              criteria: "Эхо: LA/Ao ≥1.6. Нет клинических признаков СН. Риск тромбоэмболии.",
+              firstLine: "Клопидогрел 18.75 мг per os 1р/д (профилактика тромбоэмболии — FAT CAT Trial). Атенолол 6.25 мг per os 2р/д (контроль ЧСС при ↑ЧСС, уменьшение обструкции LVOT).",
+              supportive: "Обучение владельца: экстренные признаки ТЭ (парез задних конечностей, боль, холодные лапы). Диета с умеренным ограничением натрия.",
+              contraindications: "Пимобендан при обструктивной ГКМП с SAM (ACVIM). Дилтиазем + атенолол одновременно.",
+              monitoring: "Эхо каждые 6 мес. ЧДД дома ежедневно. NT-proBNP." },
+            { label: "ГКМП декомпенс.", name: "ГКМП декомпенсированная (кошки)",
+              criteria: "Кардиогенный отёк лёгких и/или плевральный выпот. Одышка, тахипноэ, летаргия. Или тромбоэмболия.",
+              firstLine: "Фуросемид 1-2 мг/кг в/в болюс, повтор каждые 1-2ч до эффекта. Торакоцентез при плевральном выпоте (НЕМЕДЛЕННО при большом объёме). Кислородотерапия. Клопидогрел 18.75 мг 1р/д. При ТЭ: обезболивание (метадон/фентанил), НЕ согревать конечности.",
+              supportive: "Минимальный стресс! Буторфанол 0.2 мг/кг в/м (седация + аналгезия). После стабилизации: фуросемид per os 1-2 мг/кг 2-3р/д + иАПФ (беназеприл 0.5 мг/кг 1р/д).",
+              contraindications: "Пимобендан при обструктивной ГКМП! Инфузия при отёке лёгких. Агрессивная фиксация (стресс → декомпенсация → смерть).",
+              monitoring: "ЧДД каждые 15-30 мин при кризе. Рентген ГК после стабилизации. Биохимия (почки, электролиты). Прогноз: медиана 12-18 мес." },
+            { label: "ДКМП (собаки)", name: "Дилатационная КМП (собаки)",
+              criteria: "Эхо: дилатация ЛЖ (LVIDDN >1.7), снижение фракции укорочения (<25%). Породы: доберман, дог, ирландский волкодав, боксёр.",
+              firstLine: "Доклиническая (Доберман, Холтер+Эхо положительные): пимобендан 0.25 мг/кг per os 2р/д (PROTECT Trial — задерживает СН). Клиническая СН: пимобендан + фуросемид 2-4 мг/кг per os 2-3р/д + иАПФ (эналаприл/беназеприл 0.5 мг/кг 1-2р/д) + спиронолактон 1-2 мг/кг 1р/д.",
+              supportive: "Таурин 500-1000 мг per os 2р/д (кокер-спаниель, далматин — тауриндефицитная ДКМП: обратима!). Карнитин 50-100 мг/кг per os 3р/д. Омега-3. Антиаритмические: соталол при ЖТ (доберман), мексилетин.",
+              contraindications: "Атенолол/пропранолол при декомпенсированной ДКМП (↓ сократимость). Дилтиазем. Отсрочка лечения при доклинической ДКМП у добермана.",
+              monitoring: "Эхо каждые 6 мес. Холтер каждые 6-12 мес (доберман — ЖТ). ЧДД дома. Креатинин, электролиты. Медиана при ДКМП с СН: 6-12 мес." }
+        ]
+    },
+    "aiha": {
+        system: "Тяжесть (ACVIM 2019)",
+        stages: [
+            { label: "Лёгкая-средняя", name: "Стабильная АИГА",
+              criteria: "Ht 15-30%. Гемодинамика стабильна. Аутоагглютинация + или проба Кумбса +. Ретикулоцитоз. Нет тяжёлой тромбоцитопении (синдром Эванса).",
+              firstLine: "Преднизолон 2 мг/кг per os 1р/д (ACVIM 2019). Тапперинг начинать через 2-3 нед при стабилизации Ht (снижение 25% каждые 2-3 нед). Курс: минимум 3-6 мес.",
+              supportive: "Доксициклин 5 мг/кг per os 2р/д эмпирически × 28 дней (покрытие Ehrlichia/Anaplasma/Mycoplasma как возможных триггеров). Гастропротекция: омепразол 1 мг/кг per os 1р/д. Клопидогрел 1-2 мг/кг per os 1р/д (профилактика тромбоэмболии — ACVIM 2019).",
+              contraindications: "НПВС (кровотечение при тромбоцитопении). Спленэктомия при первом эпизоде. Резкая отмена ГКС.",
+              monitoring: "Ht каждые 24-48ч первые 5-7 дней, затем еженедельно. Ретикулоциты. Аутоагглютинация. Билирубин. Тромбоциты (синдром Эванса)." },
+            { label: "Тяжёлая", name: "Тяжёлая АИГА / гемолитический криз",
+              criteria: "Ht <15%. Тахикардия, одышка, коллапс. Иктеричность. Гемоглобинурия. Возможна интраваскулярная агглютинация.",
+              firstLine: "Гемотрансфузия: эритроцитарная масса 10-15 мл/кг в/в (перекрёстная проба — при АИГА может быть положительна; переливать наименее несовместимую кровь). Преднизолон 2 мг/кг в/в, затем per os. Добавить второй иммуносупрессант НЕМЕДЛЕННО: микофенолат 8-12 мг/кг per os 2р/д (ACVIM 2019 — быстрее начало действия) ИЛИ азатиоприн 2 мг/кг per os 1р/д (ТОЛЬКО собаки!).",
+              supportive: "Клопидогрел 1-2 мг/кг (тромбоэмболия — основная причина смерти при АИГА!). Инфузия: осторожно (не перегрузить при тяжёлой анемии). Кислородотерапия. Человеческий иммуноглобулин (hIVIG) 0.5-1 г/кг в/в однократно за 6-12ч (при рефрактерности).",
+              contraindications: "Азатиоприн у КОШЕК (ЛЕТАЛЬНО!). Отказ от трансфузии при Ht <10% (ждать «самовосстановления»). Монотерапия ГКС при Ht <15%.",
+              monitoring: "Ht каждые 6-12ч. Билирубин. Цвет мочи (гемоглобинурия). Тромбоциты. Коагулограмма (ДВС). Лактат." },
+            { label: "Рефрактерная", name: "Рефрактерная / рецидивирующая АИГА",
+              criteria: "Нет ответа на преднизолон + второй иммуносупрессант через 7-10 дней. Или рецидив при тапперинге. Ht не растёт или падает.",
+              firstLine: "Тройная иммуносупрессия: преднизолон + микофенолат + циклоспорин 5-7 мг/кг per os 2р/д. hIVIG 0.5-1 г/кг в/в (если не использовался). Спленэктомия — рассмотреть при рефрактерности >3-4 нед.",
+              supportive: "Повторные гемотрансфузии по необходимости. Поиск триггера: лимфома, гемангиосаркома (УЗИ БП, рентген ГК). Паранеопластическая АИГА: лечение опухоли.",
+              contraindications: "Эскалация ГКС >4 мг/кг (побочные > пользы). Отказ от поиска неоплазии. Прекращение антитромботической профилактики.",
+              monitoring: "Ht ежедневно. ОАК каждые 7 дней (миелосупрессия от ХТ). Биохимия (печень, почки). Обсуждение прогноза: летальность АИГА 30-40% даже при лечении." }
+        ]
+    },
+    "tracheal_collapse": {
+        system: "Tangner-Hobson",
+        stages: [
+            { label: "Степень I-II", name: "Лёгкий-умеренный коллапс",
+              criteria: "Степень I: <25% коллапса, хрящ сохраняет форму. Степень II: 25-50% коллапса. Периодический «гусиный» кашель, усиливающийся при нагрузке/возбуждении. Переносимость нагрузки сохранена.",
+              firstLine: "Консервативное ведение. Снижение веса (приоритет!). Противокашлевые: гидрокодон 0.22 мг/кг per os 2-3р/д или буторфанол 0.05-0.1 мг/кг per os 2-3р/д. Короткие курсы ГКС при обострении: преднизолон 0.5-1 мг/кг per os 3-5 дней.",
+              supportive: "Шлейка вместо ошейника. Избегать возбуждения, жары, дыма. Лечение сопутствующего бронхита, ларингеального паралича. Габапентин 5-10 мг/кг per os 2-3р/д (при тревожности).",
+              contraindications: "Длительные ГКС (побочные). Ошейник (давление на трахею). Интубация толстой трубкой (травма).",
+              monitoring: "Рентген/флюороскопия каждые 6-12 мес. Оценка кашля (дневник). Вес." },
+            { label: "Степень III-IV", name: "Тяжёлый коллапс",
+              criteria: "Степень III: 50-75% коллапса. Степень IV: >75%, полный коллапс, хрящ уплощён. Постоянный кашель, цианотические эпизоды, непереносимость нагрузки. Медикаментозная терапия неэффективна.",
+              firstLine: "Интратрахеальное стентирование (саморасширяющийся нитиноловый стент) — при интраторакальном коллапсе. Хирургические экстралюминальные кольца — при экстраторакальном коллапсе. Стент: быстрое улучшение в 75-90%.",
+              supportive: "Послеоперационно: противокашлевые 2-4 нед (стент-индуцированный кашель). Антибиотики при инфекции. Небулизация. Снижение веса по-прежнему обязательно.",
+              contraindications: "Продолжение только медикаментозной терапии при тяжёлых цианотических эпизодах (риск смерти). Стент без эндоскопической оценки (точный размер!).",
+              monitoring: "Эндоскопия через 4-6 нед после стентирования. Рентген каждые 3-6 мес (миграция, грануляция). Осложнения стента: фрактура, грануляция (15-20%). Кашель (частичный контроль у 80%)." }
+        ]
+    }
+};
+
 // ===== AGE NOTES =====
 const AGE_NOTES = {
     "parvovirus": { puppy: "Щенки <6 мес: гипогликемия — жизнеугрожающее осложнение, контроль глюкозы каждые 4ч. Доза инфузии выше (до 80 мл/кг/сут). Колостральный иммунитет интерферирует с вакцинацией.", geriatric: "У взрослых привитых собак парвовирусный энтерит редок. При подтверждении — подозревать иммуносупрессию." },
@@ -7017,13 +7922,10 @@ const AGE_NOTES = {
     "heat_stroke": { puppy: "Щенки: терморегуляция незрелая. Брахицефалы: максимальный риск (бульдоги, мопсы).", geriatric: "Пожилые с кардиопатологией: повышенный риск. Ожирение — дополнительный фактор." },
     "addisons": { puppy: "Крайне редко. У молодых взрослых (2-6 лет) — пик заболеваемости.", geriatric: "Менее типично. При электролитных нарушениях — дифференцировать с неоплазией надпочечников." },
     "pyometra": { puppy: "Не встречается до полового созревания.", geriatric: "Риск растёт с каждым циклом. У сук >7 лет нестерилизованных — максимальный риск." },
-    "diabetes": { puppy: "Ювенильный диабет у собак <1 года: инсулинозависимый. У кошек ювенильный крайне редок.", geriatric: "Кошки >8 лет: тип 2, возможна ремиссия. Собаки >7 лет: чаще суки, связь с диэструсом." },
-    "acute_urinary_retention": { puppy: "Крайне редко. Подозревать врождённые аномалии уретры.", geriatric: "Коты >7 лет: рассмотреть неоплазию мочевого пузыря." },
     "thromboembolism": { puppy: "Крайне редко.", geriatric: "Средний возраст 8-12 лет. Связь с ГКМП — скрининг эхо у пород риска." },
     "fip": { puppy: "Котята <2 лет — наибольший риск. Стрессовые факторы (приют, переезд) — триггеры.", geriatric: "Второй пик >10 лет. Может протекать атипично — сухая форма с неврологией." },
     "jaundice": { puppy: "У щенков/котят: чаще инфекционная причина гемолиза (бабезиоз, гемобартонеллёз).", geriatric: "Обструктивная желтуха: подозревать панкреатит, неоплазию ЖВП." },
     "cushings": { puppy: "Крайне редко. Ятрогенный — при длительных ГКС.", geriatric: "Собаки >6 лет. 85% — гипофизарная форма. 15% — адреналовая (опухоль)." },
-    "hypothyroidism_dog": { puppy: "Врождённый: карликовость, замедление развития. Крайне редко.", geriatric: "Пик 4-10 лет. Крупные породы предрасположены." },
     "demodicosis": { puppy: "Ювенильная форма <18 мес: часто самоограничивающаяся. Генерализованная — подозревать иммунодефицит.", geriatric: "Начало демодекоза у старой собаки: обязательно искать причину иммуносупрессии (Кушинг, неоплазия, гипотиреоз)." },
     "dermatophytosis": { puppy: "Котята: самый частый возраст. Часто бессимптомные носители.", geriatric: "У старых: подозревать иммуносупрессию (FIV/FeLV, ХБП)." },
     "pancreatitis": { puppy: "Редко. При рвоте у молодых — сначала исключить инородное тело, парвовирус.", geriatric: "Собаки >7 лет: частое заболевание. Связь с ожирением и гиперлипидемией." },
@@ -7137,7 +8039,28 @@ const AGE_NOTES = {
     "dermoid": { puppy: "Врождённое — хирургическое иссечение до 6-12 мес." },
     "polycythemia": { puppy: "Относительная при дегидратации. Первичная крайне редка.", geriatric: "Вторичная: ренальные опухоли, ХБП. Первичная (ИП) у пожилых собак." },
     "pleuritis": { puppy: "Котята: FIP — пиогранулематозный плеврит.", geriatric: "Хилоторакс: исключить лимфому средостения." },
-    "alopecia_x": { puppy: "Не типично до половой зрелости. Исключить демодекоз.", geriatric: "Пик у самцов нордических пород 3-9 лет." }
+    "alopecia_x": { puppy: "Не типично до половой зрелости. Исключить демодекоз.", geriatric: "Пик у самцов нордических пород 3-9 лет." },
+    "otodectosis": { puppy: "Котята/щенки <6 мес: наиболее частая причина зуда ушей. Передача от матери.", geriatric: "У взрослых нетипично. Подозревать иммуносупрессию при обнаружении." },
+    "gastritis": { puppy: "Частые погрешности в диете, поедание несъедобного. Быстрая дегидратация.", geriatric: "Хронический: исключить уремический гастрит (ХБП), неоплазию желудка, Helicobacter." },
+    "hot_spot": { puppy: "Редко до 1 года.", geriatric: "Чаще у взрослых собак с густой шерстью в тёплый сезон. Рецидивы при аллергии." },
+    "cryptosporidiosis": { puppy: "Котята/щенки: тяжёлая водянистая диарея, высокий риск дегидратации. Зооноз.", geriatric: "У иммунокомпетентных взрослых часто самоограничивающееся." },
+    "sarcoptosis": { puppy: "Щенки: тяжёлое течение, быстрая генерализация. Зооноз.", geriatric: "У пожилых — исключить иммуносупрессию как фактор." },
+    "notoedric_mange": { puppy: "Котята: тяжёлое течение, распространение с ушей на морду и всё тело.", geriatric: "Крайне редко у взрослых иммунокомпетентных кошек." },
+    "allergic_dermatitis": { puppy: "Манифестация с 6 мес. Важно раннее выявление аллергена.", geriatric: "Хроническое рецидивирующее течение. Вторичные инфекции усугубляют." },
+    "tracheal_stenosis": { puppy: "Врождённая: гипоплазия колец трахеи у бульдогов. Тяжёлое течение.", geriatric: "Приобретённая: после интубации, травмы, новообразования." },
+    "pneumothorax": { puppy: "Травматический при падении, ДТП. Спонтанный крайне редок.", geriatric: "Спонтанный: исключить буллёзную эмфизему, метастазы, абсцесс лёгкого." },
+    "soft_tissue_injury": { puppy: "Частые при играх, падениях. Быстрое заживление.", geriatric: "Замедленное заживление. Исключить коагулопатию при обширных гематомах." },
+    "head_trauma": { puppy: "Незакрытый родничок у той-пород — повышенный риск. Быстрое развитие отёка мозга.", geriatric: "Сопутствующая кардиопатология осложняет ведение. Маннитол осторожно при СН." },
+    "spondylosis": { puppy: "Не встречается.", geriatric: "Собаки >7 лет: рентгенологическая находка у >50%. Часто бессимптомный." },
+    "eclampsia": { puppy: "Не применимо (болезнь кормящих).", geriatric: "Суки мелких пород: наибольший риск в первые 2-4 нед лактации. Многоплодные помёты." },
+    "globe_atrophy": { puppy: "После тяжёлого увеита/травмы в неонатальном периоде. FHV-1 у котят.", geriatric: "Исход хронического увеита, глаукомы. Косметическая энуклеация при дискомфорте." },
+    "osteomyelitis": { puppy: "Гематогенный при бактериемии (через пуповину). Быстрое разрушение кости.", geriatric: "Послеоперационный (остеосинтез). Дифференцировать с остеосаркомой." },
+    "pharyngitis": { puppy: "Как часть URTD (FHV-1, FCV, вольерный кашель).", geriatric: "Исключить новообразование глотки/гортани при хроническом течении." },
+    "acral_dermatitis": { puppy: "Крайне редко. При вылизывании лап — исключить демодекоз, дерматофитию.", geriatric: "Поведенческое: стресс, тревога, скука. Дифференцировать с нейропатией." },
+    "balanoposthitis": { puppy: "Физиологические выделения у щенков. Не требует лечения при отсутствии воспаления.", geriatric: "Кобели >7 лет: исключить неоплазию препуция. Фимоз при хроническом." },
+    "iris_bombe": { puppy: "После тяжёлого увеита (FIP, токсоплазмоз). Котята — экстренная помощь.", geriatric: "Хронический увеит с задними синехиями → вторичная глаукома." },
+    "nasolacrimal_atresia": { puppy: "Врождённая: эпифора с первых недель жизни. Брахицефалы — максимальный риск.", geriatric: "Приобретённая обструкция: дакриоцистит, неоплазия." },
+    "distichiasis": { puppy: "Манифестация с 4-6 мес. Эпифора и блефароспазм — первые признаки.", geriatric: "Хроническое раздражение → кератит, пигментация роговицы." }
 };
 
 // ===== BREED PREDISPOSITION =====
@@ -7217,7 +8140,31 @@ const BREED_DATA = {
     "distichiasis": ["Кокер-спаниель", "Английский бульдог", "Пудель", "Золотистый ретривер", "Пекинес"],
     "corneal_dystrophy": ["Сибирский хаски (стромальная)", "Бигль", "Шелти", "Кокер-спаниель"],
     "dermoid": ["Сенбернар", "Немецкая овчарка", "Далматин", "Бирманская"],
-    "itp": ["Кокер-спаниель", "Пудель", "Немецкая овчарка", "Доберман", "Английский спрингер-спаниель"]
+    "itp": ["Кокер-спаниель", "Пудель", "Немецкая овчарка", "Доберман", "Английский спрингер-спаниель"],
+    "foreign_body": ["Лабрадор", "Золотистый ретривер", "Стаффордширский терьер", "Бигль"],
+    "fracture": ["Итальянский грейхаунд", "Чихуахуа", "Померанский шпиц", "Той-терьер", "Йоркширский терьер"],
+    "pneumonia": ["Английский бульдог (аспирационная)", "Французский бульдог", "Мопс", "Ирландский волкодав (мегаэзофагус)"],
+    "gastroenteritis": ["Немецкая овчарка (EPI)", "Ирландский сеттер", "Шарпей"],
+    "gingivostomatitis": ["Сиамская", "Абиссинская", "Бирманская"],
+    "eosinophilic_granuloma": ["Сиамская", "Гималайская", "Абиссинская"],
+    "constipation": ["Манкс (сакральные аномалии)", "Сиамская (мегаколон)"],
+    "cardiogenic_edema": ["Кавалер-кинг-чарльз (MMVD)", "Доберман (ДКМП)", "Мейн-кун (ГКМП)"],
+    "gingivitis": ["Йоркширский терьер", "Мальтезе", "Той-пудель", "Чихуахуа", "Померанский шпиц"],
+    "nephritis": ["Бернский зенненхунд (мембранопролиферативный ГН)", "Доберман", "Софт-коутед уитен-терьер"],
+    "fic": ["Персидская", "Бирманская", "Гималайская"],
+    "gastric_ulcer": ["Боксёр (мастоцитома)", "Немецкая овчарка", "Лабрадор"],
+    "leishmaniasis": ["Немецкая овчарка", "Боксёр", "Ротвейлер", "Фоксхаунд"],
+    "head_trauma": ["Чихуахуа (незакрытый родничок)", "Йоркширский терьер", "Той-пудель"],
+    "pregnancy_pathology": ["Английский бульдог", "Французский бульдог", "Бостон-терьер", "Чихуахуа"],
+    "rickets": ["Немецкая овчарка (крупные щенки)", "Дог", "Ротвейлер"],
+    "triaditis": ["Персидская", "Сиамская", "Абиссинская"],
+    "hepatic_lipidosis": ["Домашняя короткошёрстная (ожирение)", "Сиамская", "Персидская"],
+    "pseudopregnancy": ["Бигль", "Далматин", "Кокер-спаниель", "Такса"],
+    "dirofilariasis": ["Немецкая овчарка", "Золотистый ретривер", "Лабрадор", "Бигль"],
+    "piroplasmosis": ["Грейхаунд (тяжёлое течение)", "Бигль", "Питбуль"],
+    "polycythemia": ["Немецкая овчарка (первичная)", "Бигль"],
+    "tracheal_stenosis": ["Английский бульдог (гипоплазия трахеи)", "Французский бульдог", "Бостон-терьер"],
+    "sarcoma_sticker": ["Метисы/бродячие собаки"]
 };
 
 // ===== DRUG DOSES (for calculator) =====
@@ -7416,6 +8363,7 @@ let activeSpecies = "all";
 let activeSort = "alert";
 let searchMode = "name";
 let checkedTests = {};
+let selectedStage = {};
 
 // ===== INIT =====
 function init() {
@@ -7554,6 +8502,7 @@ function renderDiagList(search = "") {
 function selectDiagnosis(id) {
     selectedDiagId = id;
     checkedTests = {};
+    delete selectedStage[id];
     document.getElementById("pdfBtn").style.display = "flex";
     renderDiagList(document.getElementById("searchInput").value.toLowerCase());
     renderDetail(id);
@@ -7597,7 +8546,7 @@ function renderDetail(id) {
     if (d.mandatory.length) navItems.push({ id: "sec_mandatory", label: "Обязательные" });
     if (d.recommended.length) navItems.push({ id: "sec_recommended", label: "Рекоменд." });
     if (CHAINS_DATA[d.id]) navItems.push({ id: "sec_chains", label: "Цепочки" });
-    if (TREATMENT_DATA[d.id]) navItems.push({ id: "sec_treatment", label: "Лечение" });
+    if (TREATMENT_DATA[d.id] || (STAGING_DATA && STAGING_DATA[d.id])) navItems.push({ id: "sec_treatment", label: STAGING_DATA && STAGING_DATA[d.id] ? "Лечение / Стадии" : "Лечение" });
     if (d.differential.length) navItems.push({ id: "sec_diff", label: "Дифференциалы" });
 
     let html = `
@@ -7712,35 +8661,80 @@ function toggleDiffTree(id) {
     document.getElementById(id).classList.toggle("open");
 }
 
+function selectStage(diagId, stageIdx) {
+    selectedStage[diagId] = stageIdx;
+    _rerenderForStage(diagId);
+}
+
+function clearStage(diagId) {
+    delete selectedStage[diagId];
+    _rerenderForStage(diagId);
+}
+
+function _rerenderForStage(diagId) {
+    const content = document.getElementById("detailContent");
+    const scrollPos = content.scrollTop;
+    renderDetail(diagId);
+    content.scrollTop = scrollPos;
+    setTimeout(() => {
+        const el = document.getElementById("sec_treatment");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+}
+
 function renderTreatment(d) {
     const t = TREATMENT_DATA[d.id];
-    if (!t) return "";
+    const staging = STAGING_DATA ? STAGING_DATA[d.id] : null;
+    if (!t && !staging) return "";
+
+    let stageSelector = "";
+    let treatmentSource = t;
+    const sel = selectedStage[d.id];
+
+    if (staging) {
+        stageSelector = `
+            <div class="staging-selector">
+                <div class="staging-header">
+                    <span class="staging-system">${staging.system}</span>
+                    <button class="staging-btn ${sel === undefined ? 'active' : ''}" onclick="clearStage('${d.id}')">Общий</button>
+                    ${staging.stages.map((s, i) => `<button class="staging-btn ${sel === i ? 'active' : ''}" onclick="selectStage('${d.id}', ${i})">${s.label}</button>`).join("")}
+                </div>
+                ${sel !== undefined ? `<div class="staging-criteria"><strong>${staging.stages[sel].label} — ${staging.stages[sel].name}:</strong> ${staging.stages[sel].criteria}</div>` : ''}
+            </div>
+        `;
+        if (sel !== undefined) {
+            treatmentSource = staging.stages[sel];
+        }
+    }
+
+    if (!treatmentSource) return "";
 
     return `
         <div class="section section-treatment collapsible" id="sec_treatment">
             <div class="section-header" onclick="toggleSection('sec_treatment')">
                 <div class="section-icon">&#128138;</div>
                 <div>
-                    <div class="section-title">ПРОТОКОЛ ЛЕЧЕНИЯ</div>
-                    <div class="section-subtitle">Основная терапия, поддержка, противопоказания и мониторинг</div>
+                    <div class="section-title">ПРОТОКОЛ ЛЕЧЕНИЯ${sel !== undefined ? ' <span class="staging-name">(' + staging.stages[sel].label + ')</span>' : ''}</div>
+                    <div class="section-subtitle">${staging ? 'Выберите стадию для специфического протокола' : 'Основная терапия, поддержка, противопоказания и мониторинг'}</div>
                 </div>
             </div>
             <div class="section-body">
+            ${stageSelector}
             <div class="treatment-block first-line">
                 <h4>&#9989; Первая линия терапии</h4>
-                <p>${highlightDoses(t.firstLine)}</p>
+                <p>${highlightDoses(treatmentSource.firstLine)}</p>
             </div>
             <div class="treatment-block supportive">
                 <h4>&#128167; Поддерживающая терапия</h4>
-                <p>${highlightDoses(t.supportive)}</p>
+                <p>${highlightDoses(treatmentSource.supportive)}</p>
             </div>
             <div class="treatment-block contraindications">
                 <h4>&#9940; Противопоказания / Чего НЕ делать</h4>
-                <p>${t.contraindications}</p>
+                <p>${treatmentSource.contraindications}</p>
             </div>
             <div class="treatment-block monitoring">
                 <h4>&#128200; Мониторинг</h4>
-                <p>${highlightDoses(t.monitoring)}</p>
+                <p>${highlightDoses(treatmentSource.monitoring)}</p>
             </div>
             </div>
         </div>
@@ -7769,7 +8763,9 @@ function renderCosts(d) {
 }
 
 function renderMonitoringTimeline(d) {
-    const t = TREATMENT_DATA[d.id];
+    const staging = STAGING_DATA ? STAGING_DATA[d.id] : null;
+    const sel = selectedStage[d.id];
+    const t = (staging && sel !== undefined) ? staging.stages[sel] : TREATMENT_DATA[d.id];
     if (!t || !t.monitoring) return "";
 
     const items = [];
@@ -8317,6 +9313,141 @@ function calculateDoses() {
     }).join("");
 }
 
+function switchCalcTab(tab, btn) {
+    document.querySelectorAll(".calc-tab-content").forEach(el => el.style.display = "none");
+    document.querySelectorAll(".calc-tab").forEach(el => el.classList.remove("active"));
+    btn.classList.add("active");
+    const map = { doses: "calcTabDoses", infusion: "calcTabInfusion", bsa: "calcTabBsa", nutrition: "calcTabNutrition" };
+    document.getElementById(map[tab]).style.display = "block";
+}
+
+function calcInfusion() {
+    const w = parseFloat(document.getElementById("infWeight").value);
+    const container = document.getElementById("infResults");
+    if (!w || w <= 0) { container.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">Введите массу животного</div>'; return; }
+
+    const dehydr = parseFloat(document.getElementById("infDehydration").value);
+    const hours = parseFloat(document.getElementById("infHours").value) || 24;
+    const dropFactor = parseInt(document.getElementById("infDropSet").value);
+
+    const maintenance = w <= 2 ? 80 * w : 60 * w; // мл/сут — мелкие животные выше
+    const deficit = w * (dehydr / 100) * 1000; // мл
+    const totalVol = maintenance + deficit;
+    const mlPerHour = totalVol / hours;
+    const dropsPerMin = (mlPerHour * dropFactor) / 60;
+    const shockDog = 90 * w; // мл — шоковая доза собаки
+    const shockCat = 60 * w; // мл — шоковая доза кошки
+
+    container.innerHTML = `
+        <div class="calc-result-item">
+            <div class="calc-result-drug">Поддерживающая потребность</div>
+            <div class="calc-result-dose">${maintenance.toFixed(0)} мл/сут</div>
+            <div class="calc-result-note">${w <= 2 ? '80' : '60'} мл/кг/сут</div>
+        </div>
+        ${dehydr > 0 ? `<div class="calc-result-item">
+            <div class="calc-result-drug">Дефицит жидкости (${dehydr}%)</div>
+            <div class="calc-result-dose">${deficit.toFixed(0)} мл</div>
+            <div class="calc-result-note">Вес × ${dehydr}% × 1000</div>
+        </div>` : ''}
+        <div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+            <div class="calc-result-drug">Итого за ${hours}ч</div>
+            <div class="calc-result-dose" style="font-size:18px;color:var(--green)">${totalVol.toFixed(0)} мл = ${mlPerHour.toFixed(1)} мл/ч</div>
+            <div class="calc-result-note">${dropsPerMin.toFixed(1)} кап/мин (${dropFactor === 20 ? 'макро' : 'микро'} система)</div>
+        </div>
+        <div class="calc-result-item" style="margin-top:12px;opacity:0.8">
+            <div class="calc-result-drug">Шоковые дозы (болюс за 15-20 мин)</div>
+            <div class="calc-result-dose">&#128054; Собака: ${shockDog.toFixed(0)} мл | &#128049; Кошка: ${shockCat.toFixed(0)} мл</div>
+            <div class="calc-result-note">Собака 90 мл/кг, Кошка 60 мл/кг — давать по 1/4 объёма, оценивать ответ</div>
+        </div>
+    `;
+}
+
+function calcBSA() {
+    const w = parseFloat(document.getElementById("bsaWeight").value);
+    const container = document.getElementById("bsaResults");
+    if (!w || w <= 0) { container.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">Введите массу животного</div>'; return; }
+
+    const bsa = 10.1 * Math.pow(w * 1000, 2/3) / 10000;
+
+    container.innerHTML = `
+        <div class="calc-result-item" style="border-left:3px solid var(--purple);padding-left:12px">
+            <div class="calc-result-drug">Площадь поверхности тела (BSA)</div>
+            <div class="calc-result-dose" style="font-size:20px;color:var(--purple)">${bsa.toFixed(3)} м²</div>
+            <div class="calc-result-note">Формула: 10.1 × (вес в г)^(2/3) / 10000</div>
+        </div>
+        <div class="calc-result-item" style="margin-top:8px">
+            <div class="calc-result-drug">Типичные химиопротоколы (ориентир)</div>
+            <div class="calc-result-note">
+                Доксорубицин: 30 мг/м² = <strong>${(30 * bsa).toFixed(1)} мг</strong> (собаки, в/в, каждые 21 день)<br>
+                Винкристин: 0.7 мг/м² = <strong>${(0.7 * bsa).toFixed(2)} мг</strong> (в/в, еженедельно)<br>
+                Циклофосфамид: 250 мг/м² = <strong>${(250 * bsa).toFixed(1)} мг</strong> (п/о, каждые 21 день)<br>
+                Карбоплатин: 300 мг/м² = <strong>${(300 * bsa).toFixed(1)} мг</strong> (собаки, в/в, каждые 21 день)
+            </div>
+        </div>
+        <div class="calc-result-item" style="margin-top:8px;opacity:0.7">
+            <div class="calc-result-note" style="font-style:italic">⚠ Дозы химиопрепаратов — только ориентир. Всегда уточняйте протокол у онколога.</div>
+        </div>
+    `;
+}
+
+function calcNutrition() {
+    const w = parseFloat(document.getElementById("nutWeight").value);
+    const container = document.getElementById("nutResults");
+    if (!w || w <= 0) { container.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">Введите массу животного</div>'; return; }
+
+    const status = document.getElementById("nutStatus").value;
+    const rer = 70 * Math.pow(w, 0.75); // ккал/сут
+
+    const factors = {
+        rest: { factor: 1.0, label: "RER × 1.0 — госпитализация, покой" },
+        normal: { factor: 1.4, label: "RER × 1.4 — нормальная активность" },
+        active: { factor: 1.8, label: "RER × 1.8 — высокая активность" },
+        growth: { factor: 2.5, label: "RER × 2.5 — рост (до 4 мес)" },
+        lactation: { factor: 3.0, label: "RER × 3.0 — лактация (пик)" },
+        weightloss: { factor: 0.8, label: "RER × 0.8 — программа похудения" },
+        critical: { factor: 0.75, label: "RER × 0.75 — критический (начало кормления)" }
+    };
+
+    const f = factors[status];
+    const mer = rer * f.factor;
+    // Примерные объёмы корма
+    const dryFood = mer / 3.8; // ~3.8 ккал/г сухой корм
+    const wetFood = mer / 1.0; // ~1.0 ккал/г влажный корм
+
+    container.innerHTML = `
+        <div class="calc-result-item" style="border-left:3px solid var(--orange);padding-left:12px">
+            <div class="calc-result-drug">RER (базовая потребность в покое)</div>
+            <div class="calc-result-dose" style="font-size:18px;color:var(--orange)">${rer.toFixed(0)} ккал/сут</div>
+            <div class="calc-result-note">Формула: 70 × (вес)^0.75</div>
+        </div>
+        <div class="calc-result-item" style="border-left:3px solid var(--green);padding-left:12px">
+            <div class="calc-result-drug">MER (суточная потребность)</div>
+            <div class="calc-result-dose" style="font-size:20px;color:var(--green)">${mer.toFixed(0)} ккал/сут</div>
+            <div class="calc-result-note">${f.label}</div>
+        </div>
+        <div class="calc-result-item" style="margin-top:8px">
+            <div class="calc-result-drug">Ориентировочный объём корма</div>
+            <div class="calc-result-note">
+                Сухой корм (~3.8 ккал/г): <strong>~${dryFood.toFixed(0)} г/сут</strong><br>
+                Влажный корм (~1.0 ккал/г): <strong>~${wetFood.toFixed(0)} г/сут</strong>
+            </div>
+        </div>
+        ${status === 'critical' ? `<div class="calc-result-item" style="margin-top:8px">
+            <div class="calc-result-drug">Рекомендации для критического пациента</div>
+            <div class="calc-result-note">
+                День 1: начать с 25% RER = <strong>${(rer * 0.25).toFixed(0)} ккал</strong><br>
+                День 2: 50% RER = <strong>${(rer * 0.5).toFixed(0)} ккал</strong><br>
+                День 3: 75% RER = <strong>${(rer * 0.75).toFixed(0)} ккал</strong><br>
+                День 4+: 100% RER = <strong>${rer.toFixed(0)} ккал</strong>
+            </div>
+        </div>` : ''}
+        ${status === 'weightloss' ? `<div class="calc-result-item" style="margin-top:8px">
+            <div class="calc-result-drug">Целевая потеря веса</div>
+            <div class="calc-result-note">Собаки: 1-2% массы тела в неделю<br>Кошки: 0.5-1% в неделю (≤2% — риск липидоза!)</div>
+        </div>` : ''}
+    `;
+}
+
 // ===== MULTI-DIAGNOSIS =====
 let multiMode = false;
 let selectedDiags = [];
@@ -8632,6 +9763,357 @@ function exportAuditCSV() {
     a.download = `cdss_audit_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// ===== WIZARD =====
+const WIZ_SYMPTOM_GROUPS = {
+    "ЖКТ": ["рвота","диарея","кровавая диарея","анорексия","отказ от еды","запор","вздутие живота"],
+    "Дыхание": ["одышка","кашель","затруднённое дыхание","чихание","выделения из носа","хрипы при дыхании"],
+    "Кожа": ["зуд","облысение","выпадение шерсти","корки на коже","папулы пустулы","образование на коже"],
+    "Глаза": ["выделения из глаз","красные глаза","помутнение глаза","слезотечение","прищуривание глаза","слепота"],
+    "Мочевыделит.": ["полиурия","полидипсия","затруднённое мочеиспускание","кровь в моче","задержка мочи"],
+    "Опорно-двиг.": ["хромота","боль в суставе","боль в спине","деформация конечности","припухлость лапы"],
+    "Общие": ["лихорадка","слабость","потеря веса","обезвоживание","увеличение живота","отёк"],
+    "Неврология": ["судороги","шаткость походки","наклон головы","паралич задних ног","тремор дрожь","ригидность мышц"]
+};
+
+let wizStep = 1;
+let wizSymptoms = [];
+let wizSpecies = null;
+let wizAge = null;
+let wizBreed = "";
+let wizQuestions = {};
+
+function openWizard() {
+    wizStep = 1; wizSymptoms = []; wizSpecies = null; wizAge = null; wizBreed = ""; wizQuestions = {};
+    document.getElementById("wizardOverlay").classList.add("open");
+    renderWizStep();
+}
+function closeWizard() {
+    document.getElementById("wizardOverlay").classList.remove("open");
+}
+
+function renderWizStep() {
+    const body = document.getElementById("wizardBody");
+    const footer = document.getElementById("wizardFooter");
+    // Update progress
+    document.querySelectorAll(".wiz-step").forEach(s => {
+        const n = parseInt(s.dataset.step);
+        s.classList.toggle("active", n === wizStep);
+        s.classList.toggle("done", n < wizStep);
+    });
+
+    if (wizStep === 1) renderWizStep1(body, footer);
+    else if (wizStep === 2) renderWizStep2(body, footer);
+    else if (wizStep === 3) renderWizStep3(body, footer);
+    else if (wizStep === 4) renderWizStep4(body, footer);
+}
+
+function renderWizStep1(body, footer) {
+    const allSymptoms = Object.keys(SYMPTOMS_DATA);
+    body.innerHTML = `
+        <input class="wiz-symptom-search" id="wizSymSearch" placeholder="Поиск симптома..." oninput="filterWizSymptoms()">
+        <div class="wiz-tags" id="wizTags">${wizSymptoms.map(s => `<span class="wiz-tag">${s} <span class="remove" onclick="removeWizSymptom('${s}')">&times;</span></span>`).join("")}</div>
+        <div id="wizSymList">${renderSymptomGroups(allSymptoms)}</div>
+    `;
+    footer.innerHTML = `<div></div><button class="wiz-btn primary" onclick="wizNext()" ${wizSymptoms.length === 0 ? 'disabled' : ''}>Далее &rarr;</button>`;
+}
+
+function renderSymptomGroups(filtered) {
+    let html = "";
+    for (const [group, syms] of Object.entries(WIZ_SYMPTOM_GROUPS)) {
+        const visible = syms.filter(s => filtered.includes(s));
+        if (visible.length === 0) continue;
+        html += `<div class="wiz-group-title">${group}</div><div class="wiz-symptom-grid">`;
+        visible.forEach(s => {
+            html += `<div class="wiz-symptom-chip ${wizSymptoms.includes(s)?'selected':''}" onclick="toggleWizSymptom('${s}')">${s}</div>`;
+        });
+        html += `</div>`;
+    }
+    // Ungrouped
+    const grouped = new Set(Object.values(WIZ_SYMPTOM_GROUPS).flat());
+    const ungrouped = filtered.filter(s => !grouped.has(s));
+    if (ungrouped.length > 0) {
+        html += `<div class="wiz-group-title">Другие</div><div class="wiz-symptom-grid">`;
+        ungrouped.forEach(s => {
+            html += `<div class="wiz-symptom-chip ${wizSymptoms.includes(s)?'selected':''}" onclick="toggleWizSymptom('${s}')">${s}</div>`;
+        });
+        html += `</div>`;
+    }
+    return html;
+}
+
+function filterWizSymptoms() {
+    const q = document.getElementById("wizSymSearch").value.toLowerCase();
+    const all = Object.keys(SYMPTOMS_DATA);
+    const filtered = q ? all.filter(s => s.includes(q)) : all;
+    document.getElementById("wizSymList").innerHTML = renderSymptomGroups(filtered);
+}
+
+function toggleWizSymptom(s) {
+    const idx = wizSymptoms.indexOf(s);
+    if (idx >= 0) wizSymptoms.splice(idx, 1); else wizSymptoms.push(s);
+    renderWizStep();
+}
+function removeWizSymptom(s) {
+    wizSymptoms = wizSymptoms.filter(x => x !== s);
+    renderWizStep();
+}
+
+function renderWizStep2(body, footer) {
+    body.innerHTML = `
+        <div style="margin-bottom:14px;font-size:13px;font-weight:600;color:var(--text)">Вид животного</div>
+        <div class="wiz-species-row">
+            <div class="wiz-species-btn ${wizSpecies==='Собаки'?'selected':''}" onclick="wizSpecies='Собаки';renderWizStep()">
+                <span class="icon">&#128054;</span>Собака
+            </div>
+            <div class="wiz-species-btn ${wizSpecies==='Кошки'?'selected':''}" onclick="wizSpecies='Кошки';renderWizStep()">
+                <span class="icon">&#128049;</span>Кошка
+            </div>
+        </div>
+        <div style="margin-bottom:10px;font-size:13px;font-weight:600;color:var(--text)">Возраст</div>
+        <div class="wiz-age-row">
+            <div class="wiz-age-btn ${wizAge==='puppy'?'selected':''}" onclick="wizAge='puppy';renderWizStep()">&lt;1 года</div>
+            <div class="wiz-age-btn ${wizAge==='adult'?'selected':''}" onclick="wizAge='adult';renderWizStep()">1-7 лет</div>
+            <div class="wiz-age-btn ${wizAge==='geriatric'?'selected':''}" onclick="wizAge='geriatric';renderWizStep()">&gt;7 лет</div>
+        </div>
+        <div style="margin-bottom:10px;font-size:13px;font-weight:600;color:var(--text)">Порода <span style="font-weight:400;color:var(--text3)">(необязательно)</span></div>
+        <div class="wiz-breed-wrap">
+            ${wizBreed ? `<div class="wiz-breed-selected">${wizBreed} <span class="remove" onclick="wizBreed='';renderWizStep()">&times;</span></div>` : `<input class="wiz-breed-input" id="wizBreedInput" placeholder="Начните вводить породу..." autocomplete="off" oninput="filterWizBreeds(this.value)" onfocus="filterWizBreeds(this.value)">`}
+            <div class="wiz-breed-dropdown" id="wizBreedDropdown"></div>
+        </div>
+    `;
+    const canNext = wizSpecies && wizAge;
+    footer.innerHTML = `<button class="wiz-btn" onclick="wizBack()">&larr; Назад</button><button class="wiz-btn primary" onclick="wizNext()" ${canNext?'':'disabled'}>Далее &rarr;</button>`;
+}
+
+function getAllBreeds() {
+    const set = new Set();
+    for (const breeds of Object.values(BREED_DATA)) {
+        breeds.forEach(b => {
+            const clean = b.replace(/\s*\(.*?\)\s*/g, '').trim();
+            if (clean) set.add(clean);
+        });
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, 'ru'));
+}
+
+function filterWizBreeds(q) {
+    const dd = document.getElementById("wizBreedDropdown");
+    if (!dd) return;
+    const all = getAllBreeds();
+    const filtered = q ? all.filter(b => b.toLowerCase().includes(q.toLowerCase())) : all;
+    if (filtered.length === 0 || !q) {
+        dd.classList.remove("open");
+        dd.innerHTML = "";
+        return;
+    }
+    dd.innerHTML = filtered.slice(0, 15).map(b => `<div class="wiz-breed-option" onmousedown="selectWizBreed('${b.replace(/'/g, "\\'")}')">${b}</div>`).join("");
+    dd.classList.add("open");
+}
+
+function selectWizBreed(b) {
+    wizBreed = b;
+    renderWizStep();
+}
+
+function renderWizStep3(body, footer) {
+    const questions = getWizQuestions();
+    let html = `<div style="font-size:13px;color:var(--text2);margin-bottom:14px">Уточняющие вопросы помогут сузить дифференциальный список</div>`;
+    questions.forEach(q => {
+        html += `<div class="wiz-q-row">
+            <div class="wiz-q-label">${q.label}</div>
+            <div class="wiz-q-btns">
+                ${q.options.map(o => `<div class="wiz-q-btn ${wizQuestions[q.id]===o?'selected':''}" onclick="wizQuestions['${q.id}']='${o}';renderWizStep()">${o}</div>`).join("")}
+            </div>
+        </div>`;
+    });
+    if (questions.length === 0) html += `<div style="color:var(--text3);text-align:center;padding:20px">Нет дополнительных вопросов для выбранных симптомов</div>`;
+    body.innerHTML = html;
+    footer.innerHTML = `<button class="wiz-btn" onclick="wizBack()">&larr; Назад</button><button class="wiz-btn primary" onclick="wizNext()">Результаты &rarr;</button>`;
+}
+
+function getWizQuestions() {
+    const qs = [];
+    const symSet = new Set(wizSymptoms);
+    const hasGI = symSet.has("рвота") || symSet.has("диарея") || symSet.has("кровавая диарея") || symSet.has("анорексия");
+    const hasSkin = symSet.has("зуд") || symSet.has("облысение") || symSet.has("корки на коже") || symSet.has("выпадение шерсти");
+    const hasResp = symSet.has("кашель") || symSet.has("одышка") || symSet.has("затруднённое дыхание") || symSet.has("чихание");
+    const hasNeuro = symSet.has("судороги") || symSet.has("шаткость походки") || symSet.has("паралич задних ног");
+    const hasUro = symSet.has("затруднённое мочеиспускание") || symSet.has("кровь в моче") || symSet.has("полиурия");
+
+    qs.push({ id: "vaccination", label: "Вакцинация актуальна?", options: ["Да","Нет","Неизвестно"] });
+    qs.push({ id: "onset", label: "Начало симптомов?", options: ["Острое","Постепенное","Хроническое"] });
+    if (wizSpecies !== "Кошки") qs.push({ id: "neutered", label: "Стерилизация/кастрация?", options: ["Да","Нет","Неизвестно"] });
+    if (wizSpecies === "Кошки") qs.push({ id: "neutered", label: "Стерилизация/кастрация?", options: ["Да","Нет","Неизвестно"] });
+    if (hasGI) {
+        qs.push({ id: "appetite", label: "Аппетит?", options: ["Сохранён","Снижен","Отсутствует"] });
+        qs.push({ id: "temp", label: "Температура?", options: ["Повышена","Норма","Понижена","Неизвестно"] });
+    }
+    if (hasSkin) {
+        qs.push({ id: "season", label: "Сезонность зуда?", options: ["Да","Нет","Неизвестно"] });
+        qs.push({ id: "fleas", label: "Обработка от блох?", options: ["Да","Нет","Неизвестно"] });
+    }
+    if (hasResp) {
+        qs.push({ id: "temp", label: "Температура?", options: ["Повышена","Норма","Неизвестно"] });
+    }
+    if (hasNeuro) {
+        qs.push({ id: "consciousness", label: "Сознание?", options: ["Ясное","Оглушённое","Кома"] });
+    }
+    if (hasUro) {
+        qs.push({ id: "urine_color", label: "Цвет мочи?", options: ["Норма","Красная","Тёмная","Неизвестно"] });
+    }
+    // Deduplicate by id
+    const seen = new Set(); return qs.filter(q => { if (seen.has(q.id)) return false; seen.add(q.id); return true; });
+}
+
+function renderWizStep4(body, footer) {
+    const results = computeWizResults();
+    let html = `<div class="wiz-summary"><strong>Запрос:</strong> ${wizSymptoms.join(", ")} | ${wizSpecies === "Собаки" ? "&#128054; Собака" : "&#128049; Кошка"} | ${wizAge === "puppy" ? "<1 года" : wizAge === "adult" ? "1-7 лет" : ">7 лет"}${wizBreed ? " | " + wizBreed : ""}</div>`;
+
+    if (results.length === 0) {
+        html += `<div class="wiz-no-results">Не найдено диагнозов, соответствующих критериям</div>`;
+    } else {
+        // Total cost
+        let allTests = new Set();
+        results.slice(0, 10).forEach(r => {
+            const d = CDSS_DB.find(x => x.id === r.id);
+            if (d) [...d.mandatory, ...d.recommended].forEach(t => { const c = findTestCost(t.name); if (c) allTests.add(t.name); });
+        });
+        let totalCost = 0;
+        allTests.forEach(name => { const c = findTestCost(name); if (c) totalCost += c; });
+
+        results.slice(0, 10).forEach((r, i) => {
+            const d = CDSS_DB.find(x => x.id === r.id);
+            if (!d) return;
+            const scoreClass = r.score >= 70 ? "high" : r.score >= 40 ? "med" : "low";
+            const ageNote = AGE_NOTES[d.id];
+            const breeds = BREED_DATA[d.id];
+            const breedMatch = wizBreed && breeds && breeds.some(b => b.toLowerCase().includes(wizBreed.toLowerCase()));
+            const tests = [...d.mandatory, ...d.recommended].slice(0, 4);
+            const staging = STAGING_DATA ? STAGING_DATA[d.id] : null;
+
+            html += `<div class="wiz-result" onclick="wizOpenDiag('${d.id}')">
+                <div class="wiz-result-header">
+                    <span class="wiz-result-name">${i+1}. ${d.name}</span>
+                    <span class="wiz-result-score ${scoreClass}">${r.score}%</span>
+                </div>
+                <div class="wiz-result-meta">
+                    <span class="alert-badge ${d.alertLevel}" style="font-size:10px;padding:2px 6px">${d.alertLevel === 'hard' ? 'БЛОК' : d.alertLevel === 'soft' ? 'АЛЕРТ' : 'ИНФО'}</span>
+                    ${breedMatch ? '<span style="color:var(--green)">&#10003; Порода совпадает</span>' : ''}
+                    ${staging ? '<span style="color:var(--purple)">&#9881; Стадирование</span>' : ''}
+                </div>
+                ${ageNote ? `<div class="wiz-result-notes">${wizAge === 'puppy' && ageNote.puppy ? '&#128118; ' + ageNote.puppy.substring(0, 120) + (ageNote.puppy.length > 120 ? '...' : '') : wizAge === 'geriatric' && ageNote.geriatric ? '&#128116; ' + ageNote.geriatric.substring(0, 120) + (ageNote.geriatric.length > 120 ? '...' : '') : ''}</div>` : ''}
+                ${tests.length ? `<div class="wiz-result-tests">&#128300; ${tests.map(t => { const c = findTestCost(t.name); return t.name + (c ? ' ('+c+'₼)' : ''); }).join(" | ")}</div>` : ''}
+            </div>`;
+        });
+
+        if (totalCost > 0) {
+            html += `<div class="wiz-summary" style="margin-top:14px"><strong>&#128176; Ориентировочная стоимость ключевых тестов (топ-10):</strong> ~${totalCost} AZN</div>`;
+        }
+    }
+
+    body.innerHTML = html;
+    footer.innerHTML = `<button class="wiz-btn" onclick="wizBack()">&larr; Назад</button>
+        <div style="display:flex;gap:8px">
+            <button class="wiz-btn" onclick="openWizard()">&#8634; Заново</button>
+            <button class="wiz-btn primary" onclick="closeWizard()">Закрыть</button>
+        </div>`;
+}
+
+function computeWizResults() {
+    // Collect all matching diagnoses from symptoms
+    const diagScores = {};
+    const totalSymptoms = wizSymptoms.length;
+
+    wizSymptoms.forEach(sym => {
+        const diagIds = SYMPTOMS_DATA[sym] || [];
+        diagIds.forEach(id => {
+            if (!diagScores[id]) diagScores[id] = { id, symptomHits: 0, bonuses: 0 };
+            diagScores[id].symptomHits++;
+        });
+    });
+
+    // Filter by species
+    const speciesFilter = wizSpecies === "Собаки" ? "Собаки" : wizSpecies === "Кошки" ? "Кошки" : null;
+    const filtered = Object.values(diagScores).filter(r => {
+        const d = CDSS_DB.find(x => x.id === r.id);
+        if (!d) return false;
+        if (speciesFilter && d.species !== "Все" && d.species !== speciesFilter) return false;
+        return true;
+    });
+
+    // Score each diagnosis
+    filtered.forEach(r => {
+        const d = CDSS_DB.find(x => x.id === r.id);
+        if (!d) return;
+
+        // Base score: symptom match ratio (0-60)
+        let score = (r.symptomHits / totalSymptoms) * 60;
+
+        // Alert level bonus (0-10)
+        if (d.alertLevel === "hard") score += 10;
+        else if (d.alertLevel === "soft") score += 5;
+
+        // Frequency bonus (0-8)
+        score += Math.min(d.count / 50, 1) * 8;
+
+        // Age match bonus (0-10)
+        const ageNote = AGE_NOTES[r.id];
+        if (ageNote) {
+            if (wizAge === "puppy" && ageNote.puppy) score += 8;
+            if (wizAge === "geriatric" && ageNote.geriatric) score += 8;
+            if (wizAge === "adult") score += 4;
+        }
+
+        // Breed match bonus (0-10)
+        if (wizBreed) {
+            const breeds = BREED_DATA[r.id];
+            if (breeds && breeds.some(b => b.toLowerCase().includes(wizBreed.toLowerCase()))) {
+                score += 10;
+            }
+        }
+
+        // Question bonuses
+        if (wizQuestions.vaccination === "Нет") {
+            if (["parvovirus","panleukopenia","distemper","kennel_cough","calicivirus","rhinotracheitis"].includes(r.id)) score += 8;
+        }
+        if (wizQuestions.onset === "Острое") {
+            if (["anaphylaxis","foreign_body","parvovirus","acute_urinary_retention","thromboembolism","heat_stroke","pneumothorax","head_trauma","rodenticide_poisoning"].includes(r.id)) score += 5;
+        }
+        if (wizQuestions.onset === "Хроническое") {
+            if (["ckd","ibd","hypothyroidism_dog","cushings","arthrosis","ckd","atopic_dermatitis","food_allergy","lymphoma"].includes(r.id)) score += 5;
+        }
+        if (wizQuestions.neutered === "Нет") {
+            if (["pyometra","mammary_tumor","cryptorchidism","pseudopregnancy","pregnancy_pathology"].includes(r.id)) score += 8;
+        }
+        if (wizQuestions.appetite === "Отсутствует") {
+            if (["fip","panleukopenia","hepatic_lipidosis","pancreatitis","peritonitis","foreign_body"].includes(r.id)) score += 5;
+        }
+        if (wizQuestions.temp === "Повышена") {
+            if (["parvovirus","panleukopenia","pneumonia","pyometra","fip","peritonitis","ehrlichiosis"].includes(r.id)) score += 6;
+        }
+
+        r.score = Math.min(Math.round(score), 99);
+    });
+
+    // Sort by score descending
+    filtered.sort((a, b) => b.score - a.score);
+    return filtered;
+}
+
+function wizOpenDiag(id) {
+    closeWizard();
+    selectDiagnosis(id);
+}
+
+function wizNext() {
+    if (wizStep === 1 && wizSymptoms.length === 0) return;
+    if (wizStep === 2 && (!wizSpecies || !wizAge)) return;
+    if (wizStep < 4) { wizStep++; renderWizStep(); }
+}
+function wizBack() {
+    if (wizStep > 1) { wizStep--; renderWizStep(); }
 }
 
 document.addEventListener("DOMContentLoaded", init);
