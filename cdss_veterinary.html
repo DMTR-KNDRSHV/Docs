@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDSS - Ветеринарная система поддержки клинических решений</title>
+    <meta name="description" content="Ветеринарная CDSS: 159 диагнозов, протоколы лечения, калькуляторы доз">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vet CDSS">
+    <meta name="theme-color" content="#0f1118">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c8cf7'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='sans-serif' fill='white'>&#9879;</text></svg>">
     <style>
         :root {
             --bg: #0f1118;
@@ -1440,8 +1446,15 @@
         .treatment-block p {
             font-size: 13px;
             color: var(--text2);
-            line-height: 1.6;
+            line-height: 1.7;
         }
+        .treatment-block .rx-line {
+            display: block;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .treatment-block .rx-line:last-child { border-bottom: none; }
+        body.light .treatment-block .rx-line { border-bottom-color: rgba(0,0,0,0.04); }
 
         /* ===== SPECIES FILTER ===== */
         .species-row {
@@ -9758,12 +9771,16 @@ function setSearchMode(mode, btn) {
 // ===== DOSE HIGHLIGHTING =====
 function highlightDoses(text) {
     if (!text) return text;
-    // Highlight dose ranges (e.g. 10-20 мг/кг, 0.5-1.5 мл/кг) and single doses
-    return text
+    // Highlight dose ranges and single doses
+    let result = text
         .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(мг\/кг|мл\/кг|г\/кг|ЕД\/кг|мкг\/кг|мг\/м2|мг\/кошку|мг\/сут|мг\b|мл\b|г\b|ЕД\b|%)/g,
             '<span class="dose-hl">$1 $2</span>')
         .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(р\/д|р\/нед|р\/мес|раз в сут)/g,
             '<span class="dose-hl">$1 $2</span>');
+    // Split by sentence-ending periods followed by space+uppercase or drug separator
+    result = result.replace(/\.\s+(?=[А-ЯA-Z])/g, '.</span><span class="rx-line">');
+    result = '<span class="rx-line">' + result + '</span>';
+    return result;
 }
 
 // ===== SECTION COLLAPSE =====
