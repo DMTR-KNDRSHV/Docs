@@ -2484,7 +2484,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Информационный — подсказка для врача</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Доступно в клинике</div>
 </div>
-<div style="background:var(--card);border-top:1px solid var(--border);padding:16px 24px;font-size:11px;color:var(--text2);line-height:1.7;">
+<div style="background:var(--card);border-top:1px solid var(--border);padding:16px 24px 80px;font-size:11px;color:var(--text2);line-height:1.7;">
     <strong style="color:var(--orange);">ДИСКЛЕЙМЕР:</strong> Протоколы лечения носят справочный характер и не заменяют клиническое решение врача. Дозировки требуют индивидуальной корректировки.<br>
     <strong>Источники:</strong>
     IRIS CKD/AKI Guidelines 2023 |
@@ -8861,22 +8861,22 @@ let selectedStage = {};
 // ===== INIT =====
 // ===== SOS EMERGENCY =====
 const SOS_DIAGNOSES = [
-    { id: "anaphylaxis", icon: "\u26A0\uFE0F", desc: "Адреналин 0.01 мг/кг в/м. НЕ 0.1 мг/кг!" },
-    { id: "heat_stroke", icon: "\uD83C\uDF21\uFE0F", desc: "Охлаждение до 39.5\u00B0C. Инфузия 40-90 мл/кг/ч" },
-    { id: "aki", icon: "\uD83D\uDCA7", desc: "Инфузия 4-8 мл/кг/ч. Фуросемид при анурии" },
-    { id: "cardiogenic_edema", icon: "\u2764\uFE0F", desc: "Фуросемид 2-4 мг/кг в/в. Кислород. НЕ инфузия!" },
+    { id: "anaphylaxis", icon: "\u26A0", desc: "Адреналин 0.01 мг/кг в/м. НЕ 0.1 мг/кг!" },
+    { id: "heat_stroke", icon: "\u2668", desc: "Охлаждение до 39.5\u00B0C. Инфузия 40-90 мл/кг/ч" },
+    { id: "aki", icon: "\u2B07", desc: "Инфузия 4-8 мл/кг/ч. Фуросемид при анурии" },
+    { id: "cardiogenic_edema", icon: "\u2764", desc: "Фуросемид 2-4 мг/кг в/в. Кислород. НЕ инфузия!" },
     { id: "epilepsy", icon: "\u26A1", desc: "Диазепам 0.5-1 мг/кг в/в. Леветирацетам 30-60 мг/кг в/в" },
-    { id: "thromboembolism", icon: "\uD83E\uDE78", desc: "Обезболивание. Клопидогрел. НЕ согревать конечности!" },
-    { id: "acute_urinary_retention", icon: "\uD83D\uDEBD", desc: "При K+>7: Ca глюконат 0.5-1.5 мл/кг в/в. НЕ Рингер!" },
-    { id: "eclampsia", icon: "\uD83E\uDD31", desc: "Ca глюконат 10% 1-1.5 мл/кг в/в МЕДЛЕННО. ЭКГ!" },
-    { id: "dic", icon: "\uD83E\uDE78", desc: "СЗП 10-20 мл/кг. Гепарин. Лечить ПРИЧИНУ!" },
-    { id: "rodenticide_poisoning", icon: "\u2620\uFE0F", desc: "Вит К1 2.5-3 мг/кг п/к. НЕ вит К3! Курс 28 дней" },
-    { id: "chocolate_toxicity", icon: "\uD83C\uDF6B", desc: "Рвота если <2ч. Уголь. Лидокаин при аритмии" },
-    { id: "lily_toxicity", icon: "\uD83C\uDF38", desc: "Инфузия 2x поддерживающей 48-72ч. Промедление = смерть" },
-    { id: "nsaid_toxicity", icon: "\uD83D\uDC8A", desc: "Инфузия + омепразол + сукральфат + мизопростол" },
-    { id: "head_trauma", icon: "\uD83E\uDDE0", desc: "Голову 30\u00B0. Маннитол 0.5-1 г/кг в/в. НЕ ГКС!" },
-    { id: "pneumothorax", icon: "\uD83C\uDF2C\uFE0F", desc: "Торакоцентез немедленно. Игла 18G 2-е межреберье" },
-    { id: "addisons", icon: "\u2B07\uFE0F", desc: "NaCl 0.9% 60-90 мл/кг/ч. Декс 0.1-0.2 мг/кг в/в" }
+    { id: "thromboembolism", icon: "\u2716", desc: "Обезболивание. Клопидогрел. НЕ согревать конечности!" },
+    { id: "acute_urinary_retention", icon: "\u26D4", desc: "При K+>7: Ca глюконат 0.5-1.5 мл/кг в/в. НЕ Рингер!" },
+    { id: "eclampsia", icon: "\u2623", desc: "Ca глюконат 10% 1-1.5 мл/кг в/в МЕДЛЕННО. ЭКГ!" },
+    { id: "dic", icon: "\u2622", desc: "СЗП 10-20 мл/кг. Гепарин. Лечить ПРИЧИНУ!" },
+    { id: "rodenticide_poisoning", icon: "\u2620", desc: "Вит К1 2.5-3 мг/кг п/к. НЕ вит К3! Курс 28 дней" },
+    { id: "chocolate_toxicity", icon: "\u2716", desc: "Рвота если <2ч. Уголь. Лидокаин при аритмии" },
+    { id: "lily_toxicity", icon: "\u2716", desc: "Инфузия 2x поддерживающей 48-72ч. Промедление = смерть" },
+    { id: "nsaid_toxicity", icon: "\u2716", desc: "Инфузия + омепразол + сукральфат + мизопростол" },
+    { id: "head_trauma", icon: "\u26A0", desc: "Голову 30\u00B0. Маннитол 0.5-1 г/кг в/в. НЕ ГКС!" },
+    { id: "pneumothorax", icon: "\u26A0", desc: "Торакоцентез немедленно. Игла 18G 2-е межреберье" },
+    { id: "addisons", icon: "\u2B07", desc: "NaCl 0.9% 60-90 мл/кг/ч. Декс 0.1-0.2 мг/кг в/в" }
 ];
 
 function openSOS() {
@@ -9771,16 +9771,16 @@ function setSearchMode(mode, btn) {
 // ===== DOSE HIGHLIGHTING =====
 function highlightDoses(text) {
     if (!text) return text;
-    // Highlight dose ranges and single doses
-    let result = text
-        .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(мг\/кг|мл\/кг|г\/кг|ЕД\/кг|мкг\/кг|мг\/м2|мг\/кошку|мг\/сут|мг\b|мл\b|г\b|ЕД\b|%)/g,
-            '<span class="dose-hl">$1 $2</span>')
-        .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(р\/д|р\/нед|р\/мес|раз в сут)/g,
-            '<span class="dose-hl">$1 $2</span>');
-    // Split by sentence-ending periods followed by space+uppercase or drug separator
-    result = result.replace(/\.\s+(?=[А-ЯA-Z])/g, '.</span><span class="rx-line">');
-    result = '<span class="rx-line">' + result + '</span>';
-    return result;
+    // Split into sentences for rx-line blocks (safe for all browsers)
+    const sentences = text.replace(/\.\s+(?=[А-ЯA-Z])/g, '.\n').split('\n');
+    return sentences.map(s => {
+        const highlighted = s
+            .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(мг\/кг|мл\/кг|г\/кг|ЕД\/кг|мкг\/кг|мг\/м2|мг\/кошку|мг\/сут|мг\b|мл\b|г\b|ЕД\b|%)/g,
+                '<span class="dose-hl">$1 $2</span>')
+            .replace(/(\d+[.,]?\d*\s*[-–]\s*\d+[.,]?\d*|\d+[.,]?\d*)\s*(р\/д|р\/нед|р\/мес|раз в сут)/g,
+                '<span class="dose-hl">$1 $2</span>');
+        return '<span class="rx-line">' + highlighted + '</span>';
+    }).join('');
 }
 
 // ===== SECTION COLLAPSE =====
